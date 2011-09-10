@@ -1,0 +1,25 @@
+#!/bin/sh
+
+MIRROR="http://mirror.hatcolorsoft.com/"
+DATABASE_PATH=@DATABASE_PATH@
+
+ARCH=$(uname -m)
+
+catalogs=$(curl -f -s $MIRROR/cnf/catalogs-$ARCH)
+
+if [ $? -eq 0 ];then
+
+    for i in $catalogs; do
+        echo "Loading catalog $i ..." 
+        wget --quiet -O $DATABASE_PATH/$i $MIRROR/cnf/$i
+        if [ ! $? -eq 0 ];then 
+            echo "Failed to download catalog $i ..."
+        fi
+    done
+
+else
+    echo "Could not download catalog file ... aborting"
+    exit 1
+fi
+
+exit 0

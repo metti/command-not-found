@@ -1,0 +1,45 @@
+# Maintainer: @PROGRAM_MAINTAINER@ <@PROGRAM_MAINTAINER_MAIL@>
+pkgname=@PACKAGE_NAME@
+pkgver=@VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
+pkgrel=1
+pkgdesc="@PROGRAM_LONG_NAME@"
+arch=('i686' 'x86_64')
+url="http://github.com/metti/command-not-found"
+license=('GPL')
+depends=('boost-libs' 'gdbm')
+makedepends=('boost' 'gdbm' 'cmake' 'git')
+source=('install')
+md5sums=('@ARCH_INSTALL_MD5@')
+install='install'
+
+_gitrepo="git://github.com/metti/$pkgname.git"
+
+build() {
+    cd $srcdir
+    msg "Connecting to the GIT server ..."
+    
+    if [[ -d $srcdir/$pkgname ]] ; then
+        cd $pkgname
+        git fetch origin
+    else
+        git clone $_gitrepo
+        cd $pkgname
+    fi
+
+    git checkout v$pkgver
+
+    msg "GIT checkout done"
+
+    mkdir -p $srcdir/build
+    cd $srcdir/build
+
+    cmake -D CMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="" $srcdir/@PACKAGE_NAME@/src
+    make
+
+}
+
+package(){
+    cd $srcdir/build
+
+    make DESTDIR=$pkgdir install
+}

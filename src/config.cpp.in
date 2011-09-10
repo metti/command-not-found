@@ -1,0 +1,40 @@
+/*
+    This file is part of command-not-found.
+    Copyright (C) 2011 Matthias Maennich <matthias@maennich.net>
+
+    command-not-found is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    command-not-found is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include <string>
+
+#include "config.h"
+
+namespace cnf{
+
+const std::string PROGRAM_NAME = "@PROGRAM_NAME@";
+const std::string PROGRAM_LONG_NAME = "@PROGRAM_LONG_NAME@";
+const std::string PROGRAM_AUTHOR = "@PROGRAM_AUTHOR@";
+
+const int VERSION_MAJOR = @VERSION_MAJOR@;
+const int VERSION_MINOR = @VERSION_MINOR@;
+const int VERSION_PATCH = @VERSION_PATCH@;
+const std::string VERSION_SHORT = "@VERSION_SHORT@";
+const std::string VERSION_HASH = "@GIT_HASH@";
+const std::string VERSION_LONG = "@VERSION_SHORT@ (@GIT_HASH_SHORT@)";
+const std::string VERSION_REFSPEC = "@GIT_REFSPEC@";
+
+const std::string DATABASE_PATH = "@DATABASE_PATH@/";
+
+}
+

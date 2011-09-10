@@ -1,0 +1,29 @@
+# Maintainer: @PROGRAM_MAINTAINER@ <@PROGRAM_MAINTAINER_MAIL@>
+pkgname=@PACKAGE_NAME@
+pkgver=@VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
+pkgrel=1
+pkgdesc="@PROGRAM_LONG_NAME@"
+arch=('i686' 'x86_64')
+url="http://github.com/metti/command-not-found"
+license=('GPL')
+depends=('boost-libs' 'gdbm')
+makedepends=('boost' 'gdbm' 'cmake' 'git')
+source=('@CPACK_SOURCE_PACKAGE_FILE_NAME@.tar.gz' 'install')
+md5sums=()
+install='install'
+
+build() {
+
+    mkdir -p $srcdir/build
+    cd $srcdir/build
+
+    cmake -D CMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="" ../@CPACK_SOURCE_PACKAGE_FILE_NAME@
+    make
+
+}
+
+package(){
+    cd $srcdir/build
+
+    make DESTDIR=$pkgdir install
+}

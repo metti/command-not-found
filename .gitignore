@@ -1,0 +1,9 @@
+*.o
+*.d
+cnf
+.settings
+build
+*.swp
+*.db
+core
+*.bundle
