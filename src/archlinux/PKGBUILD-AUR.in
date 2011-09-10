@@ -2,7 +2,7 @@
 pkgname=@PACKAGE_NAME@
 pkgver=@VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
 pkgrel=1
-pkgdesc="@PROGRAM_LONG_NAME@"
+pkgdesc="Displays packages containing the command that could not be found (bash,zsh)"
 arch=('i686' 'x86_64')
 url="http://github.com/metti/command-not-found"
 license=('GPL')
@@ -33,7 +33,7 @@ build() {
     mkdir -p $srcdir/build
     cd $srcdir/build
 
-    cmake -D CMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="" $srcdir/@PACKAGE_NAME@/src
+    cmake -D CMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="" $srcdir/$pkgname/src
     make
 
 }
