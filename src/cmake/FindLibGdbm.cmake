@@ -32,7 +32,7 @@ endif (LibGdbm_INCLUDE_DIR AND LibGdbm_LIBRARY)
 
 if (LibGdbm_FOUND)
    if (NOT LibGdbm_FIND_QUIETLY)
-      message(STATUS "Found pthread Library: ${LibGdbm_LIBRARY}")
+      message(STATUS "Found GDB Library: ${LibGdbm_LIBRARY}")
    endif (NOT LibGdbm_FIND_QUIETLY)
 else (LibGdbm_FOUND)
    if (LibGdbm_FIND_REQUIRED)
