@@ -20,6 +20,7 @@
 #define DB_H_
 
 #include <map>
+#include <set>
 
 #include "package.h"
 #include "config.h"
@@ -62,8 +63,9 @@ const boost::shared_ptr<Database> getDatabase(const std::string id,
 const std::vector<std::string> getCatalogs(const std::string database_path)
         throw (DatabaseException);
 
-const std::map<std::string, std::vector<Package> > lookup(const std::string searchString,
-                                                          const std::string database_path);
+const std::map<std::string, std::set<Package> > lookup(const std::string searchString,
+                                                          const std::string database_path,
+                                                          std::vector<std::string>* const inexact_matches = NULL);
 
 void populate_mirror(const boost::filesystem::path path,
                      const std::string database_path,

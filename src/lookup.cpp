@@ -93,11 +93,11 @@ int theMain(int argc, char** argv) {
 
     args.search_string = argv[optind];
 
-    const map<string, vector<Package> > result = lookup(args.search_string,
+    const map<string, set<Package> > result = lookup(args.search_string,
                                                         args.database_path);
 
-    typedef map<string, vector<Package> >::const_iterator catIter;
-    typedef vector<Package>::const_iterator packIter;
+    typedef map<string, set<Package> >::const_iterator catIter;
+    typedef set<Package>::const_iterator packIter;
 
     stringstream out;
     bool match = false;
@@ -116,6 +116,28 @@ int theMain(int argc, char** argv) {
              << "' is been provided by the following packages:" << endl;
         cout << out.str();
         return 0;
+
+    } else {
+        boost::shared_ptr<vector<string> > matches(new vector<string>());
+        const map<string, set<Package> > inexactResult = lookup(args.search_string,
+                                                            args.database_path,
+                                                            matches.get());
+
+        for (catIter oiter = inexactResult.begin(); oiter != inexactResult.end(); ++oiter) {
+            out << "[" << oiter->first << "]" << endl;
+
+            for (packIter piter = oiter->second.begin();
+                          piter != oiter->second.end(); ++piter) {
+                out << "\t" << piter->hl_str(matches.get()) << endl;
+                match = true;
+            }
+        }
+        if (match){
+            cout << "A similar command to '" << args.search_string
+                 << "' is been provided by the following packages:" << endl;
+            cout << out.str();
+            return 0;
+        }
     }
 
     return 1;

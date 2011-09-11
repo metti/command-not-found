@@ -125,6 +125,7 @@ SET (CNF_SRCS    db.cpp
                  package.cpp
                  ${DB_BACKEND_SOURCE}
                  guard.cpp
+                 similar.cpp
                  ${PROJECT_BINARY_DIR}/config.cpp
 )
 

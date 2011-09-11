@@ -71,6 +71,7 @@ public:
         return itsCompression;
     }
     const std::string hl_str(const std::string = "") const;
+    const std::string hl_str(const std::vector<std::string>* = NULL) const;
 
     typedef std::vector<std::string>::const_iterator const_file_iterator;
     typedef std::vector<std::string>::iterator file_iterator;
@@ -94,6 +95,9 @@ enum PackageError {
 };
 
 std::ostream& operator<<(std::ostream& out, const Package& p);
+
+bool operator<(const Package& lhs, const Package& rhs);
+bool operator==(const Package& lhs, const Package& rhs);
 
 }
 

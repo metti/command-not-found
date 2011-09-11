@@ -26,6 +26,7 @@
 #include "config.h"
 #include "db_gdbm.h"
 #include "db_tdb.h"
+#include "similar.h"
 
 namespace bf = boost::filesystem;
 using namespace std;
@@ -53,22 +54,41 @@ const vector<string> getCatalogs(const string database_path) throw (DatabaseExce
 #endif
 }
 
-const map<string, vector<Package> > lookup(const string searchString,
-                                           const string database_path) {
+const map<string, set<Package> > lookup(const string searchString,
+                                           const string database_path,
+                                           vector<string>* const inexact_matches) {
 
     const vector<string>& catalogs = getCatalogs(database_path);
 
-    map<string, vector<Package> > result;
+    map<string, set<Package> > result;
 
     if (catalogs.size() > 0) {
 
         typedef vector<string>::const_iterator catIter;
         for (catIter iter = catalogs.begin(); iter != catalogs.end(); iter++) {
-            vector<Package> packs =
-                    getDatabase(*iter, true, database_path)->getPackages(
-                            searchString);
+
+            vector<Package> packs;
+
+            if (inexact_matches == NULL){
+                packs = getDatabase(*iter, true, database_path)->getPackages(searchString);
+            } else {
+                const set<string> terms = similar_words(searchString);
+
+                const shared_ptr<Database>& d = getDatabase(*iter, true, database_path);
+
+                for (set<string>::const_iterator termIter = terms.begin();
+                                                    termIter != terms.end();
+                                                    ++termIter){
+                    const vector<Package>& tempPack = d->getPackages(*termIter);
+                    if (tempPack.size() > 0){
+                        packs.insert(packs.end(),tempPack.begin(),tempPack.end());
+                        inexact_matches->push_back(*termIter);
+                    }
+                }
+            }
+
             if (packs.size() > 0)
-                result[*iter] = packs;
+                result[*iter] = set<Package>(packs.begin(),packs.end());
         }
     } else {
         cout << "WARNING: No database for lookup!" << endl;

@@ -134,9 +134,44 @@ const string Package::hl_str(const string hl) const {
     return out.str();
 }
 
+const string Package::hl_str(const vector<string>* hl) const {
+    stringstream out;
+    out << name() << " (" << version() << "-" << release() << ") [ ";
+
+    for (Package::const_file_iterator iter = files().begin();
+            iter != files().end(); ++iter) {
+
+        string color = "\033[0m";
+
+        if (hl != NULL){
+            for (vector<string>::const_iterator hlIter = hl->begin();
+                                                hlIter != hl->end(); ++hlIter){
+                if (*hlIter != "" && *hlIter == *iter){
+                    color = "\033[0;31m";
+                }
+            }
+        }
+
+        out << color << *iter << "\033[0m" << " ";
+    }
+    out << "]";
+    return out.str();
+}
+
 ostream& operator<<(ostream& out, const Package& p) {
-    out << p.hl_str();
+    out << p.hl_str("");
     return out;
+}
+
+bool operator<(const Package& lhs, const Package& rhs){
+    return lhs.name() < rhs.name();
+}
+
+bool operator==(const Package& lhs, const Package& rhs){
+   return lhs.name() == rhs.name() &&
+          lhs.version() == rhs.version() &&
+          lhs.release() == rhs.release() &&
+          lhs.architecture() == rhs.architecture();
 }
 
 }
