@@ -23,6 +23,9 @@
 
 #cmakedefine DEBUG
 
+#cmakedefine USE_GDBM
+#cmakedefine USE_TDB
+
 namespace cnf {
 
 extern const std::string PROGRAM_NAME;

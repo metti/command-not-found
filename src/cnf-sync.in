@@ -5,7 +5,7 @@ DATABASE_PATH=@DATABASE_PATH@
 
 ARCH=$(uname -m)
 
-catalogs=$(curl -f -s $MIRROR/cnf/catalogs-$ARCH)
+catalogs=$(curl -f -s $MIRROR/cnf/catalogs-$ARCH-tdb)
 
 if [ $? -eq 0 ];then
 
