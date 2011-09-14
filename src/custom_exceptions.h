@@ -20,36 +20,37 @@
 #define EXCEPTIONS_H_
 
 #include <exception>
+#include <string>
 
 namespace cnf {
 
 class ErrorCodeException: public std::exception {
 public:
-    explicit ErrorCodeException(const int aCode, const char* aMessage = "")
+    explicit ErrorCodeException(const int aCode, const std::string aMessage)
             : itsCode(aCode), itsMessage(aMessage) {
     }
+    ~ErrorCodeException() throw(){}
     int code() const {
         return itsCode;
     }
     const char* what() const throw () {
-        return itsMessage;
+        return itsMessage.c_str();
     }
-
 private:
     const int itsCode;
-    const char* itsMessage;
+    const std::string itsMessage;
 };
 
 class InvalidArgumentException: public ErrorCodeException {
 public:
-    InvalidArgumentException(const int aCode, const char* aMessage = "")
+    InvalidArgumentException(const int aCode, const std::string aMessage)
             : ErrorCodeException(aCode, aMessage) {
     }
 };
 
 class DatabaseException: public ErrorCodeException {
 public:
-    DatabaseException(const int aCode, const char* aMessage = "")
+    DatabaseException(const int aCode, const std::string aMessage)
             : ErrorCodeException(aCode, aMessage) {
     }
 };
