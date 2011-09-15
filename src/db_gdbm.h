@@ -29,15 +29,15 @@
 namespace cnf {
 class GdbmDatabase: public Database {
 public:
-    explicit GdbmDatabase(const std::string id,
+    explicit GdbmDatabase(const std::string& id,
                           const bool readonly,
-                          const std::string basepath) throw (DatabaseException);
+                          const std::string& basepath) throw (DatabaseException);
     virtual void storePackage(const Package& p) throw (DatabaseException);
-    virtual const std::vector<Package> getPackages(const std::string search) const
+    virtual const std::vector<Package> getPackages(const std::string& search) const
             throw (DatabaseException);
     virtual void truncate() throw (DatabaseException);
     virtual ~GdbmDatabase();
-    static const std::vector<std::string> getCatalogs(const std::string database_path)
+    static const std::vector<std::string> getCatalogs(const std::string& database_path)
             throw (DatabaseException);
 private:
     GDBM_FILE itsGdbmFile;
@@ -46,12 +46,12 @@ private:
 
 class KeyValue {
 public:
-    explicit KeyValue(const std::string key, const std::string value);
+    explicit KeyValue(const std::string& key, const std::string& value);
     explicit KeyValue();
-    void setKey(const std::string key);
-    void setKey(const datum key);
-    void setValue(const std::string key);
-    void setValue(const datum key);
+    void setKey(const std::string& key);
+    void setKey(const datum& key);
+    void setValue(const std::string& key);
+    void setValue(const datum& key);
     ~KeyValue();
     datum key() const {
         return itsKey;
@@ -80,7 +80,7 @@ private:
     KeyValue& operator=(const KeyValue&);
 };
 
-inline char* getWritableCString(const std::string aString);
+inline char* getWritableCString(const std::string& aString);
 
 }
 

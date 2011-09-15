@@ -24,7 +24,7 @@
 
 using namespace std;
 
-const set<string> similar_words(const string word){
+const set<string> similar_words(const string& word){
     set<string> result;
 
     static const char alphabet[] = "abcdefghijklmnopqrstuvwxyz-_0123456789";

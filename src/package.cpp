@@ -31,7 +31,7 @@ using boost::cmatch;
 
 namespace cnf {
 
-Package::Package(const bf::path path, const bool lazy) throw (InvalidArgumentException)
+Package::Package(const bf::path& path, const bool lazy) throw (InvalidArgumentException)
         : itsFilesDetermined(false), itsPath(new bf::path(path)) {
 
     // checks
@@ -121,7 +121,7 @@ void Package::updateFiles() const {
 
 }
 
-const string Package::hl_str(const string hl) const {
+const string Package::hl_str(const string& hl) const {
     stringstream out;
     out << name() << " (" << version() << "-" << release() << ") [ ";
 

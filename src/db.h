@@ -33,18 +33,18 @@ enum DatabaseError {
 
 class Database {
 public:
-    explicit Database(const std::string id,
+    explicit Database(const std::string& id,
                       bool readonly,
-                      const std::string base_path) throw (DatabaseException)
+                      const std::string& base_path) throw (DatabaseException)
             : itsId(id), isReadonly(readonly), itsBasePath(base_path) {
     }
     virtual void storePackage(const Package& p) throw (DatabaseException) = 0;
-    virtual const std::vector<Package> getPackages(const std::string search) const
+    virtual const std::vector<Package> getPackages(const std::string& search) const
             throw (DatabaseException) = 0;
     virtual void truncate() throw (DatabaseException) = 0;
     virtual ~Database() {
     }
-    static const std::vector<std::string> getCatalogs(const std::string database_path)
+    static const std::vector<std::string> getCatalogs(const std::string& database_path)
             throw (DatabaseException);
 private:
     Database& operator=(const Database&);
@@ -55,26 +55,26 @@ protected:
     const std::string itsBasePath;
 };
 
-const boost::shared_ptr<Database> getDatabase(const std::string id,
+const boost::shared_ptr<Database> getDatabase(const std::string& id,
                                               const bool readonly,
-                                              const std::string base_path)
+                                              const std::string& base_path)
                                               throw (DatabaseException);
 
-const std::vector<std::string> getCatalogs(const std::string database_path)
+const std::vector<std::string> getCatalogs(const std::string& database_path)
         throw (DatabaseException);
 
-const std::map<std::string, std::set<Package> > lookup(const std::string searchString,
-                                                          const std::string database_path,
-                                                          std::vector<std::string>* const inexact_matches = NULL);
+const std::map<std::string, std::set<Package> > lookup(const std::string& searchString,
+                                                       const std::string& database_path,
+                                                       std::vector<std::string>* const inexact_matches = NULL);
 
-void populate_mirror(const boost::filesystem::path path,
-                     const std::string database_path,
+void populate_mirror(const boost::filesystem::path& path,
+                     const std::string& database_path,
                      const bool truncate,
                      const int verbosity);
 
-void populate(const boost::filesystem::path path,
-              const std::string database_path,
-              const std::string catalog,
+void populate(const boost::filesystem::path& path,
+              const std::string& database_path,
+              const std::string& catalog,
               const bool truncate,
               const int verbosity);
 

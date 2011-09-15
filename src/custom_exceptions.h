@@ -26,7 +26,7 @@ namespace cnf {
 
 class ErrorCodeException: public std::exception {
 public:
-    explicit ErrorCodeException(const int aCode, const std::string aMessage)
+    explicit ErrorCodeException(const int aCode, const std::string& aMessage)
             : itsCode(aCode), itsMessage(aMessage) {
     }
     ~ErrorCodeException() throw(){}
@@ -43,14 +43,14 @@ private:
 
 class InvalidArgumentException: public ErrorCodeException {
 public:
-    InvalidArgumentException(const int aCode, const std::string aMessage)
+    InvalidArgumentException(const int aCode, const std::string& aMessage)
             : ErrorCodeException(aCode, aMessage) {
     }
 };
 
 class DatabaseException: public ErrorCodeException {
 public:
-    DatabaseException(const int aCode, const std::string aMessage)
+    DatabaseException(const int aCode, const std::string& aMessage)
             : ErrorCodeException(aCode, aMessage) {
     }
 };

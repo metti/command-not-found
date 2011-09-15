@@ -32,9 +32,9 @@ using boost::shared_ptr;
 
 namespace cnf {
 
-GdbmDatabase::GdbmDatabase(const string id,
+GdbmDatabase::GdbmDatabase(const string& id,
                            const bool readonly,
-                           const string base_path) throw (DatabaseException)
+                           const string& base_path) throw (DatabaseException)
         : Database(id, readonly, base_path),
                 itsDatabaseName(itsBasePath + "/" + itsId + ".db") {
 
@@ -171,7 +171,7 @@ void GdbmDatabase::storePackage(const Package& p) throw (DatabaseException) {
     gdbm_store(itsGdbmFile, kv.key(), kv.value(), GDBM_REPLACE);
 }
 
-const vector<Package> GdbmDatabase::getPackages(const string search) const
+const vector<Package> GdbmDatabase::getPackages(const string& search) const
         throw (DatabaseException) {
 
     vector<Package> result;
@@ -242,7 +242,7 @@ void GdbmDatabase::truncate() throw (DatabaseException) {
     }
 }
 
-const vector<string> GdbmDatabase::getCatalogs(const string database_path)
+const vector<string> GdbmDatabase::getCatalogs(const string& database_path)
         throw (DatabaseException) {
 
     bf::path p(database_path);
@@ -268,7 +268,7 @@ const vector<string> GdbmDatabase::getCatalogs(const string database_path)
     return result;
 }
 
-KeyValue::KeyValue(const string key, const string value)
+KeyValue::KeyValue(const string& key, const string& value)
         : itsKey(datum()), itsValue(datum()) {
     setKey(key);
     setValue(value);
@@ -278,7 +278,7 @@ KeyValue::KeyValue()
         : itsKey(datum()), itsValue(datum()) {
 }
 
-void KeyValue::setKey(const string key) {
+void KeyValue::setKey(const string& key) {
     if (itsKey.dptr != NULL) {
         free(itsKey.dptr);
     }
@@ -287,14 +287,14 @@ void KeyValue::setKey(const string key) {
     itsKey.dsize = key.size() + 1;
 }
 
-void KeyValue::setKey(const datum key) {
+void KeyValue::setKey(const datum& key) {
     if (itsKey.dptr != NULL) {
         free(itsKey.dptr);
     }
     itsKey = key;
 }
 
-void KeyValue::setValue(const string value) {
+void KeyValue::setValue(const string& value) {
     if (itsValue.dptr != NULL) {
         free(itsValue.dptr);
     }
@@ -303,7 +303,7 @@ void KeyValue::setValue(const string value) {
     itsValue.dsize = value.size() + 1;
 }
 
-void KeyValue::setValue(const datum value) {
+void KeyValue::setValue(const datum& value) {
     if (itsValue.dptr != NULL) {
         free(itsValue.dptr);
     }
@@ -317,7 +317,7 @@ KeyValue::~KeyValue() {
     itsValue.dptr = NULL;
 }
 
-char* getWritableCString(const string aString) {
+char* getWritableCString(const string& aString) {
     char* result = (char*) malloc((aString.size() + 1) * sizeof(char));
     copy(aString.begin(), aString.end(), result);
     result[aString.size()] = '\0';

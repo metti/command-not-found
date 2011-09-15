@@ -34,8 +34,8 @@ using boost::shared_ptr;
 
 namespace cnf {
 
-const shared_ptr<Database> getDatabase(const string id, const bool readonly,
-                                       const string base_path)
+const shared_ptr<Database> getDatabase(const string& id, const bool readonly,
+                                       const string& base_path)
                                        throw (DatabaseException) {
 #ifdef USE_TDB
     return shared_ptr<Database>(new TdbDatabase(id, readonly, base_path));
@@ -45,7 +45,7 @@ const shared_ptr<Database> getDatabase(const string id, const bool readonly,
 #endif
 }
 
-const vector<string> getCatalogs(const string database_path) throw (DatabaseException) {
+const vector<string> getCatalogs(const string& database_path) throw (DatabaseException) {
 #ifdef USE_TDB
     return TdbDatabase::getCatalogs(database_path);
 #endif
@@ -54,9 +54,9 @@ const vector<string> getCatalogs(const string database_path) throw (DatabaseExce
 #endif
 }
 
-const map<string, set<Package> > lookup(const string searchString,
-                                           const string database_path,
-                                           vector<string>* const inexact_matches) {
+const map<string, set<Package> > lookup(const string& searchString,
+                                        const string& database_path,
+                                        vector<string>* const inexact_matches) {
 
     const vector<string>& catalogs = getCatalogs(database_path);
 
@@ -65,7 +65,7 @@ const map<string, set<Package> > lookup(const string searchString,
     if (catalogs.size() > 0) {
 
         typedef vector<string>::const_iterator catIter;
-        for (catIter iter = catalogs.begin(); iter != catalogs.end(); iter++) {
+        for (catIter iter = catalogs.begin(); iter != catalogs.end(); ++iter) {
 
             vector<Package> packs;
 
@@ -87,7 +87,7 @@ const map<string, set<Package> > lookup(const string searchString,
                 }
             }
 
-            if (packs.size() > 0)
+            if (!packs.empty())
                 result[*iter] = set<Package>(packs.begin(),packs.end());
         }
     } else {
@@ -96,8 +96,8 @@ const map<string, set<Package> > lookup(const string searchString,
     return result;
 }
 
-void populate_mirror(const bf::path mirror_path,
-                     const string database_path,
+void populate_mirror(const bf::path& mirror_path,
+                     const string& database_path,
                      const bool truncate,
                      const int verbosity) {
     typedef bf::directory_iterator dirIter;
@@ -169,9 +169,9 @@ void populate_mirror(const bf::path mirror_path,
     }
 }
 
-void populate(const bf::path path,
-              const string database_path,
-              const string catalog,
+void populate(const bf::path& path,
+              const string& database_path,
+              const string& catalog,
               const bool truncate,
               const int verbosity) {
 

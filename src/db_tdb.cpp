@@ -31,9 +31,9 @@ using boost::shared_ptr;
 
 namespace cnf {
 
-TdbDatabase::TdbDatabase(const string id,
-                           const bool readonly,
-                           const string base_path) throw (DatabaseException)
+TdbDatabase::TdbDatabase(const string& id,
+                         const bool readonly,
+                         const string& base_path) throw (DatabaseException)
         : Database(id, readonly, base_path),
                 itsDatabaseName(itsBasePath + "/" + itsId + ".tdb") {
 
@@ -174,7 +174,7 @@ void TdbDatabase::storePackage(const Package& p) throw (DatabaseException) {
     if (res != 0 ) tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_INSERT);
 }
 
-const vector<Package> TdbDatabase::getPackages(const string search) const
+const vector<Package> TdbDatabase::getPackages(const string& search) const
         throw (DatabaseException) {
 
     vector<Package> result;
@@ -243,10 +243,10 @@ void TdbDatabase::truncate() throw (DatabaseException) {
     }
 }
 
-const vector<string> TdbDatabase::getCatalogs(const string database_path)
+const vector<string> TdbDatabase::getCatalogs(const string& database_path)
         throw (DatabaseException) {
 
-    bf::path p(database_path);
+    const bf::path p(database_path);
 
     vector<string> result;
 
@@ -269,7 +269,7 @@ const vector<string> TdbDatabase::getCatalogs(const string database_path)
     return result;
 }
 
-TdbKeyValue::TdbKeyValue(const string key, const string value)
+TdbKeyValue::TdbKeyValue(const string& key, const string& value)
         : itsKey(TDB_DATA()), itsValue(TDB_DATA()) {
     setKey(key);
     setValue(value);
@@ -279,7 +279,7 @@ TdbKeyValue::TdbKeyValue()
         : itsKey(TDB_DATA()), itsValue(TDB_DATA()) {
 }
 
-void TdbKeyValue::setKey(const string key) {
+void TdbKeyValue::setKey(const string& key) {
     if (itsKey.dptr != NULL) {
         free(itsKey.dptr);
     }
@@ -288,14 +288,14 @@ void TdbKeyValue::setKey(const string key) {
     itsKey.dsize = key.size() + 1;
 }
 
-void TdbKeyValue::setKey(const TDB_DATA key) {
+void TdbKeyValue::setKey(const TDB_DATA& key) {
     if (itsKey.dptr != NULL) {
         free(itsKey.dptr);
     }
     itsKey = key;
 }
 
-void TdbKeyValue::setValue(const string value) {
+void TdbKeyValue::setValue(const string& value) {
     if (itsValue.dptr != NULL) {
         free(itsValue.dptr);
     }
@@ -304,7 +304,7 @@ void TdbKeyValue::setValue(const string value) {
     itsValue.dsize = value.size() + 1;
 }
 
-void TdbKeyValue::setValue(const TDB_DATA value) {
+void TdbKeyValue::setValue(const TDB_DATA& value) {
     if (itsValue.dptr != NULL) {
         free(itsValue.dptr);
     }
@@ -318,7 +318,7 @@ TdbKeyValue::~TdbKeyValue() {
     itsValue.dptr = NULL;
 }
 
-unsigned char* getWritableUCString(const string aString) {
+unsigned char* getWritableUCString(const string& aString) {
     unsigned char* result = (unsigned char*) malloc((aString.size() + 1) * sizeof(unsigned char));
     copy(aString.begin(), aString.end(), result);
     result[aString.size()] = '\0';

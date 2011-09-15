@@ -26,15 +26,15 @@ namespace cnf {
 
 class Package {
 public:
-    explicit Package(const boost::filesystem::path file,
+    explicit Package(const boost::filesystem::path& file,
                      const bool lazy = false)
                              throw (cnf::InvalidArgumentException);
-    explicit Package(const std::string name,
-                     const std::string version,
-                     const std::string release,
-                     const std::string architecture,
-                     const std::string compression,
-                     const std::vector<std::string> files)
+    explicit Package(const std::string& name,
+                     const std::string& version,
+                     const std::string& release,
+                     const std::string& architecture,
+                     const std::string& compression,
+                     const std::vector<std::string>& files)
                              throw (cnf::InvalidArgumentException)
                   : itsName(name),
                     itsVersion(version),
@@ -70,7 +70,7 @@ public:
     const std::string compression() const {
         return itsCompression;
     }
-    const std::string hl_str(const std::string = "") const;
+    const std::string hl_str(const std::string& = "") const;
     const std::string hl_str(const std::vector<std::string>* = NULL) const;
 
     typedef std::vector<std::string>::const_iterator const_file_iterator;

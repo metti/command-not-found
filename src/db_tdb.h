@@ -30,15 +30,15 @@
 namespace cnf {
 class TdbDatabase: public Database {
 public:
-    explicit TdbDatabase(const std::string id,
+    explicit TdbDatabase(const std::string& id,
                           const bool readonly,
-                          const std::string basepath) throw (DatabaseException);
+                          const std::string& basepath) throw (DatabaseException);
     virtual void storePackage(const Package& p) throw (DatabaseException);
-    virtual const std::vector<Package> getPackages(const std::string search) const
+    virtual const std::vector<Package> getPackages(const std::string& search) const
             throw (DatabaseException);
     virtual void truncate() throw (DatabaseException);
     virtual ~TdbDatabase();
-    static const std::vector<std::string> getCatalogs(const std::string database_path)
+    static const std::vector<std::string> getCatalogs(const std::string& database_path)
             throw (DatabaseException);
 private:
     TDB_CONTEXT* itsTdbFile;
@@ -47,12 +47,12 @@ private:
 
 class TdbKeyValue {
 public:
-    explicit TdbKeyValue(const std::string key, const std::string value);
+    explicit TdbKeyValue(const std::string& key, const std::string& value);
     explicit TdbKeyValue();
-    void setKey(const std::string key);
-    void setKey(const TDB_DATA key);
-    void setValue(const std::string key);
-    void setValue(const TDB_DATA key);
+    void setKey(const std::string& key);
+    void setKey(const TDB_DATA& key);
+    void setValue(const std::string& key);
+    void setValue(const TDB_DATA& key);
     ~TdbKeyValue();
     TDB_DATA key() const {
         return itsKey;
@@ -81,7 +81,7 @@ private:
     TdbKeyValue& operator=(const TdbKeyValue&);
 };
 
-inline unsigned char* getWritableUCString(const std::string aString);
+inline unsigned char* getWritableUCString(const std::string& aString);
 
 }
 
