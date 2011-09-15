@@ -24,8 +24,15 @@
 #include "db.h"
 #include "custom_exceptions.h"
 #include "config.h"
+
+#ifdef USE_GDBM
 #include "db_gdbm.h"
+#endif /* USE_GDBM */
+
+#ifdef USE_TDB
 #include "db_tdb.h"
+#endif /* USE_TDB */
+
 #include "similar.h"
 
 namespace bf = boost::filesystem;
