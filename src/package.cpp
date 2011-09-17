@@ -17,9 +17,9 @@
 */
 
 #include <boost/regex.hpp>
-#include <stdio.h>
+#include <archive.h>
+#include <archive_entry.h>
 #include <sstream>
-#include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -78,36 +78,40 @@ void Package::updateFiles() const {
 
     // read package file list
 
-    //FIXME: this should be done in C++ with libtar
-
     if (!itsPath) {
         throw InvalidArgumentException(INVALID_FILE, "You should never end up here!");
     }
 
-    string cmd("tar tf 2>&1 ");
-    cmd.append(itsPath->string());
+    struct archive *arc = NULL;
+    struct archive_entry *entry = NULL;
+    int rc = 0;
+    vector<string> candidates;
 
-    FILE* pipe = popen(cmd.c_str(), "r");
-    if (!pipe) {
+    arc = archive_read_new();
+    archive_read_support_compression_gzip(arc);
+    archive_read_support_compression_xz(arc);
+    archive_read_support_format_tar(arc);
+
+    rc = archive_read_open_filename(arc, itsPath->c_str(), 10240);
+
+    if (rc != ARCHIVE_OK){
         string message;
         message += "could not read file list from: ";
         message += itsPath->string();
         throw InvalidArgumentException(INVALID_FILE, message.c_str());
     }
-    char buffer[256];
-    string result;
-    while (!feof(pipe)) {
-        if (fgets(buffer, 256, pipe) != NULL
-        )
-            result += buffer;
+    while (archive_read_next_header(arc, &entry) == ARCHIVE_OK) {
+        candidates.push_back(archive_entry_pathname(entry));
     }
-    pclose(pipe);
 
-    istringstream iss(result);
+    rc = archive_read_finish(arc);
 
-    vector<string> candidates;
-    copy(istream_iterator<string>(iss), istream_iterator<string>(),
-         back_inserter<vector<string> >(candidates));
+    if (rc != ARCHIVE_OK){
+        string message;
+        message += "error while closing archive: ";
+        message += itsPath->string();
+        throw InvalidArgumentException(INVALID_FILE, message.c_str()); 
+    }
 
     const regex significant("((usr/)?(s)?bin/([0-9A-Za-z.-]+))");
 
