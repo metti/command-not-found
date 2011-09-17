@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
 #endif /* DEBUG */
         ret = theMain(argc, argv);
 #ifndef DEBUG
-    } catch (exception& e) {
+    } catch (const exception& e) {
         cerr << "An uncaught exception occured:" << endl;
         cerr << "    " << e.what() << endl;
 

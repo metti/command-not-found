@@ -189,7 +189,7 @@ void populate(const bf::path& path,
     shared_ptr<Database> d;
     try {
         d = getDatabase(catalog, false, database_path);
-    } catch (DatabaseException& e) {
+    } catch (const DatabaseException& e) {
         cerr << e.what() << endl;
         return;
     }
@@ -217,12 +217,12 @@ void populate(const bf::path& path,
             if (verbosity > 0) {
                 cout << "done" << endl;
             }
-        } catch (InvalidArgumentException& e) {
+        } catch (const InvalidArgumentException& e) {
             if (verbosity > 0) {
                 cout << "skipping (" << e.what() << ")" << endl;
             }
             continue;
-        } catch (DatabaseException &e) {
+        } catch (const DatabaseException &e) {
             cerr << e.what() << endl;
             return;
         }

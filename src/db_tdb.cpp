@@ -43,7 +43,7 @@ TdbDatabase::TdbDatabase(const string& id,
              << "Trying to create it ..." << endl;
         try {
             bf::create_directories(base_path);
-        } catch (bf::filesystem_error& e) {
+        } catch (const bf::filesystem_error& e) {
             cerr << "Could not create database directory: "
                     << e.code().message() << ": ";
             if (!e.path1().empty()) {
