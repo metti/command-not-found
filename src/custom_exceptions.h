@@ -29,7 +29,7 @@ public:
     explicit ErrorCodeException(const int aCode, const std::string& aMessage)
             : itsCode(aCode), itsMessage(aMessage) {
     }
-    ~ErrorCodeException() throw(){}
+    virtual ~ErrorCodeException() throw(){}
     int code() const {
         return itsCode;
     }
