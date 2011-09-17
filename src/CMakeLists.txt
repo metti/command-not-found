@@ -24,6 +24,7 @@ ENDIF(STATIC_LINKS)
 FIND_PACKAGE(Boost COMPONENTS
                         regex
                         filesystem
+                        system
                    REQUIRED)
 
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})

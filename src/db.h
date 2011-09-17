@@ -21,6 +21,8 @@
 
 #include <map>
 #include <set>
+#include <vector>
+#include <string>
 
 #include "package.h"
 #include "config.h"

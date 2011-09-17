@@ -16,11 +16,14 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <getopt.h>
 #include <exception>
 #include <iostream>
 #include <vector>
 #include <sstream>
-#include <getopt.h>
+#include <map>
+#include <string>
+#include <set>
 
 #include "guard.h"
 #include "package.h"

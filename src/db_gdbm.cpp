@@ -21,6 +21,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
 #include "db.h"
 #include "db_gdbm.h"

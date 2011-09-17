@@ -19,6 +19,9 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <set>
+#include <string>
+#include <utility>
 
 #include "similar.h"
 

@@ -19,6 +19,9 @@
 #ifndef PARSEPKG_H_
 #define PARSEPKG_H_
 
+#include <vector>
+#include <string>
+
 #include "filesystem.h"
 #include "custom_exceptions.h"
 

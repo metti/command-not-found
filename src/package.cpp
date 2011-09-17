@@ -20,6 +20,9 @@
 #include <stdio.h>
 #include <sstream>
 #include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
 
 #include "package.h"
 
