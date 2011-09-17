@@ -92,7 +92,11 @@ void Package::updateFiles() const {
     archive_read_support_compression_xz(arc);
     archive_read_support_format_tar(arc);
 
+#if BOOST_FILESYSTEM_VERSION == 2
+    rc = archive_read_open_filename(arc, itsPath->string().c_str(), 10240);
+#else
     rc = archive_read_open_filename(arc, itsPath->c_str(), 10240);
+#endif
 
     if (rc != ARCHIVE_OK){
         string message;
