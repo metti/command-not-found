@@ -132,17 +132,19 @@ void Package::updateFiles() const {
 
 }
 
-const string Package::hl_str(const string& hl) const {
+const string Package::hl_str(const string& hl, const string& files_indent) const {
     vector<string> hls;
     hls.push_back(hl);
 
-    return hl_str(&hls);
+    return hl_str(&hls, files_indent);
 }
 
-const string Package::hl_str(const vector<string>* hl) const {
+const string Package::hl_str(const vector<string>* hl, const string& files_indent) const {
     stringstream out;
-    out << "\33[1m" << name() << "\033[0m" << " (" << version() << "-" << release() << ") [ ";
+    out << "\33[1m" << name() << "\033[0m" << " (" << version() << "-" << release() << ")" << endl;
+    out << files_indent << "[ ";
 
+    int linelength = 0;
     for (Package::const_file_iterator iter = files().begin();
             iter != files().end(); ++iter) {
 
@@ -156,6 +158,13 @@ const string Package::hl_str(const vector<string>* hl) const {
                 }
             }
         }
+
+        if (linelength + iter->size() > 80){
+            linelength = 0;
+            out << endl << files_indent << "  ";
+        }
+
+        linelength += iter->size() + 1;
 
         out << color << *iter << "\033[0m" << " ";
     }

@@ -109,7 +109,7 @@ int theMain(int argc, char** argv) {
         out << "[" << oiter->first << "]" << endl;
         for (packIter piter = oiter->second.begin();
                 piter != oiter->second.end(); ++piter) {
-            out << "\t" << piter->hl_str(args.search_string) << endl;
+            out << piter->hl_str(args.search_string, "\t") << endl;
             match = true;
         }
     }
@@ -131,7 +131,7 @@ int theMain(int argc, char** argv) {
 
             for (packIter piter = oiter->second.begin();
                           piter != oiter->second.end(); ++piter) {
-                out << "\t" << piter->hl_str(matches.get()) << endl;
+                out << piter->hl_str(matches.get(), "\t") << endl;
                 match = true;
             }
         }

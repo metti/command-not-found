@@ -73,8 +73,8 @@ public:
     const std::string compression() const {
         return itsCompression;
     }
-    const std::string hl_str(const std::string& = "") const;
-    const std::string hl_str(const std::vector<std::string>* = NULL) const;
+    const std::string hl_str(const std::string& = "", const std::string& files_indent = "") const;
+    const std::string hl_str(const std::vector<std::string>* = NULL, const std::string& files_indent = "") const;
 
     typedef std::vector<std::string>::const_iterator const_file_iterator;
     typedef std::vector<std::string>::iterator file_iterator;
