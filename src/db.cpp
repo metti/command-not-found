@@ -75,6 +75,11 @@ const map<string, set<Package> > lookup(const string& searchString,
 
     if (catalogs.size() > 0) {
 
+        set<string> terms;
+        if (inexact_matches != NULL){
+            terms = similar_words(searchString);
+        }
+
         typedef vector<string>::const_iterator catIter;
         for (catIter iter = catalogs.begin(); iter != catalogs.end(); ++iter) {
 
@@ -83,8 +88,6 @@ const map<string, set<Package> > lookup(const string& searchString,
             if (inexact_matches == NULL){
                 packs = getDatabase(*iter, true, database_path)->getPackages(searchString);
             } else {
-                const set<string> terms = similar_words(searchString);
-
                 const shared_ptr<Database>& d = getDatabase(*iter, true, database_path);
 
                 for (set<string>::const_iterator termIter = terms.begin();
