@@ -141,7 +141,7 @@ const string Package::hl_str(const string& hl) const {
 
 const string Package::hl_str(const vector<string>* hl) const {
     stringstream out;
-    out << name() << " (" << version() << "-" << release() << ") [ ";
+    out << "\33[1m" << name() << "\033[0m" << " (" << version() << "-" << release() << ") [ ";
 
     for (Package::const_file_iterator iter = files().begin();
             iter != files().end(); ++iter) {
