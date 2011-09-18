@@ -133,16 +133,10 @@ void Package::updateFiles() const {
 }
 
 const string Package::hl_str(const string& hl) const {
-    stringstream out;
-    out << name() << " (" << version() << "-" << release() << ") [ ";
+    vector<string> hls;
+    hls.push_back(hl);
 
-    for (Package::const_file_iterator iter = files().begin();
-            iter != files().end(); ++iter) {
-        const char* color = (hl != "" && *iter == hl) ? "\033[0;31m" : "\033[0m";
-        out << color << *iter << "\033[0m" << " ";
-    }
-    out << "]";
-    return out.str();
+    return hl_str(&hls);
 }
 
 const string Package::hl_str(const vector<string>* hl) const {
