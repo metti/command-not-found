@@ -35,14 +35,16 @@ using namespace std;
 
 static struct args_t {
     string database_path;
+    bool colors;
     int verbosity;
     string search_string;
 } args;
 
-static const char* OPT_STRING = "d:vh?";
+static const char* OPT_STRING = "d:cvh?";
 
 static const struct option LONG_OPTS[] = {
     {"database-path", required_argument, NULL, 'd'},
+    {"colors", no_argument, NULL, 'c'},
     {"verbose", no_argument, NULL, 'v'},
     {"help", no_argument, NULL, 'h'},
     {NULL, no_argument, NULL, 0}
@@ -59,6 +61,7 @@ void usage(){
             "                                                                   \n"
             " --database-path   -d        Customize the database lookup path    \n"
             "                             default is " << DATABASE_PATH << "    \n"
+            " --colors          -c        Pretty colored output                 \n"
          << endl;
     exit(1);
 }
@@ -66,6 +69,7 @@ void usage(){
 int theMain(int argc, char** argv) {
 
     args.database_path = DATABASE_PATH;
+    args.colors = false;
     args.verbosity = 0;
     args.search_string = ""; //actually done implicit
 
@@ -76,6 +80,9 @@ int theMain(int argc, char** argv) {
         switch (opt) {
             case 'd':
                 args.database_path = optarg;
+                break;
+            case 'c':
+                args.colors = true;
                 break;
             case 'v':
                 args.verbosity++;
@@ -107,10 +114,18 @@ int theMain(int argc, char** argv) {
     for (catIter oiter = result.begin(); oiter != result.end(); ++oiter) {
         for (packIter piter = oiter->second.begin();
                 piter != oiter->second.end(); ++piter) {
-            out << "\33[1m" << piter->name() << "\033[0m" 
-                << " (" << piter->version() << "-" << piter->release() << ")" 
+            if (args.colors){
+                out << "\33[1m" << piter->name() << "\033[0m";
+            } else {
+                out << piter->name();
+            }
+            out << " (" << piter->version() << "-" << piter->release() << ")" 
                 << " from " << oiter->first << endl;
-            out << piter->hl_str(args.search_string, "\t") << endl;
+            if (args.colors) {
+                out << piter->hl_str(args.search_string, "\t", "\033[0;31m") << endl;
+            } else {
+                out << piter->hl_str(args.search_string, "\t", "") << endl;
+            }
         }
     }
 
@@ -129,10 +144,18 @@ int theMain(int argc, char** argv) {
         for (catIter oiter = inexactResult.begin(); oiter != inexactResult.end(); ++oiter) {
             for (packIter piter = oiter->second.begin();
                           piter != oiter->second.end(); ++piter) {
-                out << "\33[1m" << piter->name() << "\033[0m" 
-                    << " (" << piter->version() << "-" << piter->release() << ")" 
+                if (args.colors) {
+                    out << "\033[1m" << piter->name() << "\033[0m";
+                } else {
+                    out << piter->name();
+                }
+                out << " (" << piter->version() << "-" << piter->release() << ")" 
                     << " from " << oiter->first << endl;
-                out << piter->hl_str(matches.get(), "\t") << endl;
+                if (args.colors) {
+                    out << piter->hl_str(matches.get(), "\t", "\033[0;31m") << endl;
+                } else {
+                    out << piter->hl_str(matches.get(), "\t", "") << endl;
+                }
             }
         }
         if (!inexactResult.empty()){

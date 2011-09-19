@@ -132,14 +132,14 @@ void Package::updateFiles() const {
 
 }
 
-const string Package::hl_str(const string& hl, const string& files_indent) const {
+const string Package::hl_str(const string& hl, const string& files_indent, const string& color) const {
     vector<string> hls;
     hls.push_back(hl);
 
-    return hl_str(&hls, files_indent);
+    return hl_str(&hls, files_indent, color);
 }
 
-const string Package::hl_str(const vector<string>* hl, const string& files_indent) const {
+const string Package::hl_str(const vector<string>* hl, const string& files_indent, const string& color ) const {
     stringstream out;
     out << files_indent << "[ ";
 
@@ -147,13 +147,13 @@ const string Package::hl_str(const vector<string>* hl, const string& files_inden
     for (Package::const_file_iterator iter = files().begin();
             iter != files().end(); ++iter) {
 
-        string color = "\033[0m";
-
+        bool highlight = false;
         if (hl != NULL){
             for (vector<string>::const_iterator hlIter = hl->begin();
                                                 hlIter != hl->end(); ++hlIter){
                 if (*hlIter != "" && *hlIter == *iter){
-                    color = "\033[0;31m";
+                    highlight = true;
+                    break;
                 }
             }
         }
@@ -164,8 +164,15 @@ const string Package::hl_str(const vector<string>* hl, const string& files_inden
         }
 
         linelength += iter->size() + 1;
-
-        out << color << *iter << "\033[0m" << " ";
+        if (highlight) {
+            if (color.empty()){
+                out << "*" << *iter << "* ";
+            } else {
+                out << color << *iter << "\033[0m" << " ";
+            }
+        } else {
+            out << *iter << " ";
+        }
     }
     out << "]";
     return out.str();
