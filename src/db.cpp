@@ -102,7 +102,7 @@ const map<string, set<Package> > lookup(const string& searchString,
             }
 
             if (!packs.empty())
-                result[*iter] = set<Package>(packs.begin(),packs.end());
+                result[iter->substr(0,iter->rfind("-"))].insert(packs.begin(),packs.end());
         }
     } else {
         cout << "WARNING: No database for lookup!" << endl;
