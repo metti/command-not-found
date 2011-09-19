@@ -141,7 +141,6 @@ const string Package::hl_str(const string& hl, const string& files_indent) const
 
 const string Package::hl_str(const vector<string>* hl, const string& files_indent) const {
     stringstream out;
-    out << "\33[1m" << name() << "\033[0m" << " (" << version() << "-" << release() << ")" << endl;
     out << files_indent << "[ ";
 
     int linelength = 0;
@@ -173,7 +172,7 @@ const string Package::hl_str(const vector<string>* hl, const string& files_inden
 }
 
 ostream& operator<<(ostream& out, const Package& p) {
-    out << p.hl_str("");
+    out << p.name() << " (" << p.version() << "-" << p.release() << ")" << endl;
     return out;
 }
 

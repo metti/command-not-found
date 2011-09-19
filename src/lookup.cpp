@@ -103,18 +103,18 @@ int theMain(int argc, char** argv) {
     typedef set<Package>::const_iterator packIter;
 
     stringstream out;
-    bool match = false;
 
     for (catIter oiter = result.begin(); oiter != result.end(); ++oiter) {
-        out << "[" << oiter->first << "]" << endl;
         for (packIter piter = oiter->second.begin();
                 piter != oiter->second.end(); ++piter) {
+            out << "\33[1m" << piter->name() << "\033[0m" 
+                << " (" << piter->version() << "-" << piter->release() << ")" 
+                << " from " << oiter->first << endl;
             out << piter->hl_str(args.search_string, "\t") << endl;
-            match = true;
         }
     }
 
-    if (match) {
+    if (!result.empty()) {
         cout << "The command '" << args.search_string
              << "' is been provided by the following packages:" << endl;
         cout << out.str();
@@ -127,15 +127,15 @@ int theMain(int argc, char** argv) {
                                                             matches.get());
 
         for (catIter oiter = inexactResult.begin(); oiter != inexactResult.end(); ++oiter) {
-            out << "[" << oiter->first << "]" << endl;
-
             for (packIter piter = oiter->second.begin();
                           piter != oiter->second.end(); ++piter) {
+                out << "\33[1m" << piter->name() << "\033[0m" 
+                    << " (" << piter->version() << "-" << piter->release() << ")" 
+                    << " from " << oiter->first << endl;
                 out << piter->hl_str(matches.get(), "\t") << endl;
-                match = true;
             }
         }
-        if (match){
+        if (!inexactResult.empty()){
             cout << "A similar command to '" << args.search_string
                  << "' is been provided by the following packages:" << endl;
             cout << out.str();
