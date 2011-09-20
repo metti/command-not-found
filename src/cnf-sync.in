@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MIRROR="http://mirror.hatcolorsoft.com/"
+MIRROR="http://mirror.hatcolorsoft.com"
 DATABASE_PATH=@DATABASE_PATH@
 
 ARCH=$(uname -m)
@@ -9,9 +9,10 @@ catalogs=$(curl -f -s $MIRROR/cnf/catalogs-$ARCH-tdb)
 
 if [ $? -eq 0 ];then
 
+    cd $DATABASE_PATH
     for i in $catalogs; do
         echo "Loading catalog $i ..." 
-        wget --quiet -O $DATABASE_PATH/$i $MIRROR/cnf/$i
+        wget --quiet -N $MIRROR/cnf/$i
         if [ ! $? -eq 0 ];then 
             echo "Failed to download catalog $i ..."
         fi
