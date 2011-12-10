@@ -12,12 +12,12 @@ source=('install')
 md5sums=('@ARCH_INSTALL_MD5@')
 install='install'
 
-_gitrepo="git://github.com/metti/$pkgname.git"
+_gitrepo="https://github.com/metti/$pkgname.git"
 
 build() {
     cd $srcdir
     msg "Connecting to the GIT server ..."
-    
+
     if [[ -d $srcdir/$pkgname ]] ; then
         cd $pkgname
         git fetch origin
