@@ -50,8 +50,7 @@ const shared_ptr<Database> getDatabase(const string& id, const bool readonly,
                                        throw (DatabaseException) {
 #ifdef USE_TDB
     return shared_ptr<Database>(new TdbDatabase(id, readonly, base_path));
-#endif
-#ifdef USE_GDBM
+#elif USE_GDBM
     return shared_ptr<Database>(new GdbmDatabase(id, readonly, base_path));
 #endif
 }
@@ -59,8 +58,7 @@ const shared_ptr<Database> getDatabase(const string& id, const bool readonly,
 const vector<string> getCatalogs(const string& database_path) throw (DatabaseException) {
 #ifdef USE_TDB
     return TdbDatabase::getCatalogs(database_path);
-#endif
-#ifdef USE_GDBM
+#elif USE_GDBM
     return GdbmDatabase::getCatalogs(database_path);
 #endif
 }
