@@ -2,8 +2,9 @@
 *.d
 cnf
 .settings
-build
+build*
 *.swp
 *.db
 core
 *.bundle
+CMakeLists.txt.user
