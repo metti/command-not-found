@@ -30,15 +30,13 @@ namespace cnf {
 class Package {
 public:
     explicit Package(const boost::filesystem::path& file,
-                     const bool lazy = false)
-                             throw (cnf::InvalidArgumentException);
+                     const bool lazy = false);
     explicit Package(const std::string& name,
                      const std::string& version,
                      const std::string& release,
                      const std::string& architecture,
                      const std::string& compression,
                      const std::vector<std::string>& files)
-                             throw (cnf::InvalidArgumentException)
                   : itsName(name),
                     itsVersion(version),
                     itsRelease(release),
@@ -58,19 +56,19 @@ public:
             updateFiles();
         return itsFiles;
     }
-    const std::string name() const {
+    const std::string& name() const {
         return itsName;
     }
-    const std::string version() const {
+    const std::string& version() const {
         return itsVersion;
     }
-    const std::string release() const {
+    const std::string& release() const {
         return itsRelease;
     }
-    const std::string architecture() const {
+    const std::string& architecture() const {
         return itsArchitecture;
     }
-    const std::string compression() const {
+    const std::string& compression() const {
         return itsCompression;
     }
     const std::string hl_str(const std::string& = "", const std::string& files_indent = "", const std::string& color = "") const;

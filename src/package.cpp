@@ -34,7 +34,7 @@ using boost::cmatch;
 
 namespace cnf {
 
-Package::Package(const bf::path& path, const bool lazy) throw (InvalidArgumentException)
+Package::Package(const bf::path& path, const bool lazy)
         : itsFilesDetermined(false), itsPath(new bf::path(path)) {
 
     // checks
