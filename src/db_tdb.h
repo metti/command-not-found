@@ -32,14 +32,12 @@ class TdbDatabase: public Database {
 public:
     explicit TdbDatabase(const std::string& id,
                           const bool readonly,
-                          const std::string& basepath) throw (DatabaseException);
-    virtual void storePackage(const Package& p) throw (DatabaseException);
-    virtual const std::vector<Package> getPackages(const std::string& search) const
-            throw (DatabaseException);
-    virtual void truncate() throw (DatabaseException);
+                          const std::string& basepath);
+    virtual void storePackage(const Package& p);
+    virtual void getPackages(const std::string& search, std::vector<Package>& result ) const;
+    virtual void truncate();
     virtual ~TdbDatabase();
-    static const std::vector<std::string> getCatalogs(const std::string& database_path)
-            throw (DatabaseException);
+    static void getCatalogs(const std::string& database_path, std::vector<std::string>& result);
 private:
     TDB_CONTEXT* itsTdbFile;
     std::string itsDatabaseName;

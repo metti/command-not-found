@@ -46,8 +46,7 @@ using boost::shared_ptr;
 namespace cnf {
 
 const shared_ptr<Database> getDatabase(const string& id, const bool readonly,
-                                       const string& base_path)
-                                       throw (DatabaseException) {
+                                       const string& base_path) {
 #ifdef USE_TDB
     return shared_ptr<Database>(new TdbDatabase(id, readonly, base_path));
 #elif USE_GDBM
@@ -55,11 +54,11 @@ const shared_ptr<Database> getDatabase(const string& id, const bool readonly,
 #endif
 }
 
-const vector<string> getCatalogs(const string& database_path) throw (DatabaseException) {
+void getCatalogs(const string& database_path, vector<string>& result) {
 #ifdef USE_TDB
-    return TdbDatabase::getCatalogs(database_path);
+    TdbDatabase::getCatalogs(database_path, result);
 #elif USE_GDBM
-    return GdbmDatabase::getCatalogs(database_path);
+    GdbmDatabase::getCatalogs(database_path, result);
 #endif
 }
 
@@ -67,7 +66,8 @@ const map<string, set<Package> > lookup(const string& searchString,
                                         const string& database_path,
                                         vector<string>* const inexact_matches) {
 
-    const vector<string>& catalogs = getCatalogs(database_path);
+    vector<string> catalogs;
+    getCatalogs(database_path, catalogs);
 
     map<string, set<Package> > result;
 
@@ -84,14 +84,15 @@ const map<string, set<Package> > lookup(const string& searchString,
             vector<Package> packs;
 
             if (inexact_matches == NULL){
-                packs = getDatabase(*iter, true, database_path)->getPackages(searchString);
+                getDatabase(*iter, true, database_path)->getPackages(searchString, packs);
             } else {
                 const shared_ptr<Database>& d = getDatabase(*iter, true, database_path);
 
                 for (set<string>::const_iterator termIter = terms.begin();
                                                     termIter != terms.end();
                                                     ++termIter){
-                    const vector<Package>& tempPack = d->getPackages(*termIter);
+                    vector<Package> tempPack;
+                    d->getPackages(*termIter, tempPack);
                     if (tempPack.size() > 0){
                         packs.insert(packs.end(),tempPack.begin(),tempPack.end());
                         inexact_matches->push_back(*termIter);

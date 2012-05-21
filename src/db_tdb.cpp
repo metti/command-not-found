@@ -34,7 +34,7 @@ namespace cnf {
 
 TdbDatabase::TdbDatabase(const string& id,
                          const bool readonly,
-                         const string& base_path) throw (DatabaseException)
+                         const string& base_path)
         : Database(id, readonly, base_path),
                 itsDatabaseName(itsBasePath + "/" + itsId + ".tdb") {
 
@@ -82,7 +82,7 @@ TdbDatabase::~TdbDatabase() {
     itsTdbFile = NULL;
 }
 
-void TdbDatabase::storePackage(const Package& p) throw (DatabaseException) {
+void TdbDatabase::storePackage(const Package& p) {
     typedef vector<string>::const_iterator fileIter;
 
     TdbKeyValue kv;
@@ -175,11 +175,7 @@ void TdbDatabase::storePackage(const Package& p) throw (DatabaseException) {
     if (res != 0 ) tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_INSERT);
 }
 
-const vector<Package> TdbDatabase::getPackages(const string& search) const
-        throw (DatabaseException) {
-
-    vector<Package> result;
-
+void TdbDatabase::getPackages(const string& search, vector<Package>& result) const {
     TdbKeyValue name_kv;
     name_kv.setKey(search);
     name_kv.setValue(tdb_fetch(itsTdbFile, name_kv.key()));
@@ -222,12 +218,9 @@ const vector<Package> TdbDatabase::getPackages(const string& search) const
                   arch_kv.value_str(), compression_kv.value_str(), files);
         result.push_back(p);
     }
-
-    return result;
-
 }
 
-void TdbDatabase::truncate() throw (DatabaseException) {
+void TdbDatabase::truncate() {
 
     if (itsTdbFile) {
         tdb_close(itsTdbFile);
@@ -244,12 +237,8 @@ void TdbDatabase::truncate() throw (DatabaseException) {
     }
 }
 
-const vector<string> TdbDatabase::getCatalogs(const string& database_path)
-        throw (DatabaseException) {
-
+void TdbDatabase::getCatalogs(const string& database_path, vector<string>& result) {
     const bf::path p(database_path);
-
-    vector<string> result;
 
     if (bf::is_directory(p)) {
 
@@ -266,8 +255,6 @@ const vector<string> TdbDatabase::getCatalogs(const string& database_path)
             }
         }
     }
-
-    return result;
 }
 
 TdbKeyValue::TdbKeyValue(const string& key, const string& value)
