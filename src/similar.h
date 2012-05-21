@@ -22,6 +22,6 @@
 #include <set>
 #include <string>
 
-const std::set<std::string> similar_words(const std::string& word);
+void similar_words(const std::string& word, std::set<std::string>& result);
 
 #endif /* SIMILAR_H_ */

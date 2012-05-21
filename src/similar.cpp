@@ -27,9 +27,7 @@
 
 using namespace std;
 
-const set<string> similar_words(const string& word){
-    set<string> result;
-
+void similar_words(const string& word, set<string>& result){
     static const char alphabet[] = "abcdefghijklmnopqrstuvwxyz-_0123456789";
 
     vector<pair<string,string> > splits;
@@ -63,8 +61,5 @@ const set<string> similar_words(const string& word){
 
         }
     }
-
-    return result;
-
 }
 

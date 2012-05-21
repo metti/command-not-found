@@ -75,7 +75,7 @@ const map<string, set<Package> > lookup(const string& searchString,
 
         set<string> terms;
         if (inexact_matches != NULL){
-            terms = similar_words(searchString);
+            similar_words(searchString, terms);
         }
 
         typedef vector<string>::const_iterator catIter;
