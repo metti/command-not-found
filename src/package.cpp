@@ -88,8 +88,7 @@ void Package::updateFiles() const {
     vector<string> candidates;
 
     arc = archive_read_new();
-    archive_read_support_compression_gzip(arc);
-    archive_read_support_compression_xz(arc);
+    archive_read_support_filter_all(arc);
     archive_read_support_format_tar(arc);
 
 #if BOOST_FILESYSTEM_VERSION == 2
@@ -108,7 +107,7 @@ void Package::updateFiles() const {
         candidates.push_back(archive_entry_pathname(entry));
     }
 
-    rc = archive_read_finish(arc);
+    rc = archive_read_close(arc);
 
     if (rc != ARCHIVE_OK){
         string message;
