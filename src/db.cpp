@@ -25,17 +25,9 @@
 #include <map>
 #include <set>
 
-#include "db.h"
+#include "db_tdb.h"
 #include "custom_exceptions.h"
 #include "config.h"
-
-#ifdef USE_GDBM
-#include "db_gdbm.h"
-#endif /* USE_GDBM */
-
-#ifdef USE_TDB
-#include "db_tdb.h"
-#endif /* USE_TDB */
 
 #include "similar.h"
 
@@ -47,19 +39,11 @@ namespace cnf {
 
 const shared_ptr<Database> getDatabase(const string& id, const bool readonly,
                                        const string& base_path) {
-#ifdef USE_TDB
     return shared_ptr<Database>(new TdbDatabase(id, readonly, base_path));
-#elif USE_GDBM
-    return shared_ptr<Database>(new GdbmDatabase(id, readonly, base_path));
-#endif
 }
 
 void getCatalogs(const string& database_path, vector<string>& result) {
-#ifdef USE_TDB
     TdbDatabase::getCatalogs(database_path, result);
-#elif USE_GDBM
-    GdbmDatabase::getCatalogs(database_path, result);
-#endif
 }
 
 const map<string, set<Package> > lookup(const string& searchString,
@@ -154,13 +138,7 @@ void populate_mirror(const bf::path& mirror_path,
             }
         }
 
-#ifdef USE_TDB
         bf::path catalogs_file_name = bf::path(database_path)/("catalogs-" + architecture + "-tdb");
-#endif
-#ifdef USE_GDBM
-        bf::path catalogs_file_name = bf::path(database_path)/("catalogs-" + architecture);
-#endif
-
 
         ofstream catalogs_file;
 #if BOOST_FILESYSTEM_VERSION == 2
@@ -171,12 +149,7 @@ void populate_mirror(const bf::path& mirror_path,
         for (vector<string>::iterator iter = catalogs.begin();
                 iter != catalogs.end(); ++iter) {
 
-#ifdef USE_TDB
             catalogs_file << *iter << ".tdb" << endl;
-#endif
-#ifdef USE_GDBM
-            catalogs_file << *iter << ".db" << endl;
-#endif
         }
         catalogs_file.close();
     }

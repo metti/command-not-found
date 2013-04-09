@@ -37,25 +37,8 @@ ENDIF()
 
 MESSAGE(STATUS "Using Boost Filesystem version ${BOOST_FILESYSTEM_VERSION}")
 
-SET(DATABASE_BACKEND "TDB" CACHE STRING "Datebase Backend (TDB/GDBM)")
-
-IF ("${DATABASE_BACKEND}" MATCHES "^TDB$")
-
-    FIND_PACKAGE(LibTdb REQUIRED)
-    LIST(APPEND EXTRA_LIBRARIES ${LibTdb_LIBRARY})
-    SET(DB_BACKEND_SOURCE db_tdb.cpp)
-    SET(USE_TDB 1)
-
-ENDIF()
-
-IF ("${DATABASE_BACKEND}" MATCHES "^GDBM$")
-
-    FIND_PACKAGE(LibGdbm REQUIRED)
-    LIST(APPEND EXTRA_LIBRARIES ${LibGdbm_LIBRARY})
-    SET(DB_BACKEND_SOURCE db_gdbm.cpp)
-    SET(USE_GDBM 1)
-
-ENDIF()
+FIND_PACKAGE(LibTdb 1.2 REQUIRED)
+LIST(APPEND EXTRA_LIBRARIES ${LibTdb_LIBRARY})
 
 FIND_PACKAGE(LibArchive 3 REQUIRED)
 INCLUDE_DIRECTORIES(${LibArchive_INCLUDE_DIRS})
@@ -127,7 +110,7 @@ SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic -Wall -Wextra -pedantic")
 
 SET (CNF_SRCS    db.cpp
                  package.cpp
-                 ${DB_BACKEND_SOURCE}
+                 db_tdb.cpp
                  guard.cpp
                  similar.cpp
                  ${PROJECT_BINARY_DIR}/config.cpp
