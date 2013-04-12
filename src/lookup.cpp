@@ -106,13 +106,10 @@ int theMain(int argc, char** argv) {
     const map<string, set<Package> > result = lookup(args.search_string,
                                                         args.database_path);
 
-    typedef map<string, set<Package> >::const_iterator catIter;
-    typedef set<Package>::const_iterator packIter;
-
     stringstream out;
 
-    for (catIter oiter = result.begin(); oiter != result.end(); ++oiter) {
-        for (packIter piter = oiter->second.begin();
+    for (auto oiter = result.begin(); oiter != result.end(); ++oiter) {
+        for (auto piter = oiter->second.begin();
                 piter != oiter->second.end(); ++piter) {
             if (args.colors){
                 out << "\33[1m" << piter->name() << "\033[0m";
@@ -136,13 +133,13 @@ int theMain(int argc, char** argv) {
         return 0;
 
     } else {
-        boost::shared_ptr<vector<string> > matches(new vector<string>());
+        std::shared_ptr<vector<string> > matches(new vector<string>());
         const map<string, set<Package> > inexactResult = lookup(args.search_string,
                                                             args.database_path,
                                                             matches.get());
 
-        for (catIter oiter = inexactResult.begin(); oiter != inexactResult.end(); ++oiter) {
-            for (packIter piter = oiter->second.begin();
+        for (auto oiter = inexactResult.begin(); oiter != inexactResult.end(); ++oiter) {
+            for (auto piter = oiter->second.begin();
                           piter != oiter->second.end(); ++piter) {
                 if (args.colors) {
                     out << "\033[1m" << piter->name() << "\033[0m";

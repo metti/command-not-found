@@ -118,10 +118,8 @@ void Package::updateFiles() const {
 
     const regex significant("((usr/)?(s)?bin/([0-9A-Za-z.-]+))");
 
-    typedef vector<string>::const_iterator canditer;
-
     cmatch what;
-    for (canditer iter(candidates.begin()); iter != candidates.end(); ++iter) {
+    for (auto iter = candidates.begin(); iter != candidates.end(); ++iter) {
         if (regex_match(iter->c_str(), what, significant)) {
             itsFiles.push_back(what[4]);
         }
@@ -143,13 +141,12 @@ const string Package::hl_str(const vector<string>* hl, const string& files_inden
     out << files_indent << "[ ";
 
     int linelength = 0;
-    for (Package::const_file_iterator iter = files().begin();
+    for (auto iter = files().begin();
             iter != files().end(); ++iter) {
 
         bool highlight = false;
         if (hl != NULL){
-            for (vector<string>::const_iterator hlIter = hl->begin();
-                                                hlIter != hl->end(); ++hlIter){
+            for (auto hlIter = hl->begin(); hlIter != hl->end(); ++hlIter) {
                 if (*hlIter != "" && *hlIter == *iter){
                     highlight = true;
                     break;

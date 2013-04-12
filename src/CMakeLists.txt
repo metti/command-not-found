@@ -106,7 +106,7 @@ INCLUDE_DIRECTORIES ("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}")
 
 ### CNF Client ###
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic -Wall -Wextra -pedantic")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic -Wall -Wextra -pedantic -Werror -std=c++11")
 
 SET (CNF_SRCS    db.cpp
                  package.cpp

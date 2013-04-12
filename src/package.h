@@ -74,9 +74,6 @@ public:
     const std::string hl_str(const std::string& = "", const std::string& files_indent = "", const std::string& color = "") const;
     const std::string hl_str(const std::vector<std::string>* = NULL, const std::string& files_indent = "", const std::string& color = "") const;
 
-    typedef std::vector<std::string>::const_iterator const_file_iterator;
-    typedef std::vector<std::string>::iterator file_iterator;
-
 private:
 
     void updateFiles() const;

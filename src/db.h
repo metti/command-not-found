@@ -57,7 +57,7 @@ protected:
 
 typedef std::map<std::string, std::set<Package> > ResultMap;
 
-const boost::shared_ptr<Database> getDatabase(const std::string& id,
+const std::shared_ptr<Database> getDatabase(const std::string& id,
                                               const bool readonly,
                                               const std::string& base_path);
 

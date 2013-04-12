@@ -33,7 +33,6 @@
 
 namespace bf = boost::filesystem;
 using namespace std;
-using boost::shared_ptr;
 
 namespace cnf {
 
@@ -62,8 +61,7 @@ const map<string, set<Package> > lookup(const string& searchString,
             similar_words(searchString, terms);
         }
 
-        typedef vector<string>::const_iterator catIter;
-        for (catIter iter = catalogs.begin(); iter != catalogs.end(); ++iter) {
+        for (auto iter = catalogs.begin(); iter != catalogs.end(); ++iter) {
 
             vector<Package> packs;
 

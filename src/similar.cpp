@@ -32,31 +32,29 @@ void similar_words(const string& word, set<string>& result){
 
     vector<pair<string,string> > splits;
 
-    for (unsigned int i = 0 ; i <= word.size(); ++i){
+    for (uint32_t i = 0 ; i <= word.size(); ++i){
         splits.push_back(pair<string,string>(word.substr(0,i),word.substr(i)));
     }
 
-    typedef vector<pair<string,string> >::const_iterator splitIter;
-
-    for (splitIter iter = splits.begin(); iter != splits.end(); ++iter){
-        if (iter->second.size() > 0){
+    for (const auto& split : splits){
+        if (split.second.size() > 0){
             //delete
-            result.insert(iter->first+iter->second.substr(1));
+            result.insert(split.first+split.second.substr(1));
 
-            if (iter->second.size() > 1){
+            if (split.second.size() > 1){
                 //transpose
-                result.insert(iter->first
-                               + iter->second[1]
-                               + iter->second[0]
-                               + iter->second.substr(2));
+                result.insert(split.first
+                               + split.second[1]
+                               + split.second[0]
+                               + split.second.substr(2));
             }
 
-            for(unsigned int i = 0; i < sizeof(alphabet)/sizeof(char) - 1;++i){
+            for(const auto& c : alphabet){
                 //replaces
-                result.insert(iter->first + alphabet[i] + iter->second.substr(1));
+                result.insert(split.first + c + split.second.substr(1));
 
                 //inserts
-                result.insert(iter->first + alphabet[i] + iter->second);
+                result.insert(split.first + c + split.second);
             }
 
         }

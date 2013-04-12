@@ -28,7 +28,6 @@
 
 namespace bf = boost::filesystem;
 using namespace std;
-using boost::shared_ptr;
 
 namespace cnf {
 
@@ -83,8 +82,6 @@ TdbDatabase::~TdbDatabase() {
 }
 
 void TdbDatabase::storePackage(const Package& p) {
-    typedef vector<string>::const_iterator fileIter;
-
     TdbKeyValue kv;
 
     // check if this package is already indexed
@@ -126,7 +123,7 @@ void TdbDatabase::storePackage(const Package& p) {
     string filesString;
     bool first = true;
 
-    for (fileIter iter = p.files().begin(); iter != p.files().end(); ++iter) {
+    for (auto iter = p.files().begin(); iter != p.files().end(); ++iter) {
 
         TdbKeyValue fkv(*iter, p.name());
 
@@ -141,13 +138,12 @@ void TdbDatabase::storePackage(const Package& p) {
                  back_inserter<vector<string> >(others));
             others.push_back(p.name());
 
-            typedef vector<string>::iterator strIter;
-            strIter uIter = unique(others.begin(), others.end());
+            auto uIter = unique(others.begin(), others.end());
             others.resize(uIter - others.begin());
 
             string newValue;
             bool isthefirst = true;
-            for (strIter iter = others.begin(); iter != others.end(); ++iter) {
+            for (auto iter = others.begin(); iter != others.end(); ++iter) {
                 if (isthefirst) {
                     isthefirst = false;
                 } else {
@@ -185,9 +181,7 @@ void TdbDatabase::getPackages(const string& search, vector<Package>& result) con
     copy(istream_iterator<string>(iss), istream_iterator<string>(),
          back_inserter<vector<string> >(package_names));
 
-    typedef vector<string>::iterator nameIter;
-
-    for (nameIter iter = package_names.begin(); iter != package_names.end();
+    for (auto iter = package_names.begin(); iter != package_names.end();
             ++iter) {
         TdbKeyValue version_kv;
         version_kv.setKey(*iter + "-version");
