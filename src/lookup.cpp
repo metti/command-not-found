@@ -109,9 +109,8 @@ int theMain(int argc, char** argv) {
 
     stringstream out;
 
-    for (auto oiter = result.begin(); oiter != result.end(); ++oiter) {
-        for (auto piter = oiter->second.begin();
-                piter != oiter->second.end(); ++piter) {
+    for (const auto oiter = result.begin(); oiter != result.end(); ++oiter) {
+        for (auto piter = oiter->second.begin(); piter != oiter->second.end(); ++piter) {
             if (args.colors){
                 out << "\33[1m" << piter->name() << "\033[0m";
             } else {
@@ -139,8 +138,7 @@ int theMain(int argc, char** argv) {
         lookup(args.search_string, args.database_path, inexactResult, matches.get());
 
         for (auto oiter = inexactResult.begin(); oiter != inexactResult.end(); ++oiter) {
-            for (auto piter = oiter->second.begin();
-                          piter != oiter->second.end(); ++piter) {
+            for (auto piter = oiter->second.begin(); piter != oiter->second.end(); ++piter) {
                 if (args.colors) {
                     out << "\033[1m" << piter->name() << "\033[0m";
                 } else {
