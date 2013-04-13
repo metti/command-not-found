@@ -31,16 +31,16 @@ namespace cnf {
 class TdbDatabase: public Database {
 public:
     explicit TdbDatabase(const std::string& id,
-                          const bool readonly,
-                          const std::string& basepath);
+                         const bool readonly,
+                         const std::string& basepath);
     virtual void storePackage(const Package& p);
     virtual void getPackages(const std::string& search, std::vector<Package>& result ) const;
     virtual void truncate();
     virtual ~TdbDatabase();
     static void getCatalogs(const std::string& database_path, std::vector<std::string>& result);
 private:
-    TDB_CONTEXT* itsTdbFile;
-    std::string itsDatabaseName;
+    TDB_CONTEXT* m_tdbFile;
+    const std::string m_databaseName;
 };
 
 class TdbKeyValue {
@@ -52,29 +52,29 @@ public:
     void setValue(const std::string& key);
     void setValue(const TDB_DATA& key);
     ~TdbKeyValue();
-    TDB_DATA key() const {
-        return itsKey;
+    const TDB_DATA& key() const {
+        return m_key;
     }
-    TDB_DATA value() const {
-        return itsValue;
+    const TDB_DATA& value() const {
+        return m_value;
     }
     std::string key_str() const {
-        if (itsKey.dptr) {
-            return std::string(reinterpret_cast<const char*>(itsKey.dptr));
+        if (m_key.dptr) {
+            return std::string(reinterpret_cast<const char*>(m_key.dptr));
         } else {
             return std::string();
         }
     }
     std::string value_str() const {
-        if (itsValue.dptr) {
-            return std::string(reinterpret_cast<const char*>(itsValue.dptr));
+        if (m_value.dptr) {
+            return std::string(reinterpret_cast<const char*>(m_value.dptr));
         } else {
             return std::string();
         }
     }
 private:
-    TDB_DATA itsKey;
-    TDB_DATA itsValue;
+    TDB_DATA m_key;
+    TDB_DATA m_value;
     TdbKeyValue(const TdbKeyValue&);
     TdbKeyValue& operator=(const TdbKeyValue&);
 };

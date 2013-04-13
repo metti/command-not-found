@@ -35,7 +35,7 @@ TdbDatabase::TdbDatabase(const string& id,
                          const bool readonly,
                          const string& base_path)
         : Database(id, readonly, base_path),
-                itsDatabaseName(m_basePath + "/" + m_id + ".tdb") {
+                m_databaseName(m_basePath + "/" + m_id + ".tdb") {
 
     if (!bf::is_directory(base_path)) {
         cout << "Directory '" << base_path << "' does not exist. "
@@ -61,24 +61,24 @@ TdbDatabase::TdbDatabase(const string& id,
     }
 
     if (m_readonly) {
-        itsTdbFile = tdb_open(itsDatabaseName.c_str(), 512, 0, O_RDONLY, 0);
+        m_tdbFile = tdb_open(m_databaseName.c_str(), 512, 0, O_RDONLY, 0);
     } else {
-        itsTdbFile = tdb_open(itsDatabaseName.c_str(), 512, 0, O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH);
+        m_tdbFile = tdb_open(m_databaseName.c_str(), 512, 0, O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH);
     }
 
-    if (itsTdbFile == NULL) {
+    if (m_tdbFile == NULL) {
         string message;
         message += "Error opening tdb database: ";
-        message += itsDatabaseName;
+        message += m_databaseName;
         throw DatabaseException(CONNECT_ERROR, message.c_str());
     }
 }
 
 TdbDatabase::~TdbDatabase() {
-    if (itsTdbFile) {
-        tdb_close(itsTdbFile);
+    if (m_tdbFile) {
+        tdb_close(m_tdbFile);
     }
-    itsTdbFile = NULL;
+    m_tdbFile = NULL;
 }
 
 void TdbDatabase::storePackage(const Package& p) {
@@ -86,11 +86,11 @@ void TdbDatabase::storePackage(const Package& p) {
 
     // check if this package is already indexed
     kv.setKey(p.name() + "-version");
-    kv.setValue(tdb_fetch(itsTdbFile, kv.key()));
+    kv.setValue(tdb_fetch(m_tdbFile, kv.key()));
 
     if (kv.value_str() == p.version()) {
         kv.setKey(p.name() + "-release");
-        kv.setValue(tdb_fetch(itsTdbFile, kv.key()));
+        kv.setValue(tdb_fetch(m_tdbFile, kv.key()));
         if (kv.value_str() == p.release()) {
             return;
         }
@@ -102,23 +102,23 @@ void TdbDatabase::storePackage(const Package& p) {
 
     kv.setKey(p.name() + "-version");
     kv.setValue(p.version());
-    res = tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0 ) tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_INSERT);
+    res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
+    if (res != 0 ) tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
 
     kv.setKey(p.name() + "-release");
     kv.setValue(p.release());
-    res = tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0 ) tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_INSERT);
+    res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
+    if (res != 0 ) tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
 
     kv.setKey(p.name() + "-architecture");
     kv.setValue(p.architecture());
-    res = tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0 ) tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_INSERT);
+    res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
+    if (res != 0 ) tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
 
     kv.setKey(p.name() + "-compression");
     kv.setValue(p.compression());
-    res = tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0 ) tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_INSERT);
+    res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
+    if (res != 0 ) tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
 
     string filesString;
     bool first = true;
@@ -127,11 +127,11 @@ void TdbDatabase::storePackage(const Package& p) {
 
         TdbKeyValue fkv(*iter, p.name());
 
-        const int ret = tdb_store(itsTdbFile, fkv.key(), fkv.value(),
+        const int ret = tdb_store(m_tdbFile, fkv.key(), fkv.value(),
                                    TDB_INSERT);
 
         if (ret != 0) {
-            fkv.setValue(tdb_fetch(itsTdbFile, fkv.key()));
+            fkv.setValue(tdb_fetch(m_tdbFile, fkv.key()));
             vector<string> others;
             istringstream iss(fkv.value_str());
             copy(istream_iterator<string>(iss), istream_iterator<string>(),
@@ -154,7 +154,7 @@ void TdbDatabase::storePackage(const Package& p) {
 
             fkv.setValue(newValue);
 
-            tdb_store(itsTdbFile, fkv.key(), fkv.value(), TDB_MODIFY);
+            tdb_store(m_tdbFile, fkv.key(), fkv.value(), TDB_MODIFY);
         }
 
         if (first) {
@@ -167,14 +167,14 @@ void TdbDatabase::storePackage(const Package& p) {
 
     kv.setKey(p.name() + "-files");
     kv.setValue(filesString);
-    res = tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0 ) tdb_store(itsTdbFile, kv.key(), kv.value(), TDB_INSERT);
+    res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
+    if (res != 0 ) tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
 }
 
 void TdbDatabase::getPackages(const string& search, vector<Package>& result) const {
     TdbKeyValue name_kv;
     name_kv.setKey(search);
-    name_kv.setValue(tdb_fetch(itsTdbFile, name_kv.key()));
+    name_kv.setValue(tdb_fetch(m_tdbFile, name_kv.key()));
 
     vector<string> package_names;
     istringstream iss(name_kv.value_str());
@@ -185,23 +185,23 @@ void TdbDatabase::getPackages(const string& search, vector<Package>& result) con
             ++iter) {
         TdbKeyValue version_kv;
         version_kv.setKey(*iter + "-version");
-        version_kv.setValue(tdb_fetch(itsTdbFile, version_kv.key()));
+        version_kv.setValue(tdb_fetch(m_tdbFile, version_kv.key()));
 
         TdbKeyValue release_kv;
         release_kv.setKey(*iter + "-release");
-        release_kv.setValue(tdb_fetch(itsTdbFile, release_kv.key()));
+        release_kv.setValue(tdb_fetch(m_tdbFile, release_kv.key()));
 
         TdbKeyValue arch_kv;
         arch_kv.setKey(*iter + "-architecture");
-        arch_kv.setValue(tdb_fetch(itsTdbFile, arch_kv.key()));
+        arch_kv.setValue(tdb_fetch(m_tdbFile, arch_kv.key()));
 
         TdbKeyValue compression_kv;
         compression_kv.setKey(*iter + "-compression");
-        compression_kv.setValue(tdb_fetch(itsTdbFile, compression_kv.key()));
+        compression_kv.setValue(tdb_fetch(m_tdbFile, compression_kv.key()));
 
         TdbKeyValue files_kv;
         files_kv.setKey(*iter + "-files");
-        files_kv.setValue(tdb_fetch(itsTdbFile, files_kv.key()));
+        files_kv.setValue(tdb_fetch(m_tdbFile, files_kv.key()));
 
         istringstream iss(files_kv.value_str());
         vector<string> files;
@@ -216,17 +216,17 @@ void TdbDatabase::getPackages(const string& search, vector<Package>& result) con
 
 void TdbDatabase::truncate() {
 
-    if (itsTdbFile) {
-        tdb_close(itsTdbFile);
+    if (m_tdbFile) {
+        tdb_close(m_tdbFile);
     }
 
-    itsTdbFile = tdb_open(itsDatabaseName.c_str(), 512, 0, O_RDWR | O_CREAT | O_TRUNC, S_IRWXU | S_IRGRP | S_IROTH);
+    m_tdbFile = tdb_open(m_databaseName.c_str(), 512, 0, O_RDWR | O_CREAT | O_TRUNC, S_IRWXU | S_IRGRP | S_IROTH);
 
 
-    if (itsTdbFile == NULL) {
+    if (m_tdbFile == NULL) {
         string message;
         message += "Error opening tdb database: ";
-        message += itsDatabaseName;
+        message += m_databaseName;
         throw DatabaseException(CONNECT_ERROR, message.c_str());
     }
 }
@@ -252,52 +252,52 @@ void TdbDatabase::getCatalogs(const string& database_path, vector<string>& resul
 }
 
 TdbKeyValue::TdbKeyValue(const string& key, const string& value)
-        : itsKey(TDB_DATA()), itsValue(TDB_DATA()) {
+        : m_key(TDB_DATA()), m_value(TDB_DATA()) {
     setKey(key);
     setValue(value);
 }
 
 TdbKeyValue::TdbKeyValue()
-        : itsKey(TDB_DATA()), itsValue(TDB_DATA()) {
+        : m_key(TDB_DATA()), m_value(TDB_DATA()) {
 }
 
 void TdbKeyValue::setKey(const string& key) {
-    if (itsKey.dptr != NULL) {
-        free(itsKey.dptr);
+    if (m_key.dptr != NULL) {
+        free(m_key.dptr);
     }
-    itsKey = TDB_DATA();
-    itsKey.dptr = getWritableUCString(key);
-    itsKey.dsize = key.size() + 1;
+    m_key = TDB_DATA();
+    m_key.dptr = getWritableUCString(key);
+    m_key.dsize = key.size() + 1;
 }
 
 void TdbKeyValue::setKey(const TDB_DATA& key) {
-    if (itsKey.dptr != NULL) {
-        free(itsKey.dptr);
+    if (m_key.dptr != NULL) {
+        free(m_key.dptr);
     }
-    itsKey = key;
+    m_key = key;
 }
 
 void TdbKeyValue::setValue(const string& value) {
-    if (itsValue.dptr != NULL) {
-        free(itsValue.dptr);
+    if (m_value.dptr != NULL) {
+        free(m_value.dptr);
     }
-    itsValue = TDB_DATA();
-    itsValue.dptr = getWritableUCString(value);
-    itsValue.dsize = value.size() + 1;
+    m_value = TDB_DATA();
+    m_value.dptr = getWritableUCString(value);
+    m_value.dsize = value.size() + 1;
 }
 
 void TdbKeyValue::setValue(const TDB_DATA& value) {
-    if (itsValue.dptr != NULL) {
-        free(itsValue.dptr);
+    if (m_value.dptr != NULL) {
+        free(m_value.dptr);
     }
-    itsValue = value;
+    m_value = value;
 }
 
 TdbKeyValue::~TdbKeyValue() {
-    free(itsKey.dptr);
-    itsKey.dptr = NULL;
-    free(itsValue.dptr);
-    itsValue.dptr = NULL;
+    free(m_key.dptr);
+    m_key.dptr = NULL;
+    free(m_value.dptr);
+    m_value.dptr = NULL;
 }
 
 unsigned char* getWritableUCString(const string& aString) {
