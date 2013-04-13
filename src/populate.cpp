@@ -116,16 +116,20 @@ int theMain(int argc, char** argv) {
         usage();
     }
 
-    if (args.package_path.empty())
+    if (args.package_path.empty()) {
         usage();
-    if (args.mirror && !args.catalog.empty())
+    }
+
+    if (args.mirror && !args.catalog.empty()) {
         usage();
+    }
 
     if (!bf::is_directory(args.package_path)) {
         cerr << "Not a valid package path: " << args.package_path << endl << endl;
         usage();
         return 1;
     }
+
     if (args.mirror) {
         populate_mirror(args.package_path, args.database_path, args.truncate,
                         args.verbosity);
