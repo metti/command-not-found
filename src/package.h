@@ -21,8 +21,8 @@
 
 #include <vector>
 #include <string>
+#include <boost/filesystem.hpp>
 
-#include "filesystem.h"
 #include "custom_exceptions.h"
 
 namespace cnf {

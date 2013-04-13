@@ -99,11 +99,8 @@ void populate_mirror(const bf::path& mirror_path,
 
         for (dirIter iter = dirIter(mirror_path); iter != dirIter(); ++iter) {
 
-#if BOOST_FILESYSTEM_VERSION == 2
-            const string& catalog = bf::path(*iter).stem().c_str() + "-" + architecture;
-#else
             const string& catalog = bf::path(*iter).stem().string() + "-" + architecture;
-#endif
+
             bool truncated = !truncate;
 
             bool list_catalog = false;
@@ -129,11 +126,9 @@ void populate_mirror(const bf::path& mirror_path,
         const bf::path& catalogs_file_name = bf::path(database_path)/("catalogs-" + architecture + "-tdb");
 
         ofstream catalogs_file;
-#if BOOST_FILESYSTEM_VERSION == 2
-        catalogs_file.open(catalogs_file_name.string().c_str(), ios::trunc | ios::out);
-#else
+
         catalogs_file.open(catalogs_file_name.c_str(), ios::trunc | ios::out);
-#endif
+
         for (const auto& catalog : catalogs) {
 
             catalogs_file << catalog << ".tdb" << endl;

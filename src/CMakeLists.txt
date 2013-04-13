@@ -21,21 +21,14 @@ IF(STATIC_LINKS)
     SET(Boost_USE_STATIC_LIBS ON)
 ENDIF(STATIC_LINKS)
 
-FIND_PACKAGE(Boost COMPONENTS
+FIND_PACKAGE(Boost 1.44
+                   COMPONENTS
                         regex
                         filesystem
                         system
                    REQUIRED)
 
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-
-IF(${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION} VERSION_LESS 1.44)
-    SET (BOOST_FILESYSTEM_VERSION 2)
-ELSE()
-    SET (BOOST_FILESYSTEM_VERSION 3)
-ENDIF()
-
-MESSAGE(STATUS "Using Boost Filesystem version ${BOOST_FILESYSTEM_VERSION}")
 
 FIND_PACKAGE(LibTdb 1.2 REQUIRED)
 LIST(APPEND EXTRA_LIBRARIES ${LibTdb_LIBRARY})
@@ -80,11 +73,6 @@ CONFIGURE_FILE (
 CONFIGURE_FILE (
     "${PROJECT_SOURCE_DIR}/config.h.in"
     "${PROJECT_BINARY_DIR}/config.h"
-)
-
-CONFIGURE_FILE (
-    "${PROJECT_SOURCE_DIR}/filesystem.h.in"
-    "${PROJECT_BINARY_DIR}/filesystem.h"
 )
 
 CONFIGURE_FILE (

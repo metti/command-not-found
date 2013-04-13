@@ -20,8 +20,8 @@
 #include <exception>
 #include <iostream>
 #include <string>
+#include <boost/filesystem.hpp>
 
-#include "filesystem.h"
 #include "db.h"
 #include "config.h"
 

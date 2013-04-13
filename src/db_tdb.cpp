@@ -241,11 +241,7 @@ void TdbDatabase::getCatalogs(const string& database_path, vector<string>& resul
         for (dirIter iter = dirIter(p); iter != dirIter(); ++iter) {
             bf::path cand(*iter);
             if (cand.extension() == ".tdb" && bf::is_regular_file(cand)) {
-#if BOOST_FILESYSTEM_VERSION == 2
-                result.push_back(cand.stem().c_str());
-#else
                 result.push_back(cand.stem().string());
-#endif
             }
         }
     }

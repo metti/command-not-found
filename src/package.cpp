@@ -50,11 +50,8 @@ Package::Package(const bf::path& path, const bool lazy)
 
     cmatch what;
 
-#if BOOST_FILESYSTEM_VERSION == 2
-    const string& filename = path.filename().c_str();
-#else
     const string& filename = path.filename().string();
-#endif
+
     if (regex_match(filename.c_str(), what, valid_name)) {
 
         m_name = what[1];
@@ -91,11 +88,7 @@ void Package::updateFiles() const {
     archive_read_support_filter_all(arc);
     archive_read_support_format_tar(arc);
 
-#if BOOST_FILESYSTEM_VERSION == 2
-    rc = archive_read_open_filename(arc, m_path->string().c_str(), 10240);
-#else
     rc = archive_read_open_filename(arc, m_path->c_str(), 10240);
-#endif
 
     if (rc != ARCHIVE_OK){
         string message;
