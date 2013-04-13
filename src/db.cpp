@@ -45,74 +45,64 @@ void getCatalogs(const string& database_path, vector<string>& result) {
     TdbDatabase::getCatalogs(database_path, result);
 }
 
-const map<string, set<Package> > lookup(const string& searchString,
-                                        const string& database_path,
+void lookup(const string& search_string, const string& database_path, ResultMap& result,
                                         vector<string>* const inexact_matches) {
 
     vector<string> catalogs;
     getCatalogs(database_path, catalogs);
 
-    map<string, set<Package> > result;
-
     if (catalogs.size() > 0) {
 
         set<string> terms;
         if (inexact_matches != NULL){
-            similar_words(searchString, terms);
+            similar_words(search_string, terms);
         }
 
-        for (auto iter = catalogs.begin(); iter != catalogs.end(); ++iter) {
+        for (const auto& catalog : catalogs) {
 
             vector<Package> packs;
 
             if (inexact_matches == NULL){
-                getDatabase(*iter, true, database_path)->getPackages(searchString, packs);
+                getDatabase(catalog, true, database_path)->getPackages(search_string, packs);
             } else {
-                const shared_ptr<Database>& d = getDatabase(*iter, true, database_path);
+                const shared_ptr<Database>& d = getDatabase(catalog, true, database_path);
 
-                for (set<string>::const_iterator termIter = terms.begin();
-                                                    termIter != terms.end();
-                                                    ++termIter){
+                for (const auto& term : terms){
                     vector<Package> tempPack;
-                    d->getPackages(*termIter, tempPack);
+                    d->getPackages(term, tempPack);
                     if (tempPack.size() > 0){
                         packs.insert(packs.end(),tempPack.begin(),tempPack.end());
-                        inexact_matches->push_back(*termIter);
+                        inexact_matches->push_back(term);
                     }
                 }
             }
 
             if (!packs.empty())
-                result[iter->substr(0,iter->rfind("-"))].insert(packs.begin(),packs.end());
+                result[catalog.substr(0,catalog.rfind("-"))].insert(packs.begin(),packs.end());
         }
     } else {
         cout << "WARNING: No database for lookup!" << endl;
     }
-    return result;
 }
 
 void populate_mirror(const bf::path& mirror_path,
                      const string& database_path,
                      const bool truncate,
-                     const int verbosity) {
+                     const uint8_t verbosity) {
     typedef bf::directory_iterator dirIter;
 
     static const string architectures[] = { "i686", "x86_64" };
 
-    for (unsigned int i = 0; i < sizeof(architectures) / sizeof(string); ++i) {
-
-        const string& architecture = architectures[i];
+    for (const auto& architecture : architectures) {
 
         vector<string> catalogs;
 
         for (dirIter iter = dirIter(mirror_path); iter != dirIter(); ++iter) {
 
 #if BOOST_FILESYSTEM_VERSION == 2
-            string catalog = bf::path(*iter).stem().c_str();
-            catalog.append("-"+architecture);
+            const string& catalog = bf::path(*iter).stem().c_str() + "-" + architecture;
 #else
-            const string catalog = bf::path(*iter).stem().string() + "-"
-                    + architecture;
+            const string& catalog = bf::path(*iter).stem().string() + "-" + architecture;
 #endif
             bool truncated = !truncate;
 
@@ -136,7 +126,7 @@ void populate_mirror(const bf::path& mirror_path,
             }
         }
 
-        bf::path catalogs_file_name = bf::path(database_path)/("catalogs-" + architecture + "-tdb");
+        const bf::path& catalogs_file_name = bf::path(database_path)/("catalogs-" + architecture + "-tdb");
 
         ofstream catalogs_file;
 #if BOOST_FILESYSTEM_VERSION == 2
@@ -144,10 +134,9 @@ void populate_mirror(const bf::path& mirror_path,
 #else
         catalogs_file.open(catalogs_file_name.c_str(), ios::trunc | ios::out);
 #endif
-        for (vector<string>::iterator iter = catalogs.begin();
-                iter != catalogs.end(); ++iter) {
+        for (const auto& catalog : catalogs) {
 
-            catalogs_file << *iter << ".tdb" << endl;
+            catalogs_file << catalog << ".tdb" << endl;
         }
         catalogs_file.close();
     }
@@ -157,7 +146,7 @@ void populate(const bf::path& path,
               const string& database_path,
               const string& catalog,
               const bool truncate,
-              const int verbosity) {
+              const uint8_t verbosity) {
 
     shared_ptr<Database> d;
     try {
@@ -172,12 +161,11 @@ void populate(const bf::path& path,
 
     typedef bf::directory_iterator dirIter;
 
-    int count = 0;
+    uint32_t count = 0;
 
-    for (dirIter iter = dirIter(path); iter != dirIter(); ++iter)
-        ++count;
+    for (dirIter iter = dirIter(path); iter != dirIter(); ++iter) ++count;
 
-    int current = 0;
+    uint32_t current = 0;
 
     for (dirIter iter = dirIter(path); iter != dirIter(); ++iter) {
         if (verbosity > 0) {

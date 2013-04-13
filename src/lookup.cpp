@@ -103,8 +103,9 @@ int theMain(int argc, char** argv) {
 
     args.search_string = argv[optind];
 
-    const map<string, set<Package> > result = lookup(args.search_string,
-                                                        args.database_path);
+    ResultMap result;
+
+    lookup(args.search_string, args.database_path, result);
 
     stringstream out;
 
@@ -134,9 +135,8 @@ int theMain(int argc, char** argv) {
 
     } else {
         std::shared_ptr<vector<string> > matches(new vector<string>());
-        const map<string, set<Package> > inexactResult = lookup(args.search_string,
-                                                            args.database_path,
-                                                            matches.get());
+        ResultMap inexactResult;
+        lookup(args.search_string, args.database_path, inexactResult, matches.get());
 
         for (auto oiter = inexactResult.begin(); oiter != inexactResult.end(); ++oiter) {
             for (auto piter = oiter->second.begin();

@@ -23,6 +23,7 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <stdint.h>
 
 #include "package.h"
 #include "config.h"
@@ -36,48 +37,46 @@ enum DatabaseError {
 class Database {
 public:
     explicit Database(const std::string& id,
-                      bool readonly,
+                      const bool readonly,
                       const std::string& base_path)
-            : itsId(id), isReadonly(readonly), itsBasePath(base_path) {
-    }
+            : m_id(id), m_readonly(readonly), m_basePath(base_path) { }
     virtual void storePackage(const Package& p) = 0;
     virtual void getPackages(const std::string& search, std::vector<Package>& result) const = 0;
     virtual void truncate() = 0;
-    virtual ~Database() {
-    }
+    virtual ~Database() { }
     static void getCatalogs(const std::string& database_path, std::vector<std::string>& result);
+
 private:
     Database& operator=(const Database&);
     Database(const Database&);
+
 protected:
-    const std::string itsId;
-    const bool isReadonly;
-    const std::string itsBasePath;
+    const std::string m_id;
+    const bool m_readonly;
+    const std::string m_basePath;
 };
 
 typedef std::map<std::string, std::set<Package> > ResultMap;
 
 const std::shared_ptr<Database> getDatabase(const std::string& id,
-                                              const bool readonly,
-                                              const std::string& base_path);
+                                            const bool readonly,
+                                            const std::string& base_path);
 
 void getCatalogs(const std::string& database_path, std::vector<std::string>& result);
 
-const ResultMap lookup(const std::string& searchString,
-                       const std::string& database_path,
+void lookup(const std::string& searchString, const std::string& database_path, ResultMap& result,
                        std::vector<std::string>* const inexact_matches = NULL);
 
 void populate_mirror(const boost::filesystem::path& path,
                      const std::string& database_path,
                      const bool truncate,
-                     const int verbosity);
+                     const uint8_t verbosity);
 
 void populate(const boost::filesystem::path& path,
               const std::string& database_path,
               const std::string& catalog,
               const bool truncate,
-              const int verbosity);
-
+              const uint8_t verbosity);
 }
 
 #endif /* DB_H_ */

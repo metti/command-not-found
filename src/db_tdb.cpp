@@ -35,7 +35,7 @@ TdbDatabase::TdbDatabase(const string& id,
                          const bool readonly,
                          const string& base_path)
         : Database(id, readonly, base_path),
-                itsDatabaseName(itsBasePath + "/" + itsId + ".tdb") {
+                itsDatabaseName(m_basePath + "/" + m_id + ".tdb") {
 
     if (!bf::is_directory(base_path)) {
         cout << "Directory '" << base_path << "' does not exist. "
@@ -60,7 +60,7 @@ TdbDatabase::TdbDatabase(const string& id,
         }
     }
 
-    if (isReadonly) {
+    if (m_readonly) {
         itsTdbFile = tdb_open(itsDatabaseName.c_str(), 512, 0, O_RDONLY, 0);
     } else {
         itsTdbFile = tdb_open(itsDatabaseName.c_str(), 512, 0, O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH);
