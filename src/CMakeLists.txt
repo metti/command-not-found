@@ -92,13 +92,13 @@ INCLUDE_DIRECTORIES ("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}")
 
 ###### EXECUTABLES and LIBRARIES######
 
-### CNF Client ###
-
 SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic -Wall -Wextra -pedantic -Werror -std=c++11")
 
+### CNF Client ###
+
 SET (CNF_SRCS    db.cpp
-                 package.cpp
                  db_tdb.cpp
+                 package.cpp
                  similar.cpp
                  ${PROJECT_BINARY_DIR}/config.cpp
 )
@@ -198,7 +198,7 @@ ADD_CUSTOM_TARGET(dist)
 ### Basic Configuration ###
 SET(CPACK_PACKAGE_NAME ${PROJECT_NAME})
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROGRAM_LONG_NAME})
-SET(CPACK_PACKAGE_VENDOR "Matthias Maennich")
+SET(CPACK_PACKAGE_VENDOR ${PROGRAM_AUTHOR})
 SET(CPACK_PACKAGE_EXECUTABLES ${BINARY_NAME} ${PROJECT_NAME})
 
 SET(CPACK_PACKAGE_VERSION_MAJOR ${VERSION_MAJOR})
