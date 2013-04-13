@@ -35,7 +35,8 @@ using boost::cmatch;
 namespace cnf {
 
 Package::Package(const bf::path& path, const bool lazy)
-        : itsFilesDetermined(false), itsPath(new bf::path(path)) {
+        : m_filesDetermined(false)
+        , m_path(new bf::path(path)) {
 
     // checks
     if (!bf::is_regular_file(path)) {
@@ -45,23 +46,22 @@ Package::Package(const bf::path& path, const bool lazy)
         throw InvalidArgumentException(MISSING_FILE, message.c_str());
     }
 
-    static const regex valid_name(
-            "(.+)-(.+)-(.+)-(any|i686|x86_64).pkg.tar.(xz|gz)");
+    static const regex valid_name("(.+)-(.+)-(.+)-(any|i686|x86_64).pkg.tar.(xz|gz)");
 
     cmatch what;
 
 #if BOOST_FILESYSTEM_VERSION == 2
-    const string filename = path.filename().c_str();
+    const string& filename = path.filename().c_str();
 #else
-    const string filename = path.filename().string();
+    const string& filename = path.filename().string();
 #endif
     if (regex_match(filename.c_str(), what, valid_name)) {
 
-        itsName = what[1];
-        itsVersion = what[2];
-        itsRelease = what[3];
-        itsArchitecture = what[4];
-        itsCompression = what[5];
+        m_name = what[1];
+        m_version = what[2];
+        m_release = what[3];
+        m_architecture = what[4];
+        m_compression = what[5];
     } else {
         string message;
         message += "this is not a valid package file: ";
@@ -78,7 +78,7 @@ void Package::updateFiles() const {
 
     // read package file list
 
-    if (!itsPath) {
+    if (!m_path) {
         throw InvalidArgumentException(INVALID_FILE, "You should never end up here!");
     }
 
@@ -92,15 +92,15 @@ void Package::updateFiles() const {
     archive_read_support_format_tar(arc);
 
 #if BOOST_FILESYSTEM_VERSION == 2
-    rc = archive_read_open_filename(arc, itsPath->string().c_str(), 10240);
+    rc = archive_read_open_filename(arc, m_path->string().c_str(), 10240);
 #else
-    rc = archive_read_open_filename(arc, itsPath->c_str(), 10240);
+    rc = archive_read_open_filename(arc, m_path->c_str(), 10240);
 #endif
 
     if (rc != ARCHIVE_OK){
         string message;
         message += "could not read file list from: ";
-        message += itsPath->string();
+        message += m_path->string();
         throw InvalidArgumentException(INVALID_FILE, message.c_str());
     }
     while (archive_read_next_header(arc, &entry) == ARCHIVE_OK) {
@@ -112,20 +112,20 @@ void Package::updateFiles() const {
     if (rc != ARCHIVE_OK){
         string message;
         message += "error while closing archive: ";
-        message += itsPath->string();
+        message += m_path->string();
         throw InvalidArgumentException(INVALID_FILE, message.c_str()); 
     }
 
     const regex significant("((usr/)?(s)?bin/([0-9A-Za-z.-]+))");
 
     cmatch what;
-    for (auto iter = candidates.begin(); iter != candidates.end(); ++iter) {
-        if (regex_match(iter->c_str(), what, significant)) {
-            itsFiles.push_back(what[4]);
+    for (const auto& candidate : candidates) {
+        if (regex_match(candidate.c_str(), what, significant)) {
+            m_files.push_back(what[4]);
         }
     }
 
-    itsFilesDetermined = true;
+    m_filesDetermined = true;
 
 }
 
@@ -141,33 +141,32 @@ const string Package::hl_str(const vector<string>* hl, const string& files_inden
     out << files_indent << "[ ";
 
     int linelength = 0;
-    for (auto iter = files().begin();
-            iter != files().end(); ++iter) {
+    for (const auto& file : files()) {
 
         bool highlight = false;
         if (hl != NULL){
-            for (auto hlIter = hl->begin(); hlIter != hl->end(); ++hlIter) {
-                if (*hlIter != "" && *hlIter == *iter){
+            for (const auto& hlIter : *hl) {
+                if (hlIter != "" && hlIter == file){
                     highlight = true;
                     break;
                 }
             }
         }
 
-        if (linelength + iter->size() > 80){
+        if (linelength + file.size() > 80){
             linelength = 0;
             out << endl << files_indent << "  ";
         }
 
-        linelength += iter->size() + 1;
+        linelength += file.size() + 1;
         if (highlight) {
             if (color.empty()){
-                out << "*" << *iter << "* ";
+                out << "*" << file << "* ";
             } else {
-                out << color << *iter << "\033[0m" << " ";
+                out << color << file << "\033[0m" << " ";
             }
         } else {
-            out << *iter << " ";
+            out << file << " ";
         }
     }
     out << "]";

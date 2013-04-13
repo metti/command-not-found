@@ -109,7 +109,7 @@ int theMain(int argc, char** argv) {
 
     stringstream out;
 
-    for (const auto oiter = result.begin(); oiter != result.end(); ++oiter) {
+    for (auto oiter = result.begin(); oiter != result.end(); ++oiter) {
         for (auto piter = oiter->second.begin(); piter != oiter->second.end(); ++piter) {
             if (args.colors){
                 out << "\33[1m" << piter->name() << "\033[0m";

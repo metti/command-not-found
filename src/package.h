@@ -37,39 +37,39 @@ public:
                      const std::string& architecture,
                      const std::string& compression,
                      const std::vector<std::string>& files)
-                  : itsName(name),
-                    itsVersion(version),
-                    itsRelease(release),
-                    itsArchitecture(architecture),
-                    itsCompression(compression),
-                    itsFiles(files),
-                    itsFilesDetermined(true),
-                    itsPath(NULL) {
+                  : m_name(name)
+                  , m_version(version)
+                  , m_release(release)
+                  , m_architecture(architecture)
+                  , m_compression(compression)
+                  , m_files(files)
+                  , m_filesDetermined(true)
+                  , m_path(NULL) {
     }
 
     ~Package() {
-        delete itsPath;
+        delete m_path;
     }
 
     const std::vector<std::string>& files() const {
-        if (!itsFilesDetermined)
+        if (!m_filesDetermined)
             updateFiles();
-        return itsFiles;
+        return m_files;
     }
     const std::string& name() const {
-        return itsName;
+        return m_name;
     }
     const std::string& version() const {
-        return itsVersion;
+        return m_version;
     }
     const std::string& release() const {
-        return itsRelease;
+        return m_release;
     }
     const std::string& architecture() const {
-        return itsArchitecture;
+        return m_architecture;
     }
     const std::string& compression() const {
-        return itsCompression;
+        return m_compression;
     }
     const std::string hl_str(const std::string& = "", const std::string& files_indent = "", const std::string& color = "") const;
     const std::string hl_str(const std::vector<std::string>* = NULL, const std::string& files_indent = "", const std::string& color = "") const;
@@ -78,14 +78,14 @@ private:
 
     void updateFiles() const;
 
-    std::string itsName;
-    std::string itsVersion;
-    std::string itsRelease;
-    std::string itsArchitecture;
-    std::string itsCompression;
-    mutable std::vector<std::string> itsFiles;
-    mutable bool itsFilesDetermined;
-    boost::filesystem::path* itsPath;
+    std::string m_name;
+    std::string m_version;
+    std::string m_release;
+    std::string m_architecture;
+    std::string m_compression;
+    mutable std::vector<std::string> m_files;
+    mutable bool m_filesDetermined;
+    boost::filesystem::path* m_path;
 };
 
 enum PackageError {
