@@ -111,7 +111,6 @@ SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic -Wall -Wextra -pedantic -Werr
 SET (CNF_SRCS    db.cpp
                  package.cpp
                  db_tdb.cpp
-                 guard.cpp
                  similar.cpp
                  ${PROJECT_BINARY_DIR}/config.cpp
 )

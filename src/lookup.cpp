@@ -25,7 +25,6 @@
 #include <string>
 #include <set>
 
-#include "guard.h"
 #include "package.h"
 #include "db.h"
 #include "config.h"
@@ -66,7 +65,7 @@ void usage(){
     exit(1);
 }
 
-int theMain(int argc, char** argv) {
+int main(int argc, char** argv) {
 
     args.database_path = DATABASE_PATH;
     args.colors = false;
@@ -163,22 +162,3 @@ int theMain(int argc, char** argv) {
 
     return 1;
 }
-
-int main(int argc, char** argv) {
-    int ret = 0;
-#ifndef DEBUG
-    install_handler();
-    try {
-#endif /* DEBUG */
-        ret = theMain(argc, argv);
-#ifndef DEBUG
-    } catch (const exception& e) {
-        cerr << "An uncaught exception occured:" << endl;
-        cerr << "    " << e.what() << endl;
-
-        ret = 1;
-    }
-#endif /* DEBUG */
-    return ret;
-}
-
