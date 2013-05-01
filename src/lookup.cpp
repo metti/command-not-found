@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
         }
         if (!inexactResult.empty()){
             cout << "A similar command to '" << args.search_string
-                 << "' is been provided by the following packages:" << endl;
+                 << "' is provided by the following packages:" << endl;
             cout << out.str();
             return 0;
         }
