@@ -7,4 +7,4 @@ build*
 *.db
 core
 *.bundle
-CMakeLists.txt.user
+CMakeLists.txt.user*
