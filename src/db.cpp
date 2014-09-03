@@ -62,19 +62,24 @@ void lookup(const string& search_string, const string& database_path, ResultMap&
 
             vector<Package> packs;
 
-            if (inexact_matches == NULL){
-                getDatabase(catalog, true, database_path)->getPackages(search_string, packs);
-            } else {
-                const shared_ptr<Database>& d = getDatabase(catalog, true, database_path);
+            try {
+                if (inexact_matches == NULL){
+                    getDatabase(catalog, true, database_path)->getPackages(search_string, packs);
+                } else {
+                    const shared_ptr<Database>& d = getDatabase(catalog, true, database_path);
 
-                for (const auto& term : terms){
-                    vector<Package> tempPack;
-                    d->getPackages(term, tempPack);
-                    if (tempPack.size() > 0){
-                        packs.insert(packs.end(),tempPack.begin(),tempPack.end());
-                        inexact_matches->push_back(term);
+                    for (const auto& term : terms){
+                        vector<Package> tempPack;
+                        d->getPackages(term, tempPack);
+                        if (tempPack.size() > 0){
+                            packs.insert(packs.end(),tempPack.begin(),tempPack.end());
+                            inexact_matches->push_back(term);
+                        }
                     }
                 }
+
+            } catch (const DatabaseException& e) {
+                cerr << e.what() << endl;
             }
 
             if (!packs.empty())

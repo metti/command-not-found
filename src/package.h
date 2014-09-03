@@ -51,11 +51,8 @@ public:
         delete m_path;
     }
 
-    const std::vector<std::string>& files() const {
-        if (!m_filesDetermined)
-            updateFiles();
-        return m_files;
-    }
+    const std::vector<std::string>& files() const;
+
     const std::string& name() const {
         return m_name;
     }
@@ -89,7 +86,7 @@ private:
 };
 
 enum PackageError {
-    MISSING_FILE, INVALID_FILE
+    MISSING_FILE, INVALID_FILE, UNKNOWN_ERROR
 };
 
 std::ostream& operator<<(std::ostream& out, const Package& p);

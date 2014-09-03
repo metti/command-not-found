@@ -19,6 +19,8 @@
 #include <boost/regex.hpp>
 #include <archive.h>
 #include <archive_entry.h>
+#include <assert.h>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -52,32 +54,45 @@ Package::Package(const bf::path& path, const bool lazy)
 
     const string& filename = path.filename().string();
 
-    if (regex_match(filename.c_str(), what, valid_name)) {
+    try {
+        if (regex_match(filename.c_str(), what, valid_name)) {
 
-        m_name = what[1];
-        m_version = what[2];
-        m_release = what[3];
-        m_architecture = what[4];
-        m_compression = what[5];
-    } else {
-        string message;
-        message += "this is not a valid package file: ";
-        message += path.string();
-        throw InvalidArgumentException(INVALID_FILE, message.c_str());
+            m_name = what[1];
+            m_version = what[2];
+            m_release = what[3];
+            m_architecture = what[4];
+            m_compression = what[5];
+        } else {
+            string message;
+            message += "this is not a valid package file: ";
+            message += path.string();
+            throw InvalidArgumentException(INVALID_FILE, message.c_str());
 
+        }
+    } catch (const std::logic_error& e) {
+        throw InvalidArgumentException(UNKNOWN_ERROR, e.what());
     }
 
     if (!lazy)
         updateFiles();
 }
 
+const vector<string>& Package::files() const {
+    if (!m_filesDetermined)
+        try {
+            updateFiles();
+        } catch (const InvalidArgumentException& e) {
+            cerr << e.what() << endl;
+        }
+    return m_files;
+}
+
+
 void Package::updateFiles() const {
 
     // read package file list
 
-    if (!m_path) {
-        throw InvalidArgumentException(INVALID_FILE, "You should never end up here!");
-    }
+    assert(m_path);
 
     struct archive *arc = NULL;
     struct archive_entry *entry = NULL;
@@ -112,10 +127,14 @@ void Package::updateFiles() const {
     const regex significant("((usr/)?(s)?bin/([0-9A-Za-z.-]+))");
 
     cmatch what;
-    for (const auto& candidate : candidates) {
-        if (regex_match(candidate.c_str(), what, significant)) {
-            m_files.push_back(what[4]);
+    try {
+        for (const auto& candidate : candidates) {
+            if (regex_match(candidate.c_str(), what, significant)) {
+                m_files.push_back(what[4]);
+            }
         }
+    } catch (const std::logic_error& e) {
+        throw InvalidArgumentException(UNKNOWN_ERROR, e.what());
     }
 
     m_filesDetermined = true;
