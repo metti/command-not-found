@@ -81,8 +81,13 @@ CONFIGURE_FILE (
 )
 
 CONFIGURE_FILE (
-    "${PROJECT_SOURCE_DIR}/cnf-cron.in"
-    "${PROJECT_BINARY_DIR}/cnf-cron"
+    "${PROJECT_SOURCE_DIR}/cnf.service.in"
+    "${PROJECT_BINARY_DIR}/cnf.service"
+)
+
+CONFIGURE_FILE (
+    "${PROJECT_SOURCE_DIR}/cnf.timer.in"
+    "${PROJECT_BINARY_DIR}/cnf.timer"
 )
 
 ### Add binary dir to include path ###
@@ -178,7 +183,7 @@ INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}-sync
 
             DESTINATION usr/bin)
 
-INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}-cron
+INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}.service
             PERMISSIONS OWNER_WRITE
                         OWNER_EXECUTE
                         GROUP_EXECUTE
@@ -187,7 +192,18 @@ INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}-cron
                         GROUP_READ
                         WORLD_READ
 
-            DESTINATION etc/cron.daily)
+            DESTINATION usr/lib/systemd/system)
+
+INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}.timer
+            PERMISSIONS OWNER_WRITE
+                        OWNER_EXECUTE
+                        GROUP_EXECUTE
+                        WORLD_EXECUTE
+                        OWNER_READ
+                        GROUP_READ
+                        WORLD_READ
+
+            DESTINATION usr/lib/systemd/system)
 
 
 

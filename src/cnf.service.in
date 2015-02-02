@@ -1,0 +1,6 @@
+[Unit]
+Description=Update command-not-found catalogs
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/cnf-sync

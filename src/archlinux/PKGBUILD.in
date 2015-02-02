@@ -26,4 +26,5 @@ package(){
     cd $srcdir/build
 
     make DESTDIR=$pkgdir install
+    ln -s ../cnf.timer ${pkgdir}//usr/lib/systemd/system/multi-user.target.wants/cnf.timer
 }
