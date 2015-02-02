@@ -1,0 +1,7 @@
+[Unit]
+Description=Daily command-not-found catalog updates
+
+[Timer]
+OnCalendar=daily
+AccuracySec=1h
+Persistent=true
