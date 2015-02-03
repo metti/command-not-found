@@ -185,9 +185,6 @@ INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}-sync
 
 INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}.service
             PERMISSIONS OWNER_WRITE
-                        OWNER_EXECUTE
-                        GROUP_EXECUTE
-                        WORLD_EXECUTE
                         OWNER_READ
                         GROUP_READ
                         WORLD_READ
@@ -196,9 +193,6 @@ INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}.service
 
 INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}.timer
             PERMISSIONS OWNER_WRITE
-                        OWNER_EXECUTE
-                        GROUP_EXECUTE
-                        WORLD_EXECUTE
                         OWNER_READ
                         GROUP_READ
                         WORLD_READ
