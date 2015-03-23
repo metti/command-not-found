@@ -12,7 +12,9 @@ if [ $? -eq 0 ];then
     cd $DATABASE_PATH
     for i in $catalogs; do
         echo "Loading catalog $i ..." 
-        wget --quiet -N $MIRROR/cnf/$i
+        CURL_OPTION_TIME_COND=
+        [ -e "$i" ] && CURL_OPTION_TIME_COND="-z $i"
+        curl -R -s $CURL_OPTION_TIME_COND -o $i $MIRROR/cnf/$i
         if [ ! $? -eq 0 ];then 
             echo "Failed to download catalog $i ..."
         fi
