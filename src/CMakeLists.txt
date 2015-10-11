@@ -23,7 +23,6 @@ ENDIF(STATIC_LINKS)
 
 FIND_PACKAGE(Boost 1.44
                    COMPONENTS
-                        regex
                         filesystem
                         system
                    REQUIRED)

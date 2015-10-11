@@ -16,11 +16,11 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <boost/regex.hpp>
 #include <archive.h>
 #include <archive_entry.h>
 #include <assert.h>
 #include <iostream>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -30,9 +30,6 @@
 
 namespace bf = boost::filesystem;
 using namespace std;
-using boost::regex;
-using boost::regex_match;
-using boost::cmatch;
 
 namespace cnf {
 
