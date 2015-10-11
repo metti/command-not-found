@@ -108,19 +108,19 @@ int main(int argc, char** argv) {
 
     stringstream out;
 
-    for (auto oiter = result.begin(); oiter != result.end(); ++oiter) {
-        for (auto piter = oiter->second.begin(); piter != oiter->second.end(); ++piter) {
+    for (auto& elem : result) {
+        for (auto& piter : elem.second) {
             if (args.colors){
-                out << "\33[1m" << piter->name() << "\033[0m";
+                out << "\33[1m" << piter.name() << "\033[0m";
             } else {
-                out << piter->name();
+                out << piter.name();
             }
-            out << " (" << piter->version() << "-" << piter->release() << ")" 
-                << " from " << oiter->first << endl;
+            out << " (" << piter.version() << "-" << piter.release() << ")"
+                << " from " << elem.first << endl;
             if (args.colors) {
-                out << piter->hl_str(args.search_string, "\t", "\033[0;31m") << endl;
+                out << piter.hl_str(args.search_string, "\t", "\033[0;31m") << endl;
             } else {
-                out << piter->hl_str(args.search_string, "\t", "") << endl;
+                out << piter.hl_str(args.search_string, "\t", "") << endl;
             }
         }
     }
@@ -136,19 +136,19 @@ int main(int argc, char** argv) {
         ResultMap inexactResult;
         lookup(args.search_string, args.database_path, inexactResult, matches.get());
 
-        for (auto oiter = inexactResult.begin(); oiter != inexactResult.end(); ++oiter) {
-            for (auto piter = oiter->second.begin(); piter != oiter->second.end(); ++piter) {
+        for (auto & elem : inexactResult) {
+            for (auto& piter : elem.second) {
                 if (args.colors) {
-                    out << "\033[1m" << piter->name() << "\033[0m";
+                    out << "\033[1m" << piter.name() << "\033[0m";
                 } else {
-                    out << piter->name();
+                    out << piter.name();
                 }
-                out << " (" << piter->version() << "-" << piter->release() << ")" 
-                    << " from " << oiter->first << endl;
+                out << " (" << piter.version() << "-" << piter.release() << ")" 
+                    << " from " << elem.first << endl;
                 if (args.colors) {
-                    out << piter->hl_str(matches.get(), "\t", "\033[0;31m") << endl;
+                    out << piter.hl_str(matches.get(), "\t", "\033[0;31m") << endl;
                 } else {
-                    out << piter->hl_str(matches.get(), "\t", "") << endl;
+                    out << piter.hl_str(matches.get(), "\t", "") << endl;
                 }
             }
         }

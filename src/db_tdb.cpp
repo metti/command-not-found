@@ -34,8 +34,8 @@ namespace cnf {
 TdbDatabase::TdbDatabase(const string& id,
                          const bool readonly,
                          const string& base_path)
-        : Database(id, readonly, base_path),
-                m_databaseName(m_basePath + "/" + m_id + ".tdb") {
+        : Database(id, readonly, base_path)
+        , m_databaseName(m_basePath + "/" + m_id + ".tdb") {
 
     if (!bf::is_directory(base_path)) {
         cout << "Directory '" << base_path << "' does not exist. "
@@ -123,9 +123,9 @@ void TdbDatabase::storePackage(const Package& p) {
     string filesString;
     bool first = true;
 
-    for (auto iter = p.files().begin(); iter != p.files().end(); ++iter) {
+    for (const auto& elem : p.files()) {
 
-        TdbKeyValue fkv(*iter, p.name());
+        TdbKeyValue fkv(elem, p.name());
 
         const int ret = tdb_store(m_tdbFile, fkv.key(), fkv.value(),
                                    TDB_INSERT);
@@ -143,13 +143,13 @@ void TdbDatabase::storePackage(const Package& p) {
 
             string newValue;
             bool isthefirst = true;
-            for (auto iter = others.begin(); iter != others.end(); ++iter) {
+            for (auto& other : others) {
                 if (isthefirst) {
                     isthefirst = false;
                 } else {
                     newValue += " ";
                 }
-                newValue += *iter;
+                newValue += other;
             }
 
             fkv.setValue(newValue);
@@ -158,10 +158,10 @@ void TdbDatabase::storePackage(const Package& p) {
         }
 
         if (first) {
-            filesString.append(*iter);
+            filesString.append(elem);
             first = false;
         } else {
-            filesString.append(" " + *iter);
+            filesString.append(" " + elem);
         }
     }
 
@@ -181,26 +181,25 @@ void TdbDatabase::getPackages(const string& search, vector<Package>& result) con
     copy(istream_iterator<string>(iss), istream_iterator<string>(),
          back_inserter<vector<string> >(package_names));
 
-    for (auto iter = package_names.begin(); iter != package_names.end();
-            ++iter) {
+    for (auto& package_name : package_names) {
         TdbKeyValue version_kv;
-        version_kv.setKey(*iter + "-version");
+        version_kv.setKey(package_name + "-version");
         version_kv.setValue(tdb_fetch(m_tdbFile, version_kv.key()));
 
         TdbKeyValue release_kv;
-        release_kv.setKey(*iter + "-release");
+        release_kv.setKey(package_name + "-release");
         release_kv.setValue(tdb_fetch(m_tdbFile, release_kv.key()));
 
         TdbKeyValue arch_kv;
-        arch_kv.setKey(*iter + "-architecture");
+        arch_kv.setKey(package_name + "-architecture");
         arch_kv.setValue(tdb_fetch(m_tdbFile, arch_kv.key()));
 
         TdbKeyValue compression_kv;
-        compression_kv.setKey(*iter + "-compression");
+        compression_kv.setKey(package_name + "-compression");
         compression_kv.setValue(tdb_fetch(m_tdbFile, compression_kv.key()));
 
         TdbKeyValue files_kv;
-        files_kv.setKey(*iter + "-files");
+        files_kv.setKey(package_name + "-files");
         files_kv.setValue(tdb_fetch(m_tdbFile, files_kv.key()));
 
         istringstream iss(files_kv.value_str());
@@ -208,7 +207,7 @@ void TdbDatabase::getPackages(const string& search, vector<Package>& result) con
         copy(istream_iterator<string>(iss), istream_iterator<string>(),
              back_inserter<vector<string> >(files));
 
-        Package p(*iter, version_kv.value_str(), release_kv.value_str(),
+        Package p(package_name, version_kv.value_str(), release_kv.value_str(),
                   arch_kv.value_str(), compression_kv.value_str(), files);
         result.push_back(p);
     }
