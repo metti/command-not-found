@@ -220,7 +220,7 @@ STRING(TOLOWER
          CPACK_SOURCE_PACKAGE_FILE_NAME)
 
 SET(CPACK_SOURCE_GENERATOR "TGZ")
-ADD_CUSTOM_TARGET(source COMMAND make package_source)
+ADD_CUSTOM_TARGET(source COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 
 ### Binary Packages ###
