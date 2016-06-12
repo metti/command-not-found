@@ -1,0 +1,192 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-06-12 20:18+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: db.cpp:93
+msgid "WARNING: No database for lookup!"
+msgstr ""
+
+#: db.cpp:177
+#, c-format, boost-format
+msgid "[ %d / %d ] %s..."
+msgstr ""
+
+#: db.cpp:185
+msgid "done"
+msgstr ""
+
+#: db.cpp:189
+#, c-format, boost-format
+msgid "skipping (%s)"
+msgstr ""
+
+#: db_tdb.cpp:45
+#, c-format, boost-format
+msgid "Directory '%s' does not exist. Trying to create it ..."
+msgstr ""
+
+#: db_tdb.cpp:51
+#, c-format, boost-format
+msgid "Could not create database directory: %s: "
+msgstr ""
+
+#: db_tdb.cpp:62 db_tdb.cpp:76 db_tdb.cpp:232
+msgid "Error opening tdb database: "
+msgstr ""
+
+#: db_tdb.cpp:63
+msgid "Missing database directory!"
+msgstr ""
+
+#: lookup.cpp:57
+#, c-format, boost-format
+msgid "       *** %s %s ***                                           \n"
+msgstr ""
+
+#: lookup.cpp:59
+msgid "Usage:                                                         \n"
+msgstr ""
+
+#: lookup.cpp:60
+msgid "   cnf-lookup [ -d ] <search term>                             \n"
+msgstr ""
+
+#: lookup.cpp:61 lookup.cpp:65
+msgid "                                                               \n"
+msgstr ""
+
+#: lookup.cpp:62
+msgid "Options:                                                       \n"
+msgstr ""
+
+#: lookup.cpp:63
+msgid " --help            -? -h     Show this help and exit           \n"
+msgstr ""
+
+#: lookup.cpp:64
+msgid " --verbose         -v        Display verbose output            \n"
+msgstr ""
+
+#: lookup.cpp:66
+#, c-format, boost-format
+msgid ""
+" --database-path   -d        Customize the database lookup path\n"
+"                             default is %s                     \n"
+msgstr ""
+
+#: lookup.cpp:69
+msgid " --colors          -c        Pretty colored output             \n"
+msgstr ""
+
+#: lookup.cpp:130 lookup.cpp:160
+#, c-format, boost-format
+msgid " (%s-%s) from %s"
+msgstr ""
+
+#: lookup.cpp:142
+#, c-format, boost-format
+msgid "The command '%s' is provided by the following packages:"
+msgstr ""
+
+#: lookup.cpp:171
+#, c-format, boost-format
+msgid "A similar command to '%s' is provided by the following packages:"
+msgstr ""
+
+#: package.cpp:47
+msgid "not a file: "
+msgstr ""
+
+#: package.cpp:68
+msgid "this is not a valid package file: "
+msgstr ""
+
+#: package.cpp:111
+#, c-format, boost-format
+msgid "could not read file list from: %s"
+msgstr ""
+
+#: package.cpp:123
+#, c-format, boost-format
+msgid "error while closing archive: %s"
+msgstr ""
+
+#: populate.cpp:59
+#, c-format, boost-format
+msgid ""
+"       *** %s %s ***                                                  \n"
+msgstr ""
+
+#: populate.cpp:61
+msgid "Usage:                                                                \n"
+msgstr ""
+
+#: populate.cpp:62
+msgid ""
+"   cnf-populate -p <path> ( -c <catalog> | -m ) [ -d <path> ]         \n"
+msgstr ""
+
+#: populate.cpp:63 populate.cpp:67
+msgid "                                                                      \n"
+msgstr ""
+
+#: populate.cpp:64
+msgid "Options:                                                              \n"
+msgstr ""
+
+#: populate.cpp:65
+msgid ""
+" --help            -? -h     Show this help and exit                  \n"
+msgstr ""
+
+#: populate.cpp:66
+msgid ""
+" --verbose         -v        Display verbose output                   \n"
+msgstr ""
+
+#: populate.cpp:68
+msgid ""
+" --package-path    -p        Set the path containing the packages     \n"
+msgstr ""
+
+#: populate.cpp:69
+msgid ""
+" --catalog         -c        Set the catalog name to index (e.g. core)\n"
+msgstr ""
+
+#: populate.cpp:70
+msgid ""
+" --mirror          -m        Scan mirror structure and detect catalogs\n"
+msgstr ""
+
+#: populate.cpp:71
+msgid ""
+" --truncate        -t        Truncate the catalog before indexing     \n"
+msgstr ""
+
+#: populate.cpp:72
+#, c-format, boost-format
+msgid ""
+" --database-path   -d        Customize the database lookup path       \n"
+"                             default is %s                            \n"
+msgstr ""
+
+#: populate.cpp:139
+#, c-format, boost-format
+msgid "Not a valid package path: %s"
+msgstr ""

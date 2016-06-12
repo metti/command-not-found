@@ -21,6 +21,8 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <boost/format.hpp>
+#include <boost/locale.hpp>
 
 #include "db.h"
 #include "db_tdb.h"
@@ -28,6 +30,8 @@
 
 namespace bf = boost::filesystem;
 using namespace std;
+using boost::format;
+using boost::locale::translate;
 
 namespace cnf {
 
@@ -38,13 +42,14 @@ TdbDatabase::TdbDatabase(const string& id,
         , m_databaseName(m_basePath + "/" + m_id + ".tdb") {
 
     if (!bf::is_directory(base_path)) {
-        cout << "Directory '" << base_path << "' does not exist. "
-             << "Trying to create it ..." << endl;
+        cout << format(translate("Directory '%s' does not exist. Trying to create it ..."))
+                % base_path
+             << endl;
         try {
             bf::create_directories(base_path);
         } catch (const bf::filesystem_error& e) {
-            cerr << "Could not create database directory: "
-                    << e.code().message() << ": ";
+            cerr << format(translate("Could not create database directory: %s: "))
+                    % e.code().message();
             if (!e.path1().empty()) {
                 cerr << e.path1();
             }
@@ -54,8 +59,8 @@ TdbDatabase::TdbDatabase(const string& id,
             cerr << endl;
 
             string message;
-            message += "Error opening tdb database: ";
-            message += "Missing database directory!";
+            message += translate("Error opening tdb database: ");
+            message += translate("Missing database directory!");
             throw DatabaseException(CONNECT_ERROR, message.c_str());
         }
     }
@@ -68,7 +73,7 @@ TdbDatabase::TdbDatabase(const string& id,
 
     if (m_tdbFile == NULL) {
         string message;
-        message += "Error opening tdb database: ";
+        message += translate("Error opening tdb database: ");
         message += m_databaseName;
         throw DatabaseException(CONNECT_ERROR, message.c_str());
     }
@@ -224,7 +229,7 @@ void TdbDatabase::truncate() {
 
     if (m_tdbFile == NULL) {
         string message;
-        message += "Error opening tdb database: ";
+        message += translate("Error opening tdb database: ");
         message += m_databaseName;
         throw DatabaseException(CONNECT_ERROR, message.c_str());
     }

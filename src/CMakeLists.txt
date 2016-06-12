@@ -25,6 +25,7 @@ FIND_PACKAGE(Boost 1.44
                    COMPONENTS
                         filesystem
                         system
+                        locale
                    REQUIRED)
 
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
@@ -62,6 +63,7 @@ ENDIF()
 ### Application Configuration ###
 
 SET (DATABASE_PATH ${CMAKE_INSTALL_PREFIX}/var/lib/${BINARY_NAME})
+SET (LC_MESSAGE_PATH ${CMAKE_INSTALL_PREFIX}/usr/share)
 
 ### Prepare Config ###
 CONFIGURE_FILE (
@@ -198,6 +200,35 @@ INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}.timer
 
             DESTINATION usr/lib/systemd/system)
 
+
+###### I18N FILES ######
+
+SET(locales
+    )
+
+FIND_PROGRAM(MSGFMT msgfmt)
+
+IF(MSGFMT)
+    FILE(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/i18n")
+
+    FOREACH(_locale ${locales})
+        SET(_po "${PROJECT_SOURCE_DIR}/i18n/${_locale}.po")
+        SET(_mo "${PROJECT_BINARY_DIR}/i18n/${_locale}.mo")
+        ADD_CUSTOM_COMMAND(
+            OUTPUT ${_mo}
+            COMMAND ${MSGFMT} -o ${_mo} ${_po}
+            DEPENDS ${_po}
+            )
+        INSTALL(
+            FILES ${_mo}
+            DESTINATION ${LC_MESSAGE_PATH}/${_locale}/LC_MESSAGES/
+            RENAME ${PROGRAM_NAME}.mo
+            )
+        SET(_mo_files ${_mo_files} ${_mo})
+    ENDFOREACH()
+
+    ADD_CUSTOM_TARGET(i18n ALL DEPENDS ${_mo_files})
+ENDIF()
 
 
 ###### PACKAGING ######
