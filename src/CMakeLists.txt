@@ -204,6 +204,7 @@ INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}.timer
 ###### I18N FILES ######
 
 SET(locales
+    zh_CN
     )
 
 FIND_PROGRAM(MSGFMT msgfmt)
