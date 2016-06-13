@@ -19,6 +19,8 @@
 #include <archive.h>
 #include <archive_entry.h>
 #include <assert.h>
+#include <boost/format.hpp>
+#include <boost/locale.hpp>
 #include <iostream>
 #include <regex>
 #include <sstream>
@@ -30,6 +32,8 @@
 
 namespace bf = boost::filesystem;
 using namespace std;
+using boost::format;
+using boost::locale::translate;
 
 namespace cnf {
 
@@ -40,7 +44,7 @@ Package::Package(const bf::path& path, const bool lazy)
     // checks
     if (!bf::is_regular_file(path)) {
         string message;
-        message += "not a file: ";
+        message += translate("not a file: ");
         message += path.string();
         throw InvalidArgumentException(MISSING_FILE, message.c_str());
     }
@@ -61,7 +65,7 @@ Package::Package(const bf::path& path, const bool lazy)
             m_compression = what[5];
         } else {
             string message;
-            message += "this is not a valid package file: ";
+            message += translate("this is not a valid package file: ");
             message += path.string();
             throw InvalidArgumentException(INVALID_FILE, message.c_str());
 
@@ -103,10 +107,10 @@ void Package::updateFiles() const {
     rc = archive_read_open_filename(arc, m_path->c_str(), 10240);
 
     if (rc != ARCHIVE_OK){
-        string message;
-        message += "could not read file list from: ";
-        message += m_path->string();
-        throw InvalidArgumentException(INVALID_FILE, message.c_str());
+        format message;
+        message = format(translate("could not read file list from: %s"))
+            % m_path->string();
+        throw InvalidArgumentException(INVALID_FILE, message.str());
     }
     while (archive_read_next_header(arc, &entry) == ARCHIVE_OK) {
         candidates.push_back(archive_entry_pathname(entry));
@@ -115,10 +119,10 @@ void Package::updateFiles() const {
     rc = archive_read_close(arc);
 
     if (rc != ARCHIVE_OK){
-        string message;
-        message += "error while closing archive: ";
-        message += m_path->string();
-        throw InvalidArgumentException(INVALID_FILE, message.c_str()); 
+        format message;
+        message = format(translate("error while closing archive: %s"))
+            % m_path->string();
+        throw InvalidArgumentException(INVALID_FILE, message.str());
     }
 
     const regex significant("((usr/)?(s)?bin/([0-9A-Za-z.-]+))");

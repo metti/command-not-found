@@ -35,6 +35,7 @@ const std::string VERSION_LONG = "@VERSION_SHORT@ (@GIT_HASH_SHORT@)";
 const std::string VERSION_REFSPEC = "@GIT_REFSPEC@";
 
 const std::string DATABASE_PATH = "@DATABASE_PATH@/";
+const std::string LC_MESSAGE_PATH = "@LC_MESSAGE_PATH@/";
 
 }
 

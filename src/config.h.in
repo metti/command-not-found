@@ -38,6 +38,7 @@ extern const std::string VERSION_LONG;
 extern const std::string VERSION_REFSPEC;
 
 extern const std::string DATABASE_PATH;
+extern const std::string LC_MESSAGE_PATH;
 
 }
 

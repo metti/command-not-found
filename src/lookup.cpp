@@ -24,6 +24,8 @@
 #include <map>
 #include <string>
 #include <set>
+#include <boost/format.hpp>
+#include <boost/locale.hpp>
 
 #include "package.h"
 #include "db.h"
@@ -31,6 +33,8 @@
 
 using namespace cnf;
 using namespace std;
+using boost::format;
+using boost::locale::translate;
 
 static struct args_t {
     string database_path;
@@ -50,22 +54,30 @@ static const struct option LONG_OPTS[] = {
 };
 
 void usage(){
-    cout << "       *** " << PROGRAM_NAME << " " << VERSION_LONG << " ***       \n"
-            "Usage:                                                             \n"
-            "   cnf-lookup [ -d ] <search term>                                 \n"
-            "                                                                   \n"
-            "Options:                                                           \n"
-            " --help            -? -h     Show this help and exit               \n"
-            " --verbose         -v        Display verbose output                \n"
-            "                                                                   \n"
-            " --database-path   -d        Customize the database lookup path    \n"
-            "                             default is " << DATABASE_PATH << "    \n"
-            " --colors          -c        Pretty colored output                 \n"
+    cout << format(translate("       *** %s %s ***                                           \n"))
+            % PROGRAM_NAME % VERSION_LONG
+         <<        translate("Usage:                                                         \n")
+         <<        translate("   cnf-lookup [ -d ] <search term>                             \n")
+         <<        translate("                                                               \n")
+         <<        translate("Options:                                                       \n")
+         <<        translate(" --help            -? -h     Show this help and exit           \n")
+         <<        translate(" --verbose         -v        Display verbose output            \n")
+         <<        translate("                                                               \n")
+         << format(translate(" --database-path   -d        Customize the database lookup path\n"
+                             "                             default is %s                     \n"))
+            % DATABASE_PATH
+         <<        translate(" --colors          -c        Pretty colored output             \n")
          << endl;
     exit(1);
 }
 
 int main(int argc, char** argv) {
+
+    boost::locale::generator gen;
+    gen.add_messages_path(LC_MESSAGE_PATH);
+    gen.add_messages_domain(PROGRAM_NAME);
+    locale::global(gen(""));
+    cout.imbue(locale());
 
     args.database_path = DATABASE_PATH;
     args.colors = false;
@@ -115,8 +127,9 @@ int main(int argc, char** argv) {
             } else {
                 out << piter.name();
             }
-            out << " (" << piter.version() << "-" << piter.release() << ")"
-                << " from " << elem.first << endl;
+            out << format(translate(" (%s-%s) from %s"))
+                   % piter.version() % piter.release() % elem.first
+                << endl;
             if (args.colors) {
                 out << piter.hl_str(args.search_string, "\t", "\033[0;31m") << endl;
             } else {
@@ -126,8 +139,9 @@ int main(int argc, char** argv) {
     }
 
     if (!result.empty()) {
-        cout << "The command '" << args.search_string
-             << "' is provided by the following packages:" << endl;
+        cout << format(translate("The command '%s' is provided by the following packages:"))
+                % args.search_string
+             << endl;
         cout << out.str();
         return 0;
 
@@ -143,8 +157,9 @@ int main(int argc, char** argv) {
                 } else {
                     out << piter.name();
                 }
-                out << " (" << piter.version() << "-" << piter.release() << ")" 
-                    << " from " << elem.first << endl;
+                out << format(translate(" (%s-%s) from %s"))
+                       % piter.version() % piter.release() % elem.first
+                    << endl;
                 if (args.colors) {
                     out << piter.hl_str(matches.get(), "\t", "\033[0;31m") << endl;
                 } else {
@@ -153,8 +168,9 @@ int main(int argc, char** argv) {
             }
         }
         if (!inexactResult.empty()){
-            cout << "A similar command to '" << args.search_string
-                 << "' is provided by the following packages:" << endl;
+            cout << format(translate("A similar command to '%s' is provided by the following packages:"))
+                    % args.search_string
+                 << endl;
             cout << out.str();
             return 0;
         }

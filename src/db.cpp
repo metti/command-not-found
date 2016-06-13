@@ -24,6 +24,8 @@
 #include <string>
 #include <map>
 #include <set>
+#include <boost/format.hpp>
+#include <boost/locale.hpp>
 
 #include "db_tdb.h"
 #include "custom_exceptions.h"
@@ -33,6 +35,8 @@
 
 namespace bf = boost::filesystem;
 using namespace std;
+using boost::format;
+using boost::locale::translate;
 
 namespace cnf {
 
@@ -86,7 +90,8 @@ void lookup(const string& search_string, const string& database_path, ResultMap&
                 result[catalog.substr(0,catalog.rfind("-"))].insert(packs.begin(),packs.end());
         }
     } else {
-        cout << "WARNING: No database for lookup!" << endl;
+        cout << format(translate("WARNING: No database for lookup!"))
+             << endl;
     }
 }
 
@@ -169,18 +174,20 @@ void populate(const bf::path& path,
 
     for (dirIter iter = dirIter(path); iter != dirIter(); ++iter) {
         if (verbosity > 0) {
-            cout << "[ " << ++current << " / " << count << " ] " << *iter << "...";
+            cout << format(translate("[ %d / %d ] %s..."))
+                    % ++current % count % *iter;
             cout.flush();
         }
         try {
             Package p(*iter, true);
             d->storePackage(p);
             if (verbosity > 0) {
-                cout << "done" << endl;
+                cout << translate("done") << endl;
             }
         } catch (const InvalidArgumentException& e) {
             if (verbosity > 0) {
-                cout << "skipping (" << e.what() << ")" << endl;
+                cout << format(translate("skipping (%s)")) % e.what()
+                     << endl;
             }
             continue;
         } catch (const DatabaseException &e) {

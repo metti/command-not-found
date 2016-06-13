@@ -1,0 +1,183 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-06-12 20:24+0800\n"
+"PO-Revision-Date: 2016-06-12 20:29+0800\n"
+"Last-Translator: renyuneyun@gmail.com\n"
+"Language-Team: zh_CN <renyuneyun@gmail.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: db.cpp:93
+msgid "WARNING: No database for lookup!"
+msgstr "警告: 没有数据库以查找！"
+
+#: db.cpp:177
+#, c-format, boost-format
+msgid "[ %d / %d ] %s..."
+msgstr "[ %d / %d ] %s..."
+
+#: db.cpp:185
+msgid "done"
+msgstr "完成"
+
+#: db.cpp:189
+#, c-format, boost-format
+msgid "skipping (%s)"
+msgstr "跳过 (%s)"
+
+#: db_tdb.cpp:45
+#, c-format, boost-format
+msgid "Directory '%s' does not exist. Trying to create it ..."
+msgstr "目录 '%s' 不存在。尝试创建它..."
+
+#: db_tdb.cpp:51
+#, c-format, boost-format
+msgid "Could not create database directory: %s: "
+msgstr "无法创建数据库目录: %s: "
+
+#: db_tdb.cpp:62 db_tdb.cpp:76 db_tdb.cpp:232
+msgid "Error opening tdb database: "
+msgstr "打开tdb数据库时出错: "
+
+#: db_tdb.cpp:63
+msgid "Missing database directory!"
+msgstr "缺失数据库目录！"
+
+#: lookup.cpp:57
+#, c-format, boost-format
+msgid "       *** %s %s ***                                           \n"
+msgstr "       *** %s %s ***                                           \n"
+
+#: lookup.cpp:59
+msgid "Usage:                                                         \n"
+msgstr "用法:                                                         \n"
+
+#: lookup.cpp:60
+msgid "   cnf-lookup [ -d ] <search term>                             \n"
+msgstr "   cnf-lookup [ -d ] <搜索内容>                             \n"
+
+#: lookup.cpp:61 lookup.cpp:65
+msgid "                                                               \n"
+msgstr "                                                               \n"
+
+#: lookup.cpp:62
+msgid "Options:                                                       \n"
+msgstr "选项:                                                       \n"
+
+#: lookup.cpp:63
+msgid " --help            -? -h     Show this help and exit           \n"
+msgstr " --help            -? -h     显示该帮助并退出           \n"
+
+#: lookup.cpp:64
+msgid " --verbose         -v        Display verbose output            \n"
+msgstr " --verbose         -v        显示额外输出            \n"
+
+#: lookup.cpp:66
+#, c-format, boost-format
+msgid ""
+" --database-path   -d        Customize the database lookup path\n"
+"                             default is %s                     \n"
+msgstr ""
+" --database-path   -d        自定义数据库查找路径\n"
+"                             默认为 %s                     \n"
+
+#: lookup.cpp:69
+msgid " --colors          -c        Pretty colored output             \n"
+msgstr " --colors          -c        以恰当的彩色输出             \n"
+
+#: lookup.cpp:130 lookup.cpp:160
+#, c-format, boost-format
+msgid " (%s-%s) from %s"
+msgstr " (%s-%s) 来自 %s"
+
+#: lookup.cpp:142
+#, c-format, boost-format
+msgid "The command '%s' is provided by the following packages:"
+msgstr "命令 '%s' 由下列软件包提供:"
+
+#: lookup.cpp:171
+#, c-format, boost-format
+msgid "A similar command to '%s' is provided by the following packages:"
+msgstr "类似于 '%s' 的命令由下列软件包提供:"
+
+#: package.cpp:47
+msgid "not a file: "
+msgstr "不是文件: "
+
+#: package.cpp:68
+msgid "this is not a valid package file: "
+msgstr "这不是一个有效的软件包文件: "
+
+#: package.cpp:111
+#, c-format, boost-format
+msgid "could not read file list from: %s"
+msgstr "无法从 %s 中读取文件列表"
+
+#: package.cpp:123
+#, c-format, boost-format
+msgid "error while closing archive: %s"
+msgstr "关闭归档 %s 时出错"
+
+#: populate.cpp:59
+#, c-format, boost-format
+msgid "       *** %s %s ***                                                  \n"
+msgstr "       *** %s %s ***                                                  \n"
+
+#: populate.cpp:61
+msgid "Usage:                                                                \n"
+msgstr "用法:                                                                \n"
+
+#: populate.cpp:62
+msgid "   cnf-populate -p <path> ( -c <catalog> | -m ) [ -d <path> ]         \n"
+msgstr "   cnf-populate -p <路径> ( -c <类别> | -m ) [ -d <路径> ]         \n"
+
+#: populate.cpp:63 populate.cpp:67
+msgid "                                                                      \n"
+msgstr "                                                                      \n"
+
+#: populate.cpp:64
+msgid "Options:                                                              \n"
+msgstr "选项:                                                              \n"
+
+#: populate.cpp:65
+msgid " --help            -? -h     Show this help and exit                  \n"
+msgstr " --help            -? -h     显示该帮助并退出                  \n"
+
+#: populate.cpp:66
+msgid " --verbose         -v        Display verbose output                   \n"
+msgstr " --verbose         -v        显示额外输出                   \n"
+
+#: populate.cpp:68
+msgid " --package-path    -p        Set the path containing the packages     \n"
+msgstr " --package-path    -p        设置包含该软件包的路径     \n"
+
+#: populate.cpp:69
+msgid " --catalog         -c        Set the catalog name to index (e.g. core)\n"
+msgstr " --catalog         -c        设置用于索引的类别名 (例如 core)\n"
+
+#: populate.cpp:70
+msgid " --mirror          -m        Scan mirror structure and detect catalogs\n"
+msgstr " --mirror          -m        扫描镜像结构并且检测类别\n"
+
+#: populate.cpp:71
+msgid " --truncate        -t        Truncate the catalog before indexing     \n"
+msgstr " --truncate        -t        在索引前截短类别     \n"
+
+#: populate.cpp:72
+#, c-format, boost-format
+msgid ""
+" --database-path   -d        Customize the database lookup path       \n"
+"                             default is %s                            \n"
+msgstr ""
+" --database-path   -d        自定义数据库查找路径\n"
+"                             默认为 %s                            \n"
+
+#: populate.cpp:139
+#, c-format, boost-format
+msgid "Not a valid package path: %s"
+msgstr "不是一个有效的软件包路径: %s"
