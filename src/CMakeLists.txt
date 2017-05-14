@@ -8,7 +8,7 @@ STRING(TOLOWER command-not-found PACKAGE_NAME)
 
 ###### PREREQUISITES ######
 
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8.7)
+CMAKE_MINIMUM_REQUIRED (VERSION 3.6.0)
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
@@ -99,6 +99,17 @@ INCLUDE_DIRECTORIES ("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}")
 ###### EXECUTABLES and LIBRARIES######
 
 SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++14")
+
+OPTION(ENABLE_CLANG_TIDY OFF)
+IF(ENABLE_CLANG_TIDY)
+    FIND_PROGRAM(CLANG_TIDY_EXE clang-tidy)
+    IF(CLANG_TIDY_EXE)
+        MESSAGE(STATUS "Adding clang-tidy diagnostics")
+        SET(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
+    ENDIF()
+ELSE()
+    UNSET(CMAKE_CXX_CLANG_TIDY)
+ENDIF()
 
 ### CNF Client ###
 
@@ -271,12 +282,12 @@ IF (MAKEPKG_EXECUTABLE)
         "${PROJECT_BINARY_DIR}/archlinux/install"
         COPYONLY
     )
-    
+
     CONFIGURE_FILE (
         "${PROJECT_SOURCE_DIR}/archlinux/PKGBUILD.in"
         "${PROJECT_BINARY_DIR}/archlinux/PKGBUILD"
     )
-    
+
     CONFIGURE_FILE (
         "${PROJECT_SOURCE_DIR}/archlinux/install.in"
         "${PROJECT_BINARY_DIR}/archlinux-aur/install"
