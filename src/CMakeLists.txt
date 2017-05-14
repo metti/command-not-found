@@ -98,7 +98,7 @@ INCLUDE_DIRECTORIES ("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}")
 
 ###### EXECUTABLES and LIBRARIES######
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++11")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++14")
 
 ### CNF Client ###
 
