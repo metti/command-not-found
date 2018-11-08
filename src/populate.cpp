@@ -46,14 +46,14 @@ static struct args_t {
 static const char* OPT_STRING = "p:c:mtd:vh?";
 
 static const struct option LONG_OPTS[] = {
-    {"database-path", required_argument, NULL, 'd'},
-    {"catalog", required_argument, NULL, 'c'},
-    {"mirror", no_argument, NULL, 'm'},
-    {"truncate", no_argument, NULL, 't'},
-    {"package-path", required_argument, NULL, 'p'},
-    {"verbose", no_argument, NULL, 'v'},
-    {"help", no_argument, NULL, 'h'},
-    {NULL, no_argument, NULL, 0}};
+    {"database-path", required_argument, nullptr, 'd'},
+    {"catalog", required_argument, nullptr, 'c'},
+    {"mirror", no_argument, nullptr, 'm'},
+    {"truncate", no_argument, nullptr, 't'},
+    {"package-path", required_argument, nullptr, 'p'},
+    {"verbose", no_argument, nullptr, 'v'},
+    {"help", no_argument, nullptr, 'h'},
+    {nullptr, no_argument, nullptr, 0}};
 
 void usage() {
     cout << format(translate("       *** %s %s ***                             "

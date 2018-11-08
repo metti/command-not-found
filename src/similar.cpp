@@ -33,8 +33,7 @@ void similar_words(const string& word, set<string>& result) {
     vector<pair<string, string>> splits;
 
     for (uint32_t i = 0; i <= word.size(); ++i) {
-        splits.push_back(
-            pair<string, string>(word.substr(0, i), word.substr(i)));
+        splits.emplace_back(word.substr(0, i), word.substr(i));
     }
 
     for (const auto& split : splits) {

@@ -74,7 +74,7 @@ TdbDatabase::TdbDatabase(const string& id,
                              S_IRWXU | S_IRGRP | S_IROTH);
     }
 
-    if (m_tdbFile == NULL) {
+    if (m_tdbFile == nullptr) {
         string message;
         message += translate("Error opening tdb database: ");
         message += m_databaseName;
@@ -86,7 +86,7 @@ TdbDatabase::~TdbDatabase() {
     if (m_tdbFile) {
         tdb_close(m_tdbFile);
     }
-    m_tdbFile = NULL;
+    m_tdbFile = nullptr;
 }
 
 void TdbDatabase::storePackage(const Package& p) {
@@ -235,7 +235,7 @@ void TdbDatabase::truncate() {
         tdb_open(m_databaseName.c_str(), 512, 0, O_RDWR | O_CREAT | O_TRUNC,
                  S_IRWXU | S_IRGRP | S_IROTH);
 
-    if (m_tdbFile == NULL) {
+    if (m_tdbFile == nullptr) {
         string message;
         message += translate("Error opening tdb database: ");
         message += m_databaseName;
@@ -248,7 +248,7 @@ void TdbDatabase::getCatalogs(const string& database_path,
     const bf::path p(database_path);
 
     if (bf::is_directory(p)) {
-        typedef bf::directory_iterator dirIter;
+        using dirIter = bf::directory_iterator;
 
         for (dirIter iter = dirIter(p); iter != dirIter(); ++iter) {
             bf::path cand(*iter);
@@ -268,7 +268,7 @@ TdbKeyValue::TdbKeyValue(const string& key, const string& value)
 TdbKeyValue::TdbKeyValue() : m_key(TDB_DATA()), m_value(TDB_DATA()) {}
 
 void TdbKeyValue::setKey(const string& key) {
-    if (m_key.dptr != NULL) {
+    if (m_key.dptr != nullptr) {
         free(m_key.dptr);
     }
     m_key = TDB_DATA();
@@ -277,14 +277,14 @@ void TdbKeyValue::setKey(const string& key) {
 }
 
 void TdbKeyValue::setKey(const TDB_DATA& key) {
-    if (m_key.dptr != NULL) {
+    if (m_key.dptr != nullptr) {
         free(m_key.dptr);
     }
     m_key = key;
 }
 
 void TdbKeyValue::setValue(const string& value) {
-    if (m_value.dptr != NULL) {
+    if (m_value.dptr != nullptr) {
         free(m_value.dptr);
     }
     m_value = TDB_DATA();
@@ -293,7 +293,7 @@ void TdbKeyValue::setValue(const string& value) {
 }
 
 void TdbKeyValue::setValue(const TDB_DATA& value) {
-    if (m_value.dptr != NULL) {
+    if (m_value.dptr != nullptr) {
         free(m_value.dptr);
     }
     m_value = value;
@@ -301,13 +301,13 @@ void TdbKeyValue::setValue(const TDB_DATA& value) {
 
 TdbKeyValue::~TdbKeyValue() {
     free(m_key.dptr);
-    m_key.dptr = NULL;
+    m_key.dptr = nullptr;
     free(m_value.dptr);
-    m_value.dptr = NULL;
+    m_value.dptr = nullptr;
 }
 
 unsigned char* getWritableUCString(const string& aString) {
-    unsigned char* result =
+    auto* result =
         (unsigned char*)malloc((aString.size() + 1) * sizeof(unsigned char));
     copy(aString.begin(), aString.end(), result);
     result[aString.size()] = '\0';

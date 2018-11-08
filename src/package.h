@@ -20,6 +20,7 @@
 #define PARSEPKG_H_
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <boost/filesystem.hpp>
@@ -32,20 +33,20 @@ class Package {
 public:
     explicit Package(const boost::filesystem::path& file,
                      const bool lazy = false);
-    explicit Package(const std::string& name,
-                     const std::string& version,
-                     const std::string& release,
-                     const std::string& architecture,
-                     const std::string& compression,
-                     const std::vector<std::string>& files)
-        : m_name(name)
-        , m_version(version)
-        , m_release(release)
-        , m_architecture(architecture)
-        , m_compression(compression)
-        , m_files(files)
+    explicit Package(std::string name,
+                     std::string version,
+                     std::string release,
+                     std::string architecture,
+                     std::string compression,
+                     std::vector<std::string> files)
+        : m_name(std::move(name))
+        , m_version(std::move(version))
+        , m_release(std::move(release))
+        , m_architecture(std::move(architecture))
+        , m_compression(std::move(compression))
+        , m_files(std::move(files))
         , m_filesDetermined(true)
-        , m_path(NULL) {}
+        , m_path(nullptr) {}
 
     ~Package() { delete m_path; }
 
@@ -59,7 +60,7 @@ public:
     const std::string hl_str(const std::string& = "",
                              const std::string& files_indent = "",
                              const std::string& color = "") const;
-    const std::string hl_str(const std::vector<std::string>* = NULL,
+    const std::string hl_str(const std::vector<std::string>* = nullptr,
                              const std::string& files_indent = "",
                              const std::string& color = "") const;
 

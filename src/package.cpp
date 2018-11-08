@@ -16,8 +16,8 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <assert.h>
 #include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <regex>
 #include <sstream>
@@ -91,8 +91,8 @@ void Package::updateFiles() const {
 
     assert(m_path);
 
-    struct archive* arc = NULL;
-    struct archive_entry* entry = NULL;
+    struct archive* arc = nullptr;
+    struct archive_entry* entry = nullptr;
     int rc = 0;
     vector<string> candidates;
 
@@ -109,7 +109,7 @@ void Package::updateFiles() const {
         throw InvalidArgumentException(INVALID_FILE, message.str());
     }
     while (archive_read_next_header(arc, &entry) == ARCHIVE_OK) {
-        candidates.push_back(archive_entry_pathname(entry));
+        candidates.emplace_back(archive_entry_pathname(entry));
     }
 
     rc = archive_read_close(arc);
@@ -155,7 +155,7 @@ const string Package::hl_str(const vector<string>* hl,
     int linelength = 0;
     for (const auto& file : files()) {
         bool highlight = false;
-        if (hl != NULL) {
+        if (hl != nullptr) {
             for (const auto& hlIter : *hl) {
                 if (hlIter != "" && hlIter == file) {
                     highlight = true;

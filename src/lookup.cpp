@@ -47,11 +47,11 @@ static struct args_t {
 static const char* OPT_STRING = "d:cvh?";
 
 static const struct option LONG_OPTS[] = {
-    {"database-path", required_argument, NULL, 'd'},
-    {"colors", no_argument, NULL, 'c'},
-    {"verbose", no_argument, NULL, 'v'},
-    {"help", no_argument, NULL, 'h'},
-    {NULL, no_argument, NULL, 0}};
+    {"database-path", required_argument, nullptr, 'd'},
+    {"colors", no_argument, nullptr, 'c'},
+    {"verbose", no_argument, nullptr, 'v'},
+    {"help", no_argument, nullptr, 'h'},
+    {nullptr, no_argument, nullptr, 0}};
 
 void usage() {
     cout << format(translate("       *** %s %s ***                             "

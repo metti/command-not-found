@@ -59,7 +59,7 @@ void lookup(const string& search_string,
 
     if (catalogs.size() > 0) {
         set<string> terms;
-        if (inexact_matches != NULL) {
+        if (inexact_matches != nullptr) {
             similar_words(search_string, terms);
         }
 
@@ -67,7 +67,7 @@ void lookup(const string& search_string,
             vector<Package> packs;
 
             try {
-                if (inexact_matches == NULL) {
+                if (inexact_matches == nullptr) {
                     getDatabase(catalog, true, database_path)
                         ->getPackages(search_string, packs);
                 } else {
@@ -102,7 +102,7 @@ void populate_mirror(const bf::path& mirror_path,
                      const string& database_path,
                      const bool truncate,
                      const uint8_t verbosity) {
-    typedef bf::directory_iterator dirIter;
+    using dirIter = bf::directory_iterator;
 
     static const string architectures[] = {"i686", "x86_64"};
 
@@ -165,7 +165,7 @@ void populate(const bf::path& path,
     if (truncate)
         d->truncate();
 
-    typedef bf::directory_iterator dirIter;
+    using dirIter = bf::directory_iterator;
 
     uint32_t count = 0;
 

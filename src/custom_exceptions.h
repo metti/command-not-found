@@ -28,9 +28,9 @@ class ErrorCodeException : public std::exception {
 public:
     explicit ErrorCodeException(const uint32_t code, const std::string& message)
         : m_code(code), m_message(message) {}
-    virtual ~ErrorCodeException() {}
+    ~ErrorCodeException() override = default;
     uint32_t code() const { return m_code; }
-    const char* what() const throw() { return m_message.c_str(); }
+    const char* what() const noexcept override { return m_message.c_str(); }
 
 private:
     const int m_code;

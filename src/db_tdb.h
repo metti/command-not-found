@@ -34,11 +34,11 @@ public:
     explicit TdbDatabase(const std::string& id,
                          const bool readonly,
                          const std::string& basepath);
-    virtual void storePackage(const Package& p);
-    virtual void getPackages(const std::string& search,
-                             std::vector<Package>& result) const;
-    virtual void truncate();
-    virtual ~TdbDatabase();
+    void storePackage(const Package& p) override;
+    void getPackages(const std::string& search,
+                     std::vector<Package>& result) const override;
+    void truncate() override;
+    ~TdbDatabase() override;
     static void getCatalogs(const std::string& database_path,
                             std::vector<std::string>& result);
 
@@ -51,6 +51,9 @@ class TdbKeyValue {
 public:
     explicit TdbKeyValue(const std::string& key, const std::string& value);
     explicit TdbKeyValue();
+    TdbKeyValue(const TdbKeyValue&) = delete;
+    TdbKeyValue& operator=(const TdbKeyValue&) = delete;
+
     void setKey(const std::string& key);
     void setKey(const TDB_DATA& key);
     void setValue(const std::string& key);
@@ -76,8 +79,6 @@ public:
 private:
     TDB_DATA m_key;
     TDB_DATA m_value;
-    TdbKeyValue(const TdbKeyValue&);
-    TdbKeyValue& operator=(const TdbKeyValue&);
 };
 
 inline unsigned char* getWritableUCString(const std::string& aString);
