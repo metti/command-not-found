@@ -90,7 +90,7 @@ void lookup(const string& search_string,
             }
 
             if (!packs.empty())
-                result[catalog.substr(0, catalog.rfind("-"))].insert(
+                result[catalog.substr(0, catalog.rfind('-'))].insert(
                     packs.begin(), packs.end());
         }
     } else {
