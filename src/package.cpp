@@ -16,17 +16,18 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <archive.h>
-#include <archive_entry.h>
 #include <assert.h>
-#include <boost/format.hpp>
-#include <boost/locale.hpp>
+#include <algorithm>
 #include <iostream>
 #include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <algorithm>
+
+#include <archive.h>
+#include <archive_entry.h>
+#include <boost/format.hpp>
+#include <boost/locale.hpp>
 
 #include "package.h"
 
@@ -38,9 +39,7 @@ using boost::locale::translate;
 namespace cnf {
 
 Package::Package(const bf::path& path, const bool lazy)
-        : m_filesDetermined(false)
-        , m_path(new bf::path(path)) {
-
+    : m_filesDetermined(false), m_path(new bf::path(path)) {
     // checks
     if (!bf::is_regular_file(path)) {
         string message;
@@ -49,7 +48,8 @@ Package::Package(const bf::path& path, const bool lazy)
         throw InvalidArgumentException(MISSING_FILE, message.c_str());
     }
 
-    static const regex valid_name("(.+)-(.+)-(.+)-(any|i686|x86_64).pkg.tar.(xz|gz)");
+    static const regex valid_name(
+        "(.+)-(.+)-(.+)-(any|i686|x86_64).pkg.tar.(xz|gz)");
 
     cmatch what;
 
@@ -57,7 +57,6 @@ Package::Package(const bf::path& path, const bool lazy)
 
     try {
         if (regex_match(filename.c_str(), what, valid_name)) {
-
             m_name = what[1];
             m_version = what[2];
             m_release = what[3];
@@ -68,7 +67,6 @@ Package::Package(const bf::path& path, const bool lazy)
             message += translate("this is not a valid package file: ");
             message += path.string();
             throw InvalidArgumentException(INVALID_FILE, message.c_str());
-
         }
     } catch (const std::logic_error& e) {
         throw InvalidArgumentException(UNKNOWN_ERROR, e.what());
@@ -88,15 +86,13 @@ const vector<string>& Package::files() const {
     return m_files;
 }
 
-
 void Package::updateFiles() const {
-
     // read package file list
 
     assert(m_path);
 
-    struct archive *arc = NULL;
-    struct archive_entry *entry = NULL;
+    struct archive* arc = NULL;
+    struct archive_entry* entry = NULL;
     int rc = 0;
     vector<string> candidates;
 
@@ -106,10 +102,10 @@ void Package::updateFiles() const {
 
     rc = archive_read_open_filename(arc, m_path->c_str(), 10240);
 
-    if (rc != ARCHIVE_OK){
+    if (rc != ARCHIVE_OK) {
         format message;
-        message = format(translate("could not read file list from: %s"))
-            % m_path->string();
+        message = format(translate("could not read file list from: %s")) %
+                  m_path->string();
         throw InvalidArgumentException(INVALID_FILE, message.str());
     }
     while (archive_read_next_header(arc, &entry) == ARCHIVE_OK) {
@@ -118,10 +114,10 @@ void Package::updateFiles() const {
 
     rc = archive_read_close(arc);
 
-    if (rc != ARCHIVE_OK){
+    if (rc != ARCHIVE_OK) {
         format message;
-        message = format(translate("error while closing archive: %s"))
-            % m_path->string();
+        message = format(translate("error while closing archive: %s")) %
+                  m_path->string();
         throw InvalidArgumentException(INVALID_FILE, message.str());
     }
 
@@ -139,44 +135,47 @@ void Package::updateFiles() const {
     }
 
     m_filesDetermined = true;
-
 }
 
-const string Package::hl_str(const string& hl, const string& files_indent, const string& color) const {
+const string Package::hl_str(const string& hl,
+                             const string& files_indent,
+                             const string& color) const {
     vector<string> hls;
     hls.push_back(hl);
 
     return hl_str(&hls, files_indent, color);
 }
 
-const string Package::hl_str(const vector<string>* hl, const string& files_indent, const string& color ) const {
+const string Package::hl_str(const vector<string>* hl,
+                             const string& files_indent,
+                             const string& color) const {
     stringstream out;
     out << files_indent << "[ ";
 
     int linelength = 0;
     for (const auto& file : files()) {
-
         bool highlight = false;
-        if (hl != NULL){
+        if (hl != NULL) {
             for (const auto& hlIter : *hl) {
-                if (hlIter != "" && hlIter == file){
+                if (hlIter != "" && hlIter == file) {
                     highlight = true;
                     break;
                 }
             }
         }
 
-        if (linelength + file.size() > 80){
+        if (linelength + file.size() > 80) {
             linelength = 0;
             out << endl << files_indent << "  ";
         }
 
         linelength += file.size() + 1;
         if (highlight) {
-            if (color.empty()){
+            if (color.empty()) {
                 out << "*" << file << "* ";
             } else {
-                out << color << file << "\033[0m" << " ";
+                out << color << file << "\033[0m"
+                    << " ";
             }
         } else {
             out << file << " ";
@@ -191,16 +190,14 @@ ostream& operator<<(ostream& out, const Package& p) {
     return out;
 }
 
-bool operator<(const Package& lhs, const Package& rhs){
+bool operator<(const Package& lhs, const Package& rhs) {
     return lhs.name() < rhs.name();
 }
 
-bool operator==(const Package& lhs, const Package& rhs){
-   return lhs.name() == rhs.name() &&
-          lhs.version() == rhs.version() &&
-          lhs.release() == rhs.release() &&
-          lhs.architecture() == rhs.architecture();
+bool operator==(const Package& lhs, const Package& rhs) {
+    return lhs.name() == rhs.name() && lhs.version() == rhs.version() &&
+           lhs.release() == rhs.release() &&
+           lhs.architecture() == rhs.architecture();
 }
 
-}
-
+}  // namespace cnf

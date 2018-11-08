@@ -1,0 +1,7 @@
+---
+BasedOnStyle: Chromium
+AccessModifierOffset: -4
+BreakConstructorInitializersBeforeComma: true
+IndentWidth : 4
+Standard : Cpp11
+---

@@ -19,25 +19,29 @@
 #ifndef TDB_H_
 #define TDB_H_
 
-#include <fcntl.h>
-#include <tdb.h>
 #include <string>
 #include <vector>
 
-#include "db.h"
+#include <fcntl.h>
+#include <tdb.h>
+
 #include "custom_exceptions.h"
+#include "db.h"
 
 namespace cnf {
-class TdbDatabase: public Database {
+class TdbDatabase : public Database {
 public:
     explicit TdbDatabase(const std::string& id,
                          const bool readonly,
                          const std::string& basepath);
     virtual void storePackage(const Package& p);
-    virtual void getPackages(const std::string& search, std::vector<Package>& result ) const;
+    virtual void getPackages(const std::string& search,
+                             std::vector<Package>& result) const;
     virtual void truncate();
     virtual ~TdbDatabase();
-    static void getCatalogs(const std::string& database_path, std::vector<std::string>& result);
+    static void getCatalogs(const std::string& database_path,
+                            std::vector<std::string>& result);
+
 private:
     TDB_CONTEXT* m_tdbFile;
     const std::string m_databaseName;
@@ -52,12 +56,8 @@ public:
     void setValue(const std::string& key);
     void setValue(const TDB_DATA& key);
     ~TdbKeyValue();
-    const TDB_DATA& key() const {
-        return m_key;
-    }
-    const TDB_DATA& value() const {
-        return m_value;
-    }
+    const TDB_DATA& key() const { return m_key; }
+    const TDB_DATA& value() const { return m_value; }
     std::string key_str() const {
         if (m_key.dptr) {
             return std::string(reinterpret_cast<const char*>(m_key.dptr));
@@ -72,6 +72,7 @@ public:
             return std::string();
         }
     }
+
 private:
     TDB_DATA m_key;
     TDB_DATA m_value;
@@ -81,6 +82,6 @@ private:
 
 inline unsigned char* getWritableUCString(const std::string& aString);
 
-}
+}  // namespace cnf
 
 #endif /* TDB_H_ */

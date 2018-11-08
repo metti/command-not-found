@@ -16,48 +16,45 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
 #include <algorithm>
-#include <vector>
+#include <iostream>
 #include <set>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "similar.h"
 
 using namespace std;
 
-void similar_words(const string& word, set<string>& result){
+void similar_words(const string& word, set<string>& result) {
     static const char alphabet[] = "abcdefghijklmnopqrstuvwxyz-_0123456789";
 
-    vector<pair<string,string> > splits;
+    vector<pair<string, string>> splits;
 
-    for (uint32_t i = 0 ; i <= word.size(); ++i){
-        splits.push_back(pair<string,string>(word.substr(0,i),word.substr(i)));
+    for (uint32_t i = 0; i <= word.size(); ++i) {
+        splits.push_back(
+            pair<string, string>(word.substr(0, i), word.substr(i)));
     }
 
-    for (const auto& split : splits){
-        if (split.second.size() > 0){
-            //delete
-            result.insert(split.first+split.second.substr(1));
+    for (const auto& split : splits) {
+        if (split.second.size() > 0) {
+            // delete
+            result.insert(split.first + split.second.substr(1));
 
-            if (split.second.size() > 1){
-                //transpose
-                result.insert(split.first
-                               + split.second[1]
-                               + split.second[0]
-                               + split.second.substr(2));
+            if (split.second.size() > 1) {
+                // transpose
+                result.insert(split.first + split.second[1] + split.second[0] +
+                              split.second.substr(2));
             }
 
-            for(const auto& c : alphabet){
-                //replaces
+            for (const auto& c : alphabet) {
+                // replaces
                 result.insert(split.first + c + split.second.substr(1));
 
-                //inserts
+                // inserts
                 result.insert(split.first + c + split.second);
             }
-
         }
     }
 }
-

@@ -16,16 +16,17 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <getopt.h>
 #include <exception>
 #include <iostream>
 #include <string>
+
+#include <getopt.h>
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/locale.hpp>
 
-#include "db.h"
 #include "config.h"
+#include "db.h"
 
 namespace bf = boost::filesystem;
 using namespace cnf;
@@ -52,32 +53,55 @@ static const struct option LONG_OPTS[] = {
     {"package-path", required_argument, NULL, 'p'},
     {"verbose", no_argument, NULL, 'v'},
     {"help", no_argument, NULL, 'h'},
-    {NULL, no_argument, NULL, 0}
-};
+    {NULL, no_argument, NULL, 0}};
 
-void usage(){
-    cout << format(translate("       *** %s %s ***                                                  \n"))
-            % PROGRAM_NAME % VERSION_LONG
-         <<        translate("Usage:                                                                \n")
-         <<        translate("   cnf-populate -p <path> ( -c <catalog> | -m ) [ -d <path> ]         \n")
-         <<        translate("                                                                      \n")
-         <<        translate("Options:                                                              \n")
-         <<        translate(" --help            -? -h     Show this help and exit                  \n")
-         <<        translate(" --verbose         -v        Display verbose output                   \n")
-         <<        translate("                                                                      \n")
-         <<        translate(" --package-path    -p        Set the path containing the packages     \n")
-         <<        translate(" --catalog         -c        Set the catalog name to index (e.g. core)\n")
-         <<        translate(" --mirror          -m        Scan mirror structure and detect catalogs\n")
-         <<        translate(" --truncate        -t        Truncate the catalog before indexing     \n")
-         << format(translate(" --database-path   -d        Customize the database lookup path       \n"
-                             "                             default is %s                            \n"))
-            % DATABASE_PATH
+void usage() {
+    cout << format(translate("       *** %s %s ***                             "
+                             "                     \n")) %
+                PROGRAM_NAME % VERSION_LONG
+         << translate(
+                "Usage:                                                        "
+                "        \n")
+         << translate(
+                "   cnf-populate -p <path> ( -c <catalog> | -m ) [ -d <path> ] "
+                "        \n")
+         << translate(
+                "                                                              "
+                "        \n")
+         << translate(
+                "Options:                                                      "
+                "        \n")
+         << translate(
+                " --help            -? -h     Show this help and exit          "
+                "        \n")
+         << translate(
+                " --verbose         -v        Display verbose output           "
+                "        \n")
+         << translate(
+                "                                                              "
+                "        \n")
+         << translate(
+                " --package-path    -p        Set the path containing the "
+                "packages     \n")
+         << translate(
+                " --catalog         -c        Set the catalog name to index "
+                "(e.g. core)\n")
+         << translate(
+                " --mirror          -m        Scan mirror structure and detect "
+                "catalogs\n")
+         << translate(
+                " --truncate        -t        Truncate the catalog before "
+                "indexing     \n")
+         << format(translate(" --database-path   -d        Customize the "
+                             "database lookup path       \n"
+                             "                             default is %s       "
+                             "                     \n")) %
+                DATABASE_PATH
          << endl;
     exit(1);
 }
 
 int main(int argc, char** argv) {
-
     boost::locale::generator gen;
     gen.add_messages_path(LC_MESSAGE_PATH);
     gen.add_messages_domain(PROGRAM_NAME);
@@ -136,9 +160,10 @@ int main(int argc, char** argv) {
     }
 
     if (!bf::is_directory(args.package_path)) {
-        cerr << format(translate("Not a valid package path: %s"))
-                % args.package_path
-             << endl << endl;
+        cerr << format(translate("Not a valid package path: %s")) %
+                    args.package_path
+             << endl
+             << endl;
         usage();
         return 1;
     }

@@ -24,37 +24,30 @@
 
 namespace cnf {
 
-class ErrorCodeException: public std::exception {
+class ErrorCodeException : public std::exception {
 public:
     explicit ErrorCodeException(const uint32_t code, const std::string& message)
-            : m_code(code), m_message(message) {
-    }
+        : m_code(code), m_message(message) {}
     virtual ~ErrorCodeException() {}
-    uint32_t code() const {
-        return m_code;
-    }
-    const char* what() const throw() {
-        return m_message.c_str();
-    }
+    uint32_t code() const { return m_code; }
+    const char* what() const throw() { return m_message.c_str(); }
 
 private:
     const int m_code;
     const std::string& m_message;
 };
 
-class InvalidArgumentException: public ErrorCodeException {
+class InvalidArgumentException : public ErrorCodeException {
 public:
     InvalidArgumentException(const uint32_t code, const std::string& message)
-            : ErrorCodeException(code, message) {
-    }
+        : ErrorCodeException(code, message) {}
 };
 
-class DatabaseException: public ErrorCodeException {
+class DatabaseException : public ErrorCodeException {
 public:
     DatabaseException(const uint32_t code, const std::string& message)
-            : ErrorCodeException(code, message) {
-    }
+        : ErrorCodeException(code, message) {}
 };
-}
+}  // namespace cnf
 
 #endif /* EXCEPTIONS_H_ */

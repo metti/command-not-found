@@ -20,7 +20,7 @@
 
 #include "config.h"
 
-namespace cnf{
+namespace cnf {
 
 const std::string PROGRAM_NAME = "@PROGRAM_NAME@";
 const std::string PROGRAM_LONG_NAME = "@PROGRAM_LONG_NAME@";
@@ -37,5 +37,4 @@ const std::string VERSION_REFSPEC = "@GIT_REFSPEC@";
 const std::string DATABASE_PATH = "@DATABASE_PATH@/";
 const std::string LC_MESSAGE_PATH = "@LC_MESSAGE_PATH@/";
 
-}
-
+}  // namespace cnf

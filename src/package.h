@@ -19,8 +19,9 @@
 #ifndef PARSEPKG_H_
 #define PARSEPKG_H_
 
-#include <vector>
 #include <string>
+#include <vector>
+
 #include <boost/filesystem.hpp>
 
 #include "custom_exceptions.h"
@@ -37,42 +38,32 @@ public:
                      const std::string& architecture,
                      const std::string& compression,
                      const std::vector<std::string>& files)
-                  : m_name(name)
-                  , m_version(version)
-                  , m_release(release)
-                  , m_architecture(architecture)
-                  , m_compression(compression)
-                  , m_files(files)
-                  , m_filesDetermined(true)
-                  , m_path(NULL) {
-    }
+        : m_name(name)
+        , m_version(version)
+        , m_release(release)
+        , m_architecture(architecture)
+        , m_compression(compression)
+        , m_files(files)
+        , m_filesDetermined(true)
+        , m_path(NULL) {}
 
-    ~Package() {
-        delete m_path;
-    }
+    ~Package() { delete m_path; }
 
     const std::vector<std::string>& files() const;
 
-    const std::string& name() const {
-        return m_name;
-    }
-    const std::string& version() const {
-        return m_version;
-    }
-    const std::string& release() const {
-        return m_release;
-    }
-    const std::string& architecture() const {
-        return m_architecture;
-    }
-    const std::string& compression() const {
-        return m_compression;
-    }
-    const std::string hl_str(const std::string& = "", const std::string& files_indent = "", const std::string& color = "") const;
-    const std::string hl_str(const std::vector<std::string>* = NULL, const std::string& files_indent = "", const std::string& color = "") const;
+    const std::string& name() const { return m_name; }
+    const std::string& version() const { return m_version; }
+    const std::string& release() const { return m_release; }
+    const std::string& architecture() const { return m_architecture; }
+    const std::string& compression() const { return m_compression; }
+    const std::string hl_str(const std::string& = "",
+                             const std::string& files_indent = "",
+                             const std::string& color = "") const;
+    const std::string hl_str(const std::vector<std::string>* = NULL,
+                             const std::string& files_indent = "",
+                             const std::string& color = "") const;
 
 private:
-
     void updateFiles() const;
 
     std::string m_name;
@@ -85,15 +76,13 @@ private:
     boost::filesystem::path* m_path;
 };
 
-enum PackageError {
-    MISSING_FILE, INVALID_FILE, UNKNOWN_ERROR
-};
+enum PackageError { MISSING_FILE, INVALID_FILE, UNKNOWN_ERROR };
 
 std::ostream& operator<<(std::ostream& out, const Package& p);
 
 bool operator<(const Package& lhs, const Package& rhs);
 bool operator==(const Package& lhs, const Package& rhs);
 
-}
+}  // namespace cnf
 
 #endif /* PARSEPKG_H */

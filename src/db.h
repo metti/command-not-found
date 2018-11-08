@@ -19,32 +19,32 @@
 #ifndef DB_H_
 #define DB_H_
 
+#include <stdint.h>
 #include <map>
 #include <set>
-#include <vector>
 #include <string>
-#include <stdint.h>
+#include <vector>
 
-#include "package.h"
 #include "config.h"
+#include "package.h"
 
 namespace cnf {
 
-enum DatabaseError {
-    CONNECT_ERROR
-};
+enum DatabaseError { CONNECT_ERROR };
 
 class Database {
 public:
     explicit Database(const std::string& id,
                       const bool readonly,
                       const std::string& base_path)
-            : m_id(id), m_readonly(readonly), m_basePath(base_path) { }
+        : m_id(id), m_readonly(readonly), m_basePath(base_path) {}
     virtual void storePackage(const Package& p) = 0;
-    virtual void getPackages(const std::string& search, std::vector<Package>& result) const = 0;
+    virtual void getPackages(const std::string& search,
+                             std::vector<Package>& result) const = 0;
     virtual void truncate() = 0;
-    virtual ~Database() { }
-    static void getCatalogs(const std::string& database_path, std::vector<std::string>& result);
+    virtual ~Database() {}
+    static void getCatalogs(const std::string& database_path,
+                            std::vector<std::string>& result);
 
 private:
     Database& operator=(const Database&);
@@ -56,16 +56,19 @@ protected:
     const std::string m_basePath;
 };
 
-typedef std::map<std::string, std::set<Package> > ResultMap;
+typedef std::map<std::string, std::set<Package>> ResultMap;
 
 const std::shared_ptr<Database> getDatabase(const std::string& id,
                                             const bool readonly,
                                             const std::string& base_path);
 
-void getCatalogs(const std::string& database_path, std::vector<std::string>& result);
+void getCatalogs(const std::string& database_path,
+                 std::vector<std::string>& result);
 
-void lookup(const std::string& searchString, const std::string& database_path, ResultMap& result,
-                       std::vector<std::string>* const inexact_matches = NULL);
+void lookup(const std::string& searchString,
+            const std::string& database_path,
+            ResultMap& result,
+            std::vector<std::string>* const inexact_matches = NULL);
 
 void populate_mirror(const boost::filesystem::path& path,
                      const std::string& database_path,
@@ -77,6 +80,6 @@ void populate(const boost::filesystem::path& path,
               const std::string& catalog,
               const bool truncate,
               const uint8_t verbosity);
-}
+}  // namespace cnf
 
 #endif /* DB_H_ */

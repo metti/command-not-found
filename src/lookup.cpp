@@ -16,20 +16,21 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <getopt.h>
 #include <exception>
 #include <iostream>
-#include <vector>
-#include <sstream>
 #include <map>
-#include <string>
 #include <set>
+#include <sstream>
+#include <string>
+#include <vector>
+
+#include <getopt.h>
 #include <boost/format.hpp>
 #include <boost/locale.hpp>
 
-#include "package.h"
-#include "db.h"
 #include "config.h"
+#include "db.h"
+#include "package.h"
 
 using namespace cnf;
 using namespace std;
@@ -50,29 +51,46 @@ static const struct option LONG_OPTS[] = {
     {"colors", no_argument, NULL, 'c'},
     {"verbose", no_argument, NULL, 'v'},
     {"help", no_argument, NULL, 'h'},
-    {NULL, no_argument, NULL, 0}
-};
+    {NULL, no_argument, NULL, 0}};
 
-void usage(){
-    cout << format(translate("       *** %s %s ***                                           \n"))
-            % PROGRAM_NAME % VERSION_LONG
-         <<        translate("Usage:                                                         \n")
-         <<        translate("   cnf-lookup [ -d ] <search term>                             \n")
-         <<        translate("                                                               \n")
-         <<        translate("Options:                                                       \n")
-         <<        translate(" --help            -? -h     Show this help and exit           \n")
-         <<        translate(" --verbose         -v        Display verbose output            \n")
-         <<        translate("                                                               \n")
-         << format(translate(" --database-path   -d        Customize the database lookup path\n"
-                             "                             default is %s                     \n"))
-            % DATABASE_PATH
-         <<        translate(" --colors          -c        Pretty colored output             \n")
+void usage() {
+    cout << format(translate("       *** %s %s ***                             "
+                             "              \n")) %
+                PROGRAM_NAME % VERSION_LONG
+         << translate(
+                "Usage:                                                        "
+                " \n")
+         << translate(
+                "   cnf-lookup [ -d ] <search term>                            "
+                " \n")
+         << translate(
+                "                                                              "
+                " \n")
+         << translate(
+                "Options:                                                      "
+                " \n")
+         << translate(
+                " --help            -? -h     Show this help and exit          "
+                " \n")
+         << translate(
+                " --verbose         -v        Display verbose output           "
+                " \n")
+         << translate(
+                "                                                              "
+                " \n")
+         << format(translate(" --database-path   -d        Customize the "
+                             "database lookup path\n"
+                             "                             default is %s       "
+                             "              \n")) %
+                DATABASE_PATH
+         << translate(
+                " --colors          -c        Pretty colored output            "
+                " \n")
          << endl;
     exit(1);
 }
 
 int main(int argc, char** argv) {
-
     boost::locale::generator gen;
     gen.add_messages_path(LC_MESSAGE_PATH);
     gen.add_messages_domain(PROGRAM_NAME);
@@ -82,7 +100,7 @@ int main(int argc, char** argv) {
     args.database_path = DATABASE_PATH;
     args.colors = false;
     args.verbosity = 0;
-    args.search_string = ""; //actually done implicit
+    args.search_string = "";  // actually done implicit
 
     int opt(0), long_index(0);
 
@@ -122,16 +140,17 @@ int main(int argc, char** argv) {
 
     for (auto& elem : result) {
         for (auto& piter : elem.second) {
-            if (args.colors){
+            if (args.colors) {
                 out << "\33[1m" << piter.name() << "\033[0m";
             } else {
                 out << piter.name();
             }
-            out << format(translate(" (%s-%s) from %s"))
-                   % piter.version() % piter.release() % elem.first
+            out << format(translate(" (%s-%s) from %s")) % piter.version() %
+                       piter.release() % elem.first
                 << endl;
             if (args.colors) {
-                out << piter.hl_str(args.search_string, "\t", "\033[0;31m") << endl;
+                out << piter.hl_str(args.search_string, "\t", "\033[0;31m")
+                    << endl;
             } else {
                 out << piter.hl_str(args.search_string, "\t", "") << endl;
             }
@@ -139,37 +158,42 @@ int main(int argc, char** argv) {
     }
 
     if (!result.empty()) {
-        cout << format(translate("The command '%s' is provided by the following packages:"))
-                % args.search_string
-             << endl;
+        cout
+            << format(translate(
+                   "The command '%s' is provided by the following packages:")) %
+                   args.search_string
+            << endl;
         cout << out.str();
         return 0;
 
     } else {
-        std::shared_ptr<vector<string> > matches(new vector<string>());
+        std::shared_ptr<vector<string>> matches(new vector<string>());
         ResultMap inexactResult;
-        lookup(args.search_string, args.database_path, inexactResult, matches.get());
+        lookup(args.search_string, args.database_path, inexactResult,
+               matches.get());
 
-        for (auto & elem : inexactResult) {
+        for (auto& elem : inexactResult) {
             for (auto& piter : elem.second) {
                 if (args.colors) {
                     out << "\033[1m" << piter.name() << "\033[0m";
                 } else {
                     out << piter.name();
                 }
-                out << format(translate(" (%s-%s) from %s"))
-                       % piter.version() % piter.release() % elem.first
+                out << format(translate(" (%s-%s) from %s")) % piter.version() %
+                           piter.release() % elem.first
                     << endl;
                 if (args.colors) {
-                    out << piter.hl_str(matches.get(), "\t", "\033[0;31m") << endl;
+                    out << piter.hl_str(matches.get(), "\t", "\033[0;31m")
+                        << endl;
                 } else {
                     out << piter.hl_str(matches.get(), "\t", "") << endl;
                 }
             }
         }
-        if (!inexactResult.empty()){
-            cout << format(translate("A similar command to '%s' is provided by the following packages:"))
-                    % args.search_string
+        if (!inexactResult.empty()) {
+            cout << format(translate("A similar command to '%s' is provided by "
+                                     "the following packages:")) %
+                        args.search_string
                  << endl;
             cout << out.str();
             return 0;

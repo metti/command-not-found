@@ -40,7 +40,6 @@ extern const std::string VERSION_REFSPEC;
 extern const std::string DATABASE_PATH;
 extern const std::string LC_MESSAGE_PATH;
 
-}
+}  // namespace cnf
 
-#endif // CONFIG_H_
-
+#endif  // CONFIG_H_
