@@ -3,6 +3,7 @@
 cnf
 .settings
 build*
+bld*
 *.swp
 *.db
 core
