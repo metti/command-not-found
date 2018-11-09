@@ -45,7 +45,7 @@ Package::Package(const bf::path& path, const bool lazy)
         string message;
         message += translate("not a file: ");
         message += path.string();
-        throw InvalidArgumentException(MISSING_FILE, message.c_str());
+        throw InvalidArgumentException(MISSING_FILE, message);
     }
 
     static const regex valid_name(
@@ -66,23 +66,25 @@ Package::Package(const bf::path& path, const bool lazy)
             string message;
             message += translate("this is not a valid package file: ");
             message += path.string();
-            throw InvalidArgumentException(INVALID_FILE, message.c_str());
+            throw InvalidArgumentException(INVALID_FILE, message);
         }
     } catch (const std::logic_error& e) {
         throw InvalidArgumentException(UNKNOWN_ERROR, e.what());
     }
 
-    if (!lazy)
+    if (!lazy) {
         updateFiles();
+    }
 }
 
 const vector<string>& Package::files() const {
-    if (!m_filesDetermined)
+    if (!m_filesDetermined) {
         try {
             updateFiles();
         } catch (const InvalidArgumentException& e) {
             cerr << e.what() << endl;
         }
+    }
     return m_files;
 }
 
@@ -157,7 +159,7 @@ const string Package::hl_str(const vector<string>* hl,
         bool highlight = false;
         if (hl != nullptr) {
             for (const auto& hlIter : *hl) {
-                if (hlIter != "" && hlIter == file) {
+                if (!hlIter.empty() && hlIter == file) {
                     highlight = true;
                     break;
                 }

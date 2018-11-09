@@ -57,7 +57,7 @@ void lookup(const string& search_string,
     vector<string> catalogs;
     getCatalogs(database_path, catalogs);
 
-    if (catalogs.size() > 0) {
+    if (!catalogs.empty()) {
         set<string> terms;
         if (inexact_matches != nullptr) {
             similar_words(search_string, terms);
@@ -77,7 +77,7 @@ void lookup(const string& search_string,
                     for (const auto& term : terms) {
                         vector<Package> tempPack;
                         d->getPackages(term, tempPack);
-                        if (tempPack.size() > 0) {
+                        if (!tempPack.empty()) {
                             packs.insert(packs.end(), tempPack.begin(),
                                          tempPack.end());
                             inexact_matches->push_back(term);
@@ -89,9 +89,10 @@ void lookup(const string& search_string,
                 cerr << e.what() << endl;
             }
 
-            if (!packs.empty())
+            if (!packs.empty()) {
                 result[catalog.substr(0, catalog.rfind('-'))].insert(
                     packs.begin(), packs.end());
+            }
         }
     } else {
         cout << format(translate("WARNING: No database for lookup!")) << endl;
@@ -162,15 +163,17 @@ void populate(const bf::path& path,
         return;
     }
 
-    if (truncate)
+    if (truncate) {
         d->truncate();
+    }
 
     using dirIter = bf::directory_iterator;
 
     uint32_t count = 0;
 
-    for (dirIter iter = dirIter(path); iter != dirIter(); ++iter)
+    for (dirIter iter = dirIter(path); iter != dirIter(); ++iter) {
         ++count;
+    }
 
     uint32_t current = 0;
 

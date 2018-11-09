@@ -62,27 +62,27 @@ protected:
 using ResultMap = std::map<std::string, std::set<Package>>;
 
 const std::shared_ptr<Database> getDatabase(const std::string& id,
-                                            const bool readonly,
+                                            bool readonly,
                                             const std::string& base_path);
 
 void getCatalogs(const std::string& database_path,
                  std::vector<std::string>& result);
 
-void lookup(const std::string& searchString,
+void lookup(const std::string& search_string,
             const std::string& database_path,
             ResultMap& result,
-            std::vector<std::string>* const inexact_matches = nullptr);
+            std::vector<std::string>* inexact_matches = nullptr);
 
 void populate_mirror(const boost::filesystem::path& path,
                      const std::string& database_path,
-                     const bool truncate,
-                     const uint8_t verbosity);
+                     bool truncate,
+                     uint8_t verbosity);
 
 void populate(const boost::filesystem::path& path,
               const std::string& database_path,
               const std::string& catalog,
-              const bool truncate,
-              const uint8_t verbosity);
+              bool truncate,
+              uint8_t verbosity);
 }  // namespace cnf
 
 #endif /* DB_H_ */

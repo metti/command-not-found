@@ -32,8 +32,8 @@ namespace cnf {
 class TdbDatabase : public Database {
 public:
     explicit TdbDatabase(const std::string& id,
-                         const bool readonly,
-                         const std::string& basepath);
+                         bool readonly,
+                         const std::string& base_path);
     void storePackage(const Package& p) override;
     void getPackages(const std::string& search,
                      std::vector<Package>& result) const override;
@@ -56,24 +56,22 @@ public:
 
     void setKey(const std::string& key);
     void setKey(const TDB_DATA& key);
-    void setValue(const std::string& key);
-    void setValue(const TDB_DATA& key);
+    void setValue(const std::string& value);
+    void setValue(const TDB_DATA& value);
     ~TdbKeyValue();
     const TDB_DATA& key() const { return m_key; }
     const TDB_DATA& value() const { return m_value; }
     std::string key_str() const {
         if (m_key.dptr) {
             return std::string(reinterpret_cast<const char*>(m_key.dptr));
-        } else {
-            return std::string();
         }
+            return std::string();
     }
     std::string value_str() const {
         if (m_value.dptr) {
             return std::string(reinterpret_cast<const char*>(m_value.dptr));
-        } else {
-            return std::string();
         }
+            return std::string();
     }
 
 private:

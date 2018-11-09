@@ -37,7 +37,7 @@ void similar_words(const string& word, set<string>& result) {
     }
 
     for (const auto& split : splits) {
-        if (split.second.size() > 0) {
+        if (!split.second.empty()) {
             // delete
             result.insert(split.first + split.second.substr(1));
 

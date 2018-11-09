@@ -63,7 +63,7 @@ TdbDatabase::TdbDatabase(const string& id,
             string message;
             message += translate("Error opening tdb database: ");
             message += translate("Missing database directory!");
-            throw DatabaseException(CONNECT_ERROR, message.c_str());
+            throw DatabaseException(CONNECT_ERROR, message);
         }
     }
 
@@ -78,7 +78,7 @@ TdbDatabase::TdbDatabase(const string& id,
         string message;
         message += translate("Error opening tdb database: ");
         message += m_databaseName;
-        throw DatabaseException(CONNECT_ERROR, message.c_str());
+        throw DatabaseException(CONNECT_ERROR, message);
     }
 }
 
@@ -111,26 +111,30 @@ void TdbDatabase::storePackage(const Package& p) {
     kv.setKey(p.name() + "-version");
     kv.setValue(p.version());
     res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0)
+    if (res != 0) {
         tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
+    }
 
     kv.setKey(p.name() + "-release");
     kv.setValue(p.release());
     res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0)
+    if (res != 0) {
         tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
+    }
 
     kv.setKey(p.name() + "-architecture");
     kv.setValue(p.architecture());
     res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0)
+    if (res != 0) {
         tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
+    }
 
     kv.setKey(p.name() + "-compression");
     kv.setValue(p.compression());
     res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0)
+    if (res != 0) {
         tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
+    }
 
     string filesString;
     bool first = true;
@@ -179,8 +183,9 @@ void TdbDatabase::storePackage(const Package& p) {
     kv.setKey(p.name() + "-files");
     kv.setValue(filesString);
     res = tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_MODIFY);
-    if (res != 0)
+    if (res != 0) {
         tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
+    }
 }
 
 void TdbDatabase::getPackages(const string& search,
@@ -239,7 +244,7 @@ void TdbDatabase::truncate() {
         string message;
         message += translate("Error opening tdb database: ");
         message += m_databaseName;
-        throw DatabaseException(CONNECT_ERROR, message.c_str());
+        throw DatabaseException(CONNECT_ERROR, message);
     }
 }
 

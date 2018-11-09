@@ -166,7 +166,7 @@ int main(int argc, char** argv) {
         cout << out.str();
         return 0;
 
-    } else {
+    }
         std::shared_ptr<vector<string>> matches(new vector<string>());
         ResultMap inexactResult;
         lookup(args.search_string, args.database_path, inexactResult,
@@ -198,7 +198,6 @@ int main(int argc, char** argv) {
             cout << out.str();
             return 0;
         }
-    }
 
     return 1;
 }
