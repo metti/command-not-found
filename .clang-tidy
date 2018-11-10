@@ -1,0 +1,12 @@
+---
+Checks: "-*,\
+bugprone-*,\
+clang-*,\
+misc-*,\
+modernize-*,\
+performance-*,\
+readability-*,\
+-readability-implicit-bool-conversion,\
+"
+HeaderFilterRegex: 'src/.*\.h$'
+...
