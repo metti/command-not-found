@@ -128,7 +128,6 @@ void populate_mirror(const bf::path& mirror_path,
             dir = bf::path(*iter) / "os" / "any";
             if (bf::is_directory(dir)) {
                 populate(dir, database_path, catalog, !truncated, verbosity);
-                truncated = true;
                 list_catalog = true;
             }
             if (list_catalog) {
