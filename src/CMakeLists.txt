@@ -166,6 +166,32 @@ IF (NOT "${CMAKE_BUILD_TYPE}" MATCHES "^Debug$")
                        )
 ENDIF()
 
+###### TESTS #####
+OPTION(WITH_TESTS "Build the test suite" ON)
+IF(WITH_TESTS)
+    ENABLE_TESTING()
+    FIND_PACKAGE(Catch2 REQUIRED)
+    INCLUDE(Catch)
+
+    ADD_CUSTOM_TARGET(check)
+    ADD_CUSTOM_COMMAND(TARGET check COMMAND ${CMAKE_CTEST_COMMAND}
+                                            --output-on-failure
+                                             -j${CPU_CORES})
+    ADD_CUSTOM_TARGET(tests)
+
+    ADD_LIBRARY(test_main OBJECT test_main.cpp)
+    TARGET_LINK_LIBRARIES(test_main PUBLIC Catch2::Catch2)
+
+    FOREACH(test_name )
+        STRING(REPLACE "/" "-" test_bin_name ${test_name})
+        SET(test_bin_name test-${test_bin_name})
+        ADD_EXECUTABLE(${test_bin_name} ${test_name}.t.cpp)
+        TARGET_LINK_LIBRARIES(${test_bin_name} PRIVATE ${BINARY_NAME} test_main)
+        ADD_DEPENDENCIES(check ${test_bin_name})
+        ADD_DEPENDENCIES(tests ${test_bin_name})
+        catch_discover_tests(${test_bin_name})
+    ENDFOREACH()
+ENDIF()
 
 ###### INSTALLATION ######
 
