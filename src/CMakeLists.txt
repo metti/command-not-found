@@ -182,7 +182,7 @@ IF(WITH_TESTS)
     ADD_LIBRARY(test_main OBJECT test_main.cpp)
     TARGET_LINK_LIBRARIES(test_main PUBLIC Catch2::Catch2)
 
-    FOREACH(test_name )
+    FOREACH(test_name similar)
         STRING(REPLACE "/" "-" test_bin_name ${test_name})
         SET(test_bin_name test-${test_bin_name})
         ADD_EXECUTABLE(${test_bin_name} ${test_name}.t.cpp)
