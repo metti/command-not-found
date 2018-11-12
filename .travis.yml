@@ -27,11 +27,21 @@ addons:
 cache:
   apt: true
 
+before_script:
+  - git clone https://github.com/catchorg/Catch2.git
+  - cd Catch2
+  - git checkout v2.4.2
+  - cmake -Bbuild -H. -DBUILD_TESTING=OFF
+  - sudo env "PATH=$PATH" cmake --build build/ --target install
+  - cd ..
+  - rm -rf Catch2
+
 script:
     - mkdir build
     - cd build
     - cmake -DCMAKE_BUILD_TYPE=Debug ../src
     - cmake --build .
+    - cmake --build . --target check
 
 matrix:
   include:
