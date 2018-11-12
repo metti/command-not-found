@@ -58,9 +58,9 @@ void lookup(const string& search_string,
     getCatalogs(database_path, catalogs);
 
     if (!catalogs.empty()) {
-        set<string> terms;
-        if (inexact_matches != nullptr) {
-            similar_words(search_string, terms);
+        vector<string> terms;
+        if (inexact_matches) {
+            terms = similar_words(search_string);
         }
 
         for (const auto& catalog : catalogs) {
