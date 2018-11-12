@@ -26,34 +26,32 @@
 #include "similar.h"
 
 using namespace std;
+using namespace std::string_literals;
 
 void similar_words(const string& word, set<string>& result) {
-    static const char alphabet[] = "abcdefghijklmnopqrstuvwxyz-_0123456789";
+    static const auto alphabet = "abcdefghijklmnopqrstuvwxyz-_0123456789"s;
 
     vector<pair<string, string>> splits;
 
-    for (uint32_t i = 0; i <= word.size(); ++i) {
+    for (uint32_t i = 0; i < word.size(); ++i) {
         splits.emplace_back(word.substr(0, i), word.substr(i));
     }
 
     for (const auto& split : splits) {
-        if (!split.second.empty()) {
+        if (split.second.size() > 1) {
             // delete
             result.insert(split.first + split.second.substr(1));
+            // transpose
+            result.insert(split.first + split.second[1] + split.second[0] +
+                          split.second.substr(2));
+        }
 
-            if (split.second.size() > 1) {
-                // transpose
-                result.insert(split.first + split.second[1] + split.second[0] +
-                              split.second.substr(2));
-            }
+        for (const auto& c : alphabet) {
+            // replaces
+            result.insert(split.first + c + split.second.substr(1));
 
-            for (const auto& c : alphabet) {
-                // replaces
-                result.insert(split.first + c + split.second.substr(1));
-
-                // inserts
-                result.insert(split.first + c + split.second);
-            }
+            // inserts
+            result.insert(split.first + c + split.second);
         }
     }
 }
