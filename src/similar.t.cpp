@@ -3,38 +3,36 @@
 #include <catch2/catch.hpp>
 
 template <typename... Args>
-std::set<std::string> make_set(Args&&... args) {
+std::vector<std::string> make_vector(Args&&... args) {
     return {args...};
 }
 
 TEST_CASE("similar::empty_string") {
-    std::set<std::string> result;
-    similar_words("", result);
+    auto result = cnf::similar_words("");
     CHECK(result.empty());
 }
 
 TEST_CASE("similar::single_char_string") {
-    std::set<std::string> result;
-    similar_words("x", result);
+    auto result = cnf::similar_words("x");
     CHECK(!result.empty());
     CHECK(result ==
-          make_set("-", "-x", "0", "0x", "1", "1x", "2", "2x", "3", "3x", "4",
-                   "4x", "5", "5x", "6", "6x", "7", "7x", "8", "8x", "9", "9x",
-                   "_", "_x", "a", "ax", "b", "bx", "c", "cx", "d", "dx", "e",
-                   "ex", "f", "fx", "g", "gx", "h", "hx", "i", "ix", "j", "jx",
-                   "k", "kx", "l", "lx", "m", "mx", "n", "nx", "o", "ox", "p",
-                   "px", "q", "qx", "r", "rx", "s", "sx", "t", "tx", "u", "ux",
-                   "v", "vx", "w", "wx", "x", "xx", "y", "yx", "z", "zx"));
+          make_vector("-", "-x", "0", "0x", "1", "1x", "2", "2x", "3", "3x",
+                      "4", "4x", "5", "5x", "6", "6x", "7", "7x", "8", "8x",
+                      "9", "9x", "_", "_x", "a", "ax", "b", "bx", "c", "cx",
+                      "d", "dx", "e", "ex", "f", "fx", "g", "gx", "h", "hx",
+                      "i", "ix", "j", "jx", "k", "kx", "l", "lx", "m", "mx",
+                      "n", "nx", "o", "ox", "p", "px", "q", "qx", "r", "rx",
+                      "s", "sx", "t", "tx", "u", "ux", "v", "vx", "w", "wx",
+                      "x", "xx", "y", "yx", "z", "zx"));
     CHECK(result.size() == 76);
 }
 
 TEST_CASE("similar::multi_char_string") {
-    std::set<std::string> result;
-    similar_words("xyz", result);
+    auto result = cnf::similar_words("xyz");
     CHECK(!result.empty());
     CHECK(
         result ==
-        make_set(
+        make_vector(
             "-xyz", "-yz", "0xyz", "0yz", "1xyz", "1yz", "2xyz", "2yz", "3xyz",
             "3yz", "4xyz", "4yz", "5xyz", "5yz", "6xyz", "6yz", "7xyz", "7yz",
             "8xyz", "8yz", "9xyz", "9yz", "_xyz", "_yz", "axyz", "ayz", "bxyz",
@@ -65,8 +63,7 @@ TEST_CASE("similar::multi_char_string") {
 }
 
 TEST_CASE("similar::long_string") {
-    std::set<std::string> result;
-    similar_words(std::string(512, 'x'), result);
+    auto result = cnf::similar_words(std::string(512, 'x'));
     CHECK(!result.empty());
     CHECK(result.size() == 37891);
 }

@@ -17,21 +17,30 @@
 */
 
 #include <algorithm>
+#include <cassert>
 #include <iostream>
-#include <set>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "similar.h"
 
-using namespace std;
 using namespace std::string_literals;
 
-void similar_words(const string& word, set<string>& result) {
+namespace cnf {
+
+std::vector<std::string> similar_words(const std::string& word) {
     static const auto alphabet = "abcdefghijklmnopqrstuvwxyz-_0123456789"s;
 
-    vector<pair<string, string>> splits;
+    std::vector<std::string> result;
+    if (word.empty()) {
+        return result;
+    }
+
+    const size_t upper_bound{(alphabet.size() * 2 + 2) * word.size() - 2};
+    result.reserve(upper_bound);
+
+    std::vector<std::pair<std::string, std::string>> splits;
+    splits.reserve(word.size());
 
     for (uint32_t i = 0; i < word.size(); ++i) {
         splits.emplace_back(word.substr(0, i), word.substr(i));
@@ -40,18 +49,27 @@ void similar_words(const string& word, set<string>& result) {
     for (const auto& split : splits) {
         if (split.second.size() > 1) {
             // delete
-            result.insert(split.first + split.second.substr(1));
+            result.emplace_back(split.first + split.second.substr(1));
             // transpose
-            result.insert(split.first + split.second[1] + split.second[0] +
-                          split.second.substr(2));
+            result.emplace_back(split.first + split.second[1] +
+                                split.second[0] + split.second.substr(2));
         }
 
         for (const auto& c : alphabet) {
             // replaces
-            result.insert(split.first + c + split.second.substr(1));
+            result.emplace_back(split.first + c + split.second.substr(1));
 
             // inserts
-            result.insert(split.first + c + split.second);
+            result.emplace_back(split.first + c + split.second);
         }
     }
+
+    assert(upper_bound >= result.size());  // wrong reserve calculation
+
+    sort(result.begin(), result.end());
+    result.erase(std::unique(result.begin(), result.end()), result.end());
+
+    return result;
 }
+
+}  // namespace cnf

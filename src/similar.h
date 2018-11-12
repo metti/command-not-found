@@ -19,9 +19,13 @@
 #ifndef SIMILAR_H_
 #define SIMILAR_H_
 
-#include <set>
 #include <string>
+#include <vector>
 
-void similar_words(const std::string& word, std::set<std::string>& result);
+namespace cnf {
+
+std::vector<std::string> similar_words(const std::string& word);
+
+}  // namespace cnf
 
 #endif /* SIMILAR_H_ */
