@@ -1,29 +1,20 @@
-sudo: required
+language: cpp
 dist: xenial
 
-language: cpp
-
-compiler:
-    - gcc
-    - clang
-
-before_install:
-    - sudo apt-get install -y -q libboost-all-dev libtdb-dev libarchive-dev
-
-before_script:
-    - mkdir build
-    - cd build
-    - cmake ../src
-
-script: make
-
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "Cm4CuZIXsKIC9+nHqrlbAEnKhVhzYnwyBLnfRjHrrEp8ulPazweguzvqksmNP6zyFeYmSH5qpIxZCb/bhgaGmaLDUNjp4q4lwN9U84/2D763Hdm7vYHPFnWKbyIEpwujW8NPb3xqm70XN3T17QJdQFqfhw4SYTPCo6EFWjy0QPc9oH7yIQKrd0wafADCF1KOaeP0jW37z+bhu96tbN7lEfUcwdLEi2bTp5rLHzVZ3U/WgZ6VMjR3oPnqIEhjbaRoX1R4zycEGOL2HGDAXedc8E6ViaDg1eBnKXzKOj5iO5A1eilwtzEUQWVbM3sLDfttDQmilPSIFnzv2CBvX8gu63OyEPIv5E1p3E7xpgcMulQINNvA2GjbmGLjNFyj/yNCBHWzUZiFkba+6S0DqeDFXb7u8icoIxUjTcaHJZBWcpomr6t2NW+a1VMn0EbL1rCeZ5dORvBXj52KZjXpQ1TrKnfUUWqF9IrVN8zC7NgJsWnG8J3ZOhdZD9QL8D2uCt3DFUO93zbX4ycw2za0QtXf+cYaIUtCG9k6LTeQBtFAeONdG6GKuthH1NTjRtZ4qhjUML6cgP+d89LyFM8M3xfD61FssMsvATY+O+3JyxFNZiKId1TaNDYuKcpTttu0d8OQzEiGRi8VDISwrCjwvx6Rbi5nvtUGPmjPiwUWj6Z5lx4="
-
 addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main'
+        key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+    packages:
+      - libarchive-dev
+      - libboost-filesystem-dev
+      - libboost-locale-dev
+      - libboost-system-dev
+      - libtdb-dev
+      - g++-8
+      - clang-7
   coverity_scan:
     project:
       name: "metti/command-not-found"
@@ -32,3 +23,31 @@ addons:
     build_command_prepend: "cmake ."
     build_command:   "make -B -j4"
     branch_pattern: coverity_scan
+
+cache:
+  apt: true
+
+script:
+    - mkdir build
+    - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Debug ../src
+    - cmake --build .
+
+matrix:
+  include:
+    - os: linux
+      env: 
+        - MATRIX_EVAL="CC='gcc-8' && CXX=g++-8"
+    - os: linux
+      env:
+        - MATRIX_EVAL="CC='clang-7' && CXX=clang++-7"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "Cm4CuZIXsKIC9+nHqrlbAEnKhVhzYnwyBLnfRjHrrEp8ulPazweguzvqksmNP6zyFeYmSH5qpIxZCb/bhgaGmaLDUNjp4q4lwN9U84/2D763Hdm7vYHPFnWKbyIEpwujW8NPb3xqm70XN3T17QJdQFqfhw4SYTPCo6EFWjy0QPc9oH7yIQKrd0wafADCF1KOaeP0jW37z+bhu96tbN7lEfUcwdLEi2bTp5rLHzVZ3U/WgZ6VMjR3oPnqIEhjbaRoX1R4zycEGOL2HGDAXedc8E6ViaDg1eBnKXzKOj5iO5A1eilwtzEUQWVbM3sLDfttDQmilPSIFnzv2CBvX8gu63OyEPIv5E1p3E7xpgcMulQINNvA2GjbmGLjNFyj/yNCBHWzUZiFkba+6S0DqeDFXb7u8icoIxUjTcaHJZBWcpomr6t2NW+a1VMn0EbL1rCeZ5dORvBXj52KZjXpQ1TrKnfUUWqF9IrVN8zC7NgJsWnG8J3ZOhdZD9QL8D2uCt3DFUO93zbX4ycw2za0QtXf+cYaIUtCG9k6LTeQBtFAeONdG6GKuthH1NTjRtZ4qhjUML6cgP+d89LyFM8M3xfD61FssMsvATY+O+3JyxFNZiKId1TaNDYuKcpTttu0d8OQzEiGRi8VDISwrCjwvx6Rbi5nvtUGPmjPiwUWj6Z5lx4="
+
