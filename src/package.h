@@ -19,11 +19,10 @@
 #ifndef PARSEPKG_H_
 #define PARSEPKG_H_
 
+#include <filesystem>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <boost/filesystem.hpp>
 
 #include "custom_exceptions.h"
 
@@ -31,7 +30,7 @@ namespace cnf {
 
 class Package {
 public:
-    explicit Package(const boost::filesystem::path& path, bool lazy = false);
+    explicit Package(const std::filesystem::path& path, bool lazy = false);
     explicit Package(std::string name,
                      std::string version,
                      std::string release,
@@ -73,7 +72,7 @@ private:
     std::string m_compression;
     mutable std::vector<std::string> m_files;
     mutable bool m_filesDetermined;
-    boost::filesystem::path* m_path;
+    std::filesystem::path* m_path;
 };
 
 enum PackageError { MISSING_FILE, INVALID_FILE, UNKNOWN_ERROR };

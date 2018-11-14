@@ -17,18 +17,17 @@
 */
 
 #include <exception>
+#include <filesystem>
 #include <iostream>
 #include <string>
 
 #include <getopt.h>
-#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/locale.hpp>
 
 #include "config.h"
 #include "db.h"
 
-namespace bf = boost::filesystem;
 using namespace cnf;
 using namespace std;
 using boost::format;
@@ -159,7 +158,7 @@ int main(int argc, char** argv) {
         usage();
     }
 
-    if (!bf::is_directory(args.package_path)) {
+    if (!std::filesystem::is_directory(args.package_path)) {
         cerr << format(translate("Not a valid package path: %s")) %
                     args.package_path
              << endl

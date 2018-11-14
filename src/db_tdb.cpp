@@ -17,6 +17,7 @@
 */
 
 #include <algorithm>
+#include <filesystem>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -29,7 +30,7 @@
 #include "db.h"
 #include "db_tdb.h"
 
-namespace bf = boost::filesystem;
+namespace fs = std::filesystem;
 using namespace std;
 using boost::format;
 using boost::locale::translate;
@@ -41,14 +42,14 @@ TdbDatabase::TdbDatabase(const string& id,
                          const string& base_path)
     : Database(id, readonly, base_path)
     , m_databaseName(m_basePath + "/" + m_id + ".tdb") {
-    if (!bf::is_directory(base_path)) {
+    if (!fs::is_directory(base_path)) {
         cout << format(translate(
                     "Directory '%s' does not exist. Trying to create it ...")) %
                     base_path
              << endl;
         try {
-            bf::create_directories(base_path);
-        } catch (const bf::filesystem_error& e) {
+            fs::create_directories(base_path);
+        } catch (const fs::filesystem_error& e) {
             cerr << format(translate(
                         "Could not create database directory: %s: ")) %
                         e.code().message();
@@ -250,14 +251,14 @@ void TdbDatabase::truncate() {
 
 void TdbDatabase::getCatalogs(const string& database_path,
                               vector<string>& result) {
-    const bf::path p(database_path);
+    const fs::path p(database_path);
 
-    if (bf::is_directory(p)) {
-        using dirIter = bf::directory_iterator;
+    if (fs::is_directory(p)) {
+        using dirIter = fs::directory_iterator;
 
         for (dirIter iter = dirIter(p); iter != dirIter(); ++iter) {
-            bf::path cand(*iter);
-            if (cand.extension() == ".tdb" && bf::is_regular_file(cand)) {
+            fs::path cand(*iter);
+            if (cand.extension() == ".tdb" && fs::is_regular_file(cand)) {
                 result.push_back(cand.stem().string());
             }
         }

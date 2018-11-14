@@ -25,8 +25,6 @@ ENDIF(STATIC_LINKS)
 
 FIND_PACKAGE(Boost 1.44
                    COMPONENTS
-                        filesystem
-                        system
                         locale
                    REQUIRED)
 
@@ -38,6 +36,8 @@ LIST(APPEND EXTRA_LIBRARIES ${LibTdb_LIBRARY})
 FIND_PACKAGE(LibArchive 3 REQUIRED)
 INCLUDE_DIRECTORIES(${LibArchive_INCLUDE_DIRS})
 LIST(APPEND EXTRA_LIBRARIES ${LibArchive_LIBRARIES})
+
+LIST(APPEND EXTRA_LIBRARIES stdc++fs)
 
 ###### PROJECT CONFIGURATION ######
 

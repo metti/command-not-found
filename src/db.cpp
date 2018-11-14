@@ -17,6 +17,7 @@
 */
 
 #include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -33,7 +34,7 @@
 #include "db_tdb.h"
 #include "similar.h"
 
-namespace bf = boost::filesystem;
+namespace fs = std::filesystem;
 using namespace std;
 using boost::format;
 using boost::locale::translate;
@@ -99,11 +100,11 @@ void lookup(const string& search_string,
     }
 }
 
-void populate_mirror(const bf::path& mirror_path,
+void populate_mirror(const fs::path& mirror_path,
                      const string& database_path,
                      const bool truncate,
                      const uint8_t verbosity) {
-    using dirIter = bf::directory_iterator;
+    using dirIter = fs::directory_iterator;
 
     static const string architectures[] = {"i686", "x86_64"};
 
@@ -112,21 +113,21 @@ void populate_mirror(const bf::path& mirror_path,
 
         for (dirIter iter = dirIter(mirror_path); iter != dirIter(); ++iter) {
             const string& catalog =
-                bf::path(*iter).stem().string() + "-" + architecture;
+                fs::path(*iter).stem().string() + "-" + architecture;
 
             bool truncated = !truncate;
 
             bool list_catalog = false;
 
-            bf::path dir = bf::path(*iter) / "os" / architecture;
-            if (bf::is_directory(dir)) {
+            fs::path dir = fs::path(*iter) / "os" / architecture;
+            if (fs::is_directory(dir)) {
                 populate(dir, database_path, catalog, !truncated, verbosity);
                 truncated = true;
                 list_catalog = true;
             }
 
-            dir = bf::path(*iter) / "os" / "any";
-            if (bf::is_directory(dir)) {
+            dir = fs::path(*iter) / "os" / "any";
+            if (fs::is_directory(dir)) {
                 populate(dir, database_path, catalog, !truncated, verbosity);
                 list_catalog = true;
             }
@@ -135,8 +136,8 @@ void populate_mirror(const bf::path& mirror_path,
             }
         }
 
-        const bf::path& catalogs_file_name =
-            bf::path(database_path) / ("catalogs-" + architecture + "-tdb");
+        const fs::path& catalogs_file_name =
+            fs::path(database_path) / ("catalogs-" + architecture + "-tdb");
 
         ofstream catalogs_file;
 
@@ -149,7 +150,7 @@ void populate_mirror(const bf::path& mirror_path,
     }
 }
 
-void populate(const bf::path& path,
+void populate(const fs::path& path,
               const string& database_path,
               const string& catalog,
               const bool truncate,
@@ -166,7 +167,7 @@ void populate(const bf::path& path,
         d->truncate();
     }
 
-    using dirIter = bf::directory_iterator;
+    using dirIter = fs::directory_iterator;
 
     uint32_t count = 0;
 

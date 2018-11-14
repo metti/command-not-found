@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <filesystem>
 #include <iostream>
 #include <regex>
 #include <sstream>
@@ -31,17 +32,16 @@
 
 #include "package.h"
 
-namespace bf = boost::filesystem;
 using namespace std;
 using boost::format;
 using boost::locale::translate;
 
 namespace cnf {
 
-Package::Package(const bf::path& path, const bool lazy)
-    : m_filesDetermined(false), m_path(new bf::path(path)) {
+Package::Package(const std::filesystem::path& path, const bool lazy)
+    : m_filesDetermined(false), m_path(new std::filesystem::path(path)) {
     // checks
-    if (!bf::is_regular_file(path)) {
+    if (!std::filesystem::is_regular_file(path)) {
         string message;
         message += translate("not a file: ");
         message += path.string();
