@@ -16,8 +16,8 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TDB_H_
-#define TDB_H_
+#ifndef DB_TDB_H_
+#define DB_TDB_H_
 
 #include <string>
 #include <vector>
@@ -83,4 +83,4 @@ inline unsigned char* getWritableUCString(const std::string& aString);
 
 }  // namespace cnf
 
-#endif /* TDB_H_ */
+#endif /* DB_TDB_H_ */

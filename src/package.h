@@ -16,8 +16,8 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSEPKG_H_
-#define PARSEPKG_H_
+#ifndef PACKAGE_H_
+#define PACKAGE_H_
 
 #include <filesystem>
 #include <optional>
@@ -82,4 +82,4 @@ bool operator==(const Package& lhs, const Package& rhs);
 
 }  // namespace cnf
 
-#endif /* PARSEPKG_H */
+#endif /* PACKAGE_H */

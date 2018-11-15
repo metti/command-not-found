@@ -16,8 +16,8 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef EXCEPTIONS_H_
-#define EXCEPTIONS_H_
+#ifndef CUSTOM_EXCEPTIONS_H_
+#define CUSTOM_EXCEPTIONS_H_
 
 #include <exception>
 #include <string>
@@ -50,4 +50,4 @@ public:
 };
 }  // namespace cnf
 
-#endif /* EXCEPTIONS_H_ */
+#endif /* CUSTOM_EXCEPTIONS_H_ */
