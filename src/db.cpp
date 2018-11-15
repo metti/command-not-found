@@ -40,10 +40,10 @@ using boost::locale::translate;
 
 namespace cnf {
 
-const std::shared_ptr<Database> getDatabase(const std::string& id,
-                                            const bool readonly,
-                                            const std::string& base_path) {
-    return std::shared_ptr<Database>(new TdbDatabase(id, readonly, base_path));
+std::unique_ptr<Database> getDatabase(const std::string& id,
+                                      const bool readonly,
+                                      const std::string& base_path) {
+    return std::make_unique<TdbDatabase>(id, readonly, base_path);
 }
 
 void getCatalogs(const std::string& database_path,
@@ -68,13 +68,10 @@ void lookup(const std::string& search_string,
             std::vector<Package> packs;
 
             try {
+                auto d = getDatabase(catalog, true, database_path);
                 if (inexact_matches == nullptr) {
-                    getDatabase(catalog, true, database_path)
-                        ->getPackages(search_string, packs);
+                    d->getPackages(search_string, packs);
                 } else {
-                    const std::shared_ptr<Database>& d =
-                        getDatabase(catalog, true, database_path);
-
                     for (const auto& term : terms) {
                         std::vector<Package> tempPack;
                         d->getPackages(term, tempPack);
@@ -157,7 +154,7 @@ void populate(const fs::path& path,
               const std::string& catalog,
               const bool truncate,
               const uint8_t verbosity) {
-    std::shared_ptr<Database> d;
+    std::unique_ptr<Database> d;
     try {
         d = getDatabase(catalog, false, database_path);
     } catch (const DatabaseException& e) {

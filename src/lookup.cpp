@@ -165,11 +165,9 @@ int main(int argc, char** argv) {
         std::cout << out.str();
         return 0;
     }
-    std::shared_ptr<std::vector<std::string>> matches(
-        new std::vector<std::string>());
+    auto matches = std::vector<std::string>();
     cnf::ResultMap inexactResult;
-    lookup(args.search_string, args.database_path, inexactResult,
-           matches.get());
+    lookup(args.search_string, args.database_path, inexactResult, &matches);
 
     for (auto& elem : inexactResult) {
         for (auto& piter : elem.second) {
@@ -182,9 +180,9 @@ int main(int argc, char** argv) {
                        piter.release() % elem.first
                 << '\n';
             if (args.colors) {
-                out << piter.hl_str(matches.get(), "\t", "\033[0;31m") << '\n';
+                out << piter.hl_str(&matches, "\t", "\033[0;31m") << '\n';
             } else {
-                out << piter.hl_str(matches.get(), "\t", "") << '\n';
+                out << piter.hl_str(&matches, "\t", "") << '\n';
             }
         }
     }

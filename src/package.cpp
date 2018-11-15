@@ -38,7 +38,7 @@ using boost::locale::translate;
 namespace cnf {
 
 Package::Package(const std::filesystem::path& path, const bool lazy)
-    : m_filesDetermined(false), m_path(new std::filesystem::path(path)) {
+    : m_filesDetermined(false), m_path(path) {
     // checks
     if (!std::filesystem::is_regular_file(path)) {
         std::string message;
@@ -90,7 +90,7 @@ const std::vector<std::string>& Package::files() const {
 void Package::updateFiles() const {
     // read package file list
 
-    assert(m_path);
+    assert(m_path.has_value());
 
     struct archive* arc = nullptr;
     struct archive_entry* entry = nullptr;

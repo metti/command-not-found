@@ -62,9 +62,9 @@ protected:
 
 using ResultMap = std::map<std::string, std::set<Package>>;
 
-const std::shared_ptr<Database> getDatabase(const std::string& id,
-                                            bool readonly,
-                                            const std::string& base_path);
+std::unique_ptr<Database> getDatabase(const std::string& id,
+                                      bool readonly,
+                                      const std::string& base_path);
 
 void getCatalogs(const std::string& database_path,
                  std::vector<std::string>& result);
