@@ -28,15 +28,13 @@
 #include "config.h"
 #include "db.h"
 
-using namespace cnf;
-using namespace std;
 using boost::format;
 using boost::locale::translate;
 
 static struct args_t {
-    string catalog;
-    string package_path;
-    string database_path;
+    std::string catalog;
+    std::string package_path;
+    std::string database_path;
     int verbosity;
     bool mirror;
     bool truncate;
@@ -55,59 +53,60 @@ static const struct option LONG_OPTS[] = {
     {nullptr, no_argument, nullptr, 0}};
 
 void usage() {
-    cout << format(translate("       *** %s %s ***                             "
-                             "                     \n")) %
-                PROGRAM_NAME % VERSION_LONG
-         << translate(
-                "Usage:                                                        "
-                "        \n")
-         << translate(
-                "   cnf-populate -p <path> ( -c <catalog> | -m ) [ -d <path> ] "
-                "        \n")
-         << translate(
-                "                                                              "
-                "        \n")
-         << translate(
-                "Options:                                                      "
-                "        \n")
-         << translate(
-                " --help            -? -h     Show this help and exit          "
-                "        \n")
-         << translate(
-                " --verbose         -v        Display verbose output           "
-                "        \n")
-         << translate(
-                "                                                              "
-                "        \n")
-         << translate(
-                " --package-path    -p        Set the path containing the "
-                "packages     \n")
-         << translate(
-                " --catalog         -c        Set the catalog name to index "
-                "(e.g. core)\n")
-         << translate(
-                " --mirror          -m        Scan mirror structure and detect "
-                "catalogs\n")
-         << translate(
-                " --truncate        -t        Truncate the catalog before "
-                "indexing     \n")
-         << format(translate(" --database-path   -d        Customize the "
-                             "database lookup path       \n"
-                             "                             default is %s       "
-                             "                     \n")) %
-                DATABASE_PATH
-         << endl;
+    std::cout
+        << format(translate("       *** %s %s ***                             "
+                            "                     \n")) %
+               cnf::PROGRAM_NAME % cnf::VERSION_LONG
+        << translate(
+               "Usage:                                                        "
+               "        \n")
+        << translate(
+               "   cnf-populate -p <path> ( -c <catalog> | -m ) [ -d <path> ] "
+               "        \n")
+        << translate(
+               "                                                              "
+               "        \n")
+        << translate(
+               "Options:                                                      "
+               "        \n")
+        << translate(
+               " --help            -? -h     Show this help and exit          "
+               "        \n")
+        << translate(
+               " --verbose         -v        Display verbose output           "
+               "        \n")
+        << translate(
+               "                                                              "
+               "        \n")
+        << translate(
+               " --package-path    -p        Set the path containing the "
+               "packages     \n")
+        << translate(
+               " --catalog         -c        Set the catalog name to index "
+               "(e.g. core)\n")
+        << translate(
+               " --mirror          -m        Scan mirror structure and detect "
+               "catalogs\n")
+        << translate(
+               " --truncate        -t        Truncate the catalog before "
+               "indexing     \n")
+        << format(translate(" --database-path   -d        Customize the "
+                            "database lookup path       \n"
+                            "                             default is %s       "
+                            "                     \n")) %
+               cnf::DATABASE_PATH
+        << '\n';
     exit(1);
 }
 
 int main(int argc, char** argv) {
     boost::locale::generator gen;
-    gen.add_messages_path(LC_MESSAGE_PATH);
-    gen.add_messages_domain(PROGRAM_NAME);
-    locale::global(gen(""));
-    cout.imbue(locale());
+    gen.add_messages_path(cnf::LC_MESSAGE_PATH);
+    gen.add_messages_domain(cnf::PROGRAM_NAME);
+    std::locale::global(gen(""));
+    std::cout.imbue(std::locale());
 
-    args.database_path = DATABASE_PATH;
+    args.database_path = cnf::DATABASE_PATH;
     args.catalog = "";
     args.mirror = false;
     args.package_path = "";
@@ -159,20 +158,19 @@ int main(int argc, char** argv) {
     }
 
     if (!std::filesystem::is_directory(args.package_path)) {
-        cerr << format(translate("Not a valid package path: %s")) %
-                    args.package_path
-             << endl
-             << endl;
+        std::cerr << format(translate("Not a valid package path: %s")) %
+                         args.package_path
+                  << "\n\n";
         usage();
         return 1;
     }
 
     if (args.mirror) {
-        populate_mirror(args.package_path, args.database_path, args.truncate,
-                        args.verbosity);
+        cnf::populate_mirror(args.package_path, args.database_path,
+                             args.truncate, args.verbosity);
     } else {
-        populate(args.package_path, args.database_path, args.catalog,
-                 args.truncate, args.verbosity);
+        cnf::populate(args.package_path, args.database_path, args.catalog,
+                      args.truncate, args.verbosity);
     }
     return 0;
 }

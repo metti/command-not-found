@@ -32,16 +32,14 @@
 #include "db.h"
 #include "package.h"
 
-using namespace cnf;
-using namespace std;
 using boost::format;
 using boost::locale::translate;
 
 static struct args_t {
-    string database_path;
+    std::string database_path;
     bool colors;
     int verbosity;
-    string search_string;
+    std::string search_string;
 } args;
 
 static const char* OPT_STRING = "d:cvh?";
@@ -54,50 +52,51 @@ static const struct option LONG_OPTS[] = {
     {nullptr, no_argument, nullptr, 0}};
 
 void usage() {
-    cout << format(translate("       *** %s %s ***                             "
-                             "              \n")) %
-                PROGRAM_NAME % VERSION_LONG
-         << translate(
-                "Usage:                                                        "
-                " \n")
-         << translate(
-                "   cnf-lookup [ -d ] <search term>                            "
-                " \n")
-         << translate(
-                "                                                              "
-                " \n")
-         << translate(
-                "Options:                                                      "
-                " \n")
-         << translate(
-                " --help            -? -h     Show this help and exit          "
-                " \n")
-         << translate(
-                " --verbose         -v        Display verbose output           "
-                " \n")
-         << translate(
-                "                                                              "
-                " \n")
-         << format(translate(" --database-path   -d        Customize the "
-                             "database lookup path\n"
-                             "                             default is %s       "
-                             "              \n")) %
-                DATABASE_PATH
-         << translate(
-                " --colors          -c        Pretty colored output            "
-                " \n")
-         << endl;
+    std::cout
+        << format(translate("       *** %s %s ***                             "
+                            "              \n")) %
+               cnf::PROGRAM_NAME % cnf::VERSION_LONG
+        << translate(
+               "Usage:                                                        "
+               " \n")
+        << translate(
+               "   cnf-lookup [ -d ] <search term>                            "
+               " \n")
+        << translate(
+               "                                                              "
+               " \n")
+        << translate(
+               "Options:                                                      "
+               " \n")
+        << translate(
+               " --help            -? -h     Show this help and exit          "
+               " \n")
+        << translate(
+               " --verbose         -v        Display verbose output           "
+               " \n")
+        << translate(
+               "                                                              "
+               " \n")
+        << format(translate(" --database-path   -d        Customize the "
+                            "database lookup path\n"
+                            "                             default is %s       "
+                            "              \n")) %
+               cnf::DATABASE_PATH
+        << translate(
+               " --colors          -c        Pretty colored output            "
+               " \n")
+        << '\n';
     exit(1);
 }
 
 int main(int argc, char** argv) {
     boost::locale::generator gen;
-    gen.add_messages_path(LC_MESSAGE_PATH);
-    gen.add_messages_domain(PROGRAM_NAME);
-    locale::global(gen(""));
-    cout.imbue(locale());
+    gen.add_messages_path(cnf::LC_MESSAGE_PATH);
+    gen.add_messages_domain(cnf::PROGRAM_NAME);
+    std::locale::global(gen(""));
+    std::cout.imbue(std::locale());
 
-    args.database_path = DATABASE_PATH;
+    args.database_path = cnf::DATABASE_PATH;
     args.colors = false;
     args.verbosity = 0;
     args.search_string = "";  // actually done implicit
@@ -132,11 +131,11 @@ int main(int argc, char** argv) {
 
     args.search_string = argv[optind];
 
-    ResultMap result;
+    cnf::ResultMap result;
 
     lookup(args.search_string, args.database_path, result);
 
-    stringstream out;
+    std::stringstream out;
 
     for (auto& elem : result) {
         for (auto& piter : elem.second) {
@@ -147,57 +146,57 @@ int main(int argc, char** argv) {
             }
             out << format(translate(" (%s-%s) from %s")) % piter.version() %
                        piter.release() % elem.first
-                << endl;
+                << '\n';
             if (args.colors) {
                 out << piter.hl_str(args.search_string, "\t", "\033[0;31m")
-                    << endl;
+                    << '\n';
             } else {
-                out << piter.hl_str(args.search_string, "\t", "") << endl;
+                out << piter.hl_str(args.search_string, "\t", "") << '\n';
             }
         }
     }
 
     if (!result.empty()) {
-        cout
+        std::cout
             << format(translate(
                    "The command '%s' is provided by the following packages:")) %
                    args.search_string
-            << endl;
-        cout << out.str();
+            << '\n';
+        std::cout << out.str();
         return 0;
-
     }
-        std::shared_ptr<vector<string>> matches(new vector<string>());
-        ResultMap inexactResult;
-        lookup(args.search_string, args.database_path, inexactResult,
-               matches.get());
+    std::shared_ptr<std::vector<std::string>> matches(
+        new std::vector<std::string>());
+    cnf::ResultMap inexactResult;
+    lookup(args.search_string, args.database_path, inexactResult,
+           matches.get());
 
-        for (auto& elem : inexactResult) {
-            for (auto& piter : elem.second) {
-                if (args.colors) {
-                    out << "\033[1m" << piter.name() << "\033[0m";
-                } else {
-                    out << piter.name();
-                }
-                out << format(translate(" (%s-%s) from %s")) % piter.version() %
-                           piter.release() % elem.first
-                    << endl;
-                if (args.colors) {
-                    out << piter.hl_str(matches.get(), "\t", "\033[0;31m")
-                        << endl;
-                } else {
-                    out << piter.hl_str(matches.get(), "\t", "") << endl;
-                }
+    for (auto& elem : inexactResult) {
+        for (auto& piter : elem.second) {
+            if (args.colors) {
+                out << "\033[1m" << piter.name() << "\033[0m";
+            } else {
+                out << piter.name();
+            }
+            out << format(translate(" (%s-%s) from %s")) % piter.version() %
+                       piter.release() % elem.first
+                << '\n';
+            if (args.colors) {
+                out << piter.hl_str(matches.get(), "\t", "\033[0;31m") << '\n';
+            } else {
+                out << piter.hl_str(matches.get(), "\t", "") << '\n';
             }
         }
-        if (!inexactResult.empty()) {
-            cout << format(translate("A similar command to '%s' is provided by "
-                                     "the following packages:")) %
-                        args.search_string
-                 << endl;
-            cout << out.str();
-            return 0;
-        }
+    }
+    if (!inexactResult.empty()) {
+        std::cout << format(
+                         translate("A similar command to '%s' is provided by "
+                                   "the following packages:")) %
+                         args.search_string
+                  << '\n';
+        std::cout << out.str();
+        return 0;
+    }
 
     return 1;
 }
