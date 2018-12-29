@@ -212,11 +212,12 @@ INSTALL (FILES cnf.sh
                         WORLD_READ
             DESTINATION etc/profile.d)
 
-INSTALL (FILES __fish_command_not_found_handler.fish
+INSTALL (FILES cnf.fish
             PERMISSIONS OWNER_WRITE
                         OWNER_READ
                         GROUP_READ
                         WORLD_READ
+						RENAME __fish_command_not_found_handler.fish
             DESTINATION usr/share/fish/functions)
 
 INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}-sync

@@ -7,6 +7,6 @@ function __fish_command_not_found_handler --on-event fish_command_not_found
 	else
 		__fish_default_command_not_found_handler $argv[1]
 	end
-	# return 127 # This is actually unnecessary; fish handles it
+	# no need to return an error code for fish
 end
 
