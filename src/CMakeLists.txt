@@ -218,7 +218,7 @@ INSTALL (FILES cnf.fish
                         GROUP_READ
                         WORLD_READ
 						RENAME __fish_command_not_found_handler.fish
-            DESTINATION usr/share/fish/functions)
+            DESTINATION usr/share/fish/vendor_functions.d)
 
 INSTALL (FILES ${PROJECT_BINARY_DIR}/${BINARY_NAME}-sync
             PERMISSIONS OWNER_WRITE
