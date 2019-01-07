@@ -21,8 +21,6 @@
 
 #include <string>
 
-#cmakedefine DEBUG
-
 namespace cnf {
 
 extern const std::string PROGRAM_NAME;

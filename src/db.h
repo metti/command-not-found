@@ -20,6 +20,7 @@
 #define DB_H_
 
 #include <cstdint>
+#include <filesystem>
 #include <map>
 #include <set>
 #include <string>
@@ -61,9 +62,9 @@ protected:
 
 using ResultMap = std::map<std::string, std::set<Package>>;
 
-const std::shared_ptr<Database> getDatabase(const std::string& id,
-                                            bool readonly,
-                                            const std::string& base_path);
+std::unique_ptr<Database> getDatabase(const std::string& id,
+                                      bool readonly,
+                                      const std::string& base_path);
 
 void getCatalogs(const std::string& database_path,
                  std::vector<std::string>& result);
@@ -73,12 +74,12 @@ void lookup(const std::string& search_string,
             ResultMap& result,
             std::vector<std::string>* inexact_matches = nullptr);
 
-void populate_mirror(const boost::filesystem::path& path,
+void populate_mirror(const std::filesystem::path& path,
                      const std::string& database_path,
                      bool truncate,
                      uint8_t verbosity);
 
-void populate(const boost::filesystem::path& path,
+void populate(const std::filesystem::path& path,
               const std::string& database_path,
               const std::string& catalog,
               bool truncate,

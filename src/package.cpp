@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <filesystem>
 #include <iostream>
 #include <regex>
 #include <sstream>
@@ -31,29 +32,27 @@
 
 #include "package.h"
 
-namespace bf = boost::filesystem;
-using namespace std;
 using boost::format;
 using boost::locale::translate;
 
 namespace cnf {
 
-Package::Package(const bf::path& path, const bool lazy)
-    : m_filesDetermined(false), m_path(new bf::path(path)) {
+Package::Package(const std::filesystem::path& path, const bool lazy)
+    : m_filesDetermined(false), m_path(path) {
     // checks
-    if (!bf::is_regular_file(path)) {
-        string message;
+    if (!std::filesystem::is_regular_file(path)) {
+        std::string message;
         message += translate("not a file: ");
         message += path.string();
         throw InvalidArgumentException(MISSING_FILE, message);
     }
 
-    static const regex valid_name(
+    static const std::regex valid_name(
         "(.+)-(.+)-(.+)-(any|i686|x86_64).pkg.tar.(xz|gz)");
 
-    cmatch what;
+    std::cmatch what;
 
-    const string& filename = path.filename().string();
+    const std::string& filename = path.filename().string();
 
     try {
         if (regex_match(filename.c_str(), what, valid_name)) {
@@ -63,7 +62,7 @@ Package::Package(const bf::path& path, const bool lazy)
             m_architecture = what[4];
             m_compression = what[5];
         } else {
-            string message;
+            std::string message;
             message += translate("this is not a valid package file: ");
             message += path.string();
             throw InvalidArgumentException(INVALID_FILE, message);
@@ -77,12 +76,12 @@ Package::Package(const bf::path& path, const bool lazy)
     }
 }
 
-const vector<string>& Package::files() const {
+const std::vector<std::string>& Package::files() const {
     if (!m_filesDetermined) {
         try {
             updateFiles();
         } catch (const InvalidArgumentException& e) {
-            cerr << e.what() << endl;
+            std::cerr << e.what() << '\n';
         }
     }
     return m_files;
@@ -91,12 +90,12 @@ const vector<string>& Package::files() const {
 void Package::updateFiles() const {
     // read package file list
 
-    assert(m_path);
+    assert(m_path.has_value());
 
     struct archive* arc = nullptr;
     struct archive_entry* entry = nullptr;
     int rc = 0;
-    vector<string> candidates;
+    std::vector<std::string> candidates;
 
     arc = archive_read_new();
     archive_read_support_filter_all(arc);
@@ -123,9 +122,9 @@ void Package::updateFiles() const {
         throw InvalidArgumentException(INVALID_FILE, message.str());
     }
 
-    const regex significant("((usr/)?(s)?bin/([0-9A-Za-z.-]+))");
+    const std::regex significant("((usr/)?(s)?bin/([0-9A-Za-z.-]+))");
 
-    cmatch what;
+    std::cmatch what;
     try {
         for (const auto& candidate : candidates) {
             if (regex_match(candidate.c_str(), what, significant)) {
@@ -139,19 +138,19 @@ void Package::updateFiles() const {
     m_filesDetermined = true;
 }
 
-const string Package::hl_str(const string& hl,
-                             const string& files_indent,
-                             const string& color) const {
-    vector<string> hls;
+const std::string Package::hl_str(const std::string& hl,
+                                  const std::string& files_indent,
+                                  const std::string& color) const {
+    std::vector<std::string> hls;
     hls.push_back(hl);
 
     return hl_str(&hls, files_indent, color);
 }
 
-const string Package::hl_str(const vector<string>* hl,
-                             const string& files_indent,
-                             const string& color) const {
-    stringstream out;
+const std::string Package::hl_str(const std::vector<std::string>* hl,
+                                  const std::string& files_indent,
+                                  const std::string& color) const {
+    std::stringstream out;
     out << files_indent << "[ ";
 
     int linelength = 0;
@@ -168,7 +167,7 @@ const string Package::hl_str(const vector<string>* hl,
 
         if (linelength + file.size() > 80) {
             linelength = 0;
-            out << endl << files_indent << "  ";
+            out << '\n' << files_indent << "  ";
         }
 
         linelength += file.size() + 1;
@@ -187,8 +186,8 @@ const string Package::hl_str(const vector<string>* hl,
     return out.str();
 }
 
-ostream& operator<<(ostream& out, const Package& p) {
-    out << p.name() << " (" << p.version() << "-" << p.release() << ")" << endl;
+std::ostream& operator<<(std::ostream& out, const Package& p) {
+    out << p.name() << " (" << p.version() << "-" << p.release() << ")" << '\n';
     return out;
 }
 

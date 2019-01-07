@@ -17,6 +17,7 @@
 */
 
 #include <algorithm>
+#include <filesystem>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -29,38 +30,38 @@
 #include "db.h"
 #include "db_tdb.h"
 
-namespace bf = boost::filesystem;
-using namespace std;
+namespace fs = std::filesystem;
 using boost::format;
 using boost::locale::translate;
 
 namespace cnf {
 
-TdbDatabase::TdbDatabase(const string& id,
+TdbDatabase::TdbDatabase(const std::string& id,
                          const bool readonly,
-                         const string& base_path)
+                         const std::string& base_path)
     : Database(id, readonly, base_path)
     , m_databaseName(m_basePath + "/" + m_id + ".tdb") {
-    if (!bf::is_directory(base_path)) {
-        cout << format(translate(
-                    "Directory '%s' does not exist. Trying to create it ...")) %
-                    base_path
-             << endl;
+    if (!fs::is_directory(base_path)) {
+        std::cout
+            << format(translate(
+                   "Directory '%s' does not exist. Trying to create it ...")) %
+                   base_path
+            << '\n';
         try {
-            bf::create_directories(base_path);
-        } catch (const bf::filesystem_error& e) {
-            cerr << format(translate(
-                        "Could not create database directory: %s: ")) %
-                        e.code().message();
+            fs::create_directories(base_path);
+        } catch (const fs::filesystem_error& e) {
+            std::cerr << format(translate(
+                             "Could not create database directory: %s: ")) %
+                             e.code().message();
             if (!e.path1().empty()) {
-                cerr << e.path1();
+                std::cerr << e.path1();
             }
             if (!e.path2().empty()) {
-                cerr << ", " << e.path2();
+                std::cerr << ", " << e.path2();
             }
-            cerr << endl;
+            std::cerr << '\n';
 
-            string message;
+            std::string message;
             message += translate("Error opening tdb database: ");
             message += translate("Missing database directory!");
             throw DatabaseException(CONNECT_ERROR, message);
@@ -75,7 +76,7 @@ TdbDatabase::TdbDatabase(const string& id,
     }
 
     if (m_tdbFile == nullptr) {
-        string message;
+        std::string message;
         message += translate("Error opening tdb database: ");
         message += m_databaseName;
         throw DatabaseException(CONNECT_ERROR, message);
@@ -136,7 +137,7 @@ void TdbDatabase::storePackage(const Package& p) {
         tdb_store(m_tdbFile, kv.key(), kv.value(), TDB_INSERT);
     }
 
-    string filesString;
+    std::string filesString;
     bool first = true;
 
     for (const auto& elem : p.files()) {
@@ -147,16 +148,17 @@ void TdbDatabase::storePackage(const Package& p) {
 
         if (ret != 0) {
             fkv.setValue(tdb_fetch(m_tdbFile, fkv.key()));
-            vector<string> others;
-            istringstream iss(fkv.value_str());
-            copy(istream_iterator<string>(iss), istream_iterator<string>(),
-                 back_inserter<vector<string>>(others));
+            std::vector<std::string> others;
+            std::istringstream iss(fkv.value_str());
+            copy(std::istream_iterator<std::string>(iss),
+                 std::istream_iterator<std::string>(),
+                 std::back_inserter<std::vector<std::string>>(others));
             others.push_back(p.name());
 
             auto uIter = unique(others.begin(), others.end());
             others.resize(uIter - others.begin());
 
-            string newValue;
+            std::string newValue;
             bool isthefirst = true;
             for (auto& other : others) {
                 if (isthefirst) {
@@ -188,16 +190,17 @@ void TdbDatabase::storePackage(const Package& p) {
     }
 }
 
-void TdbDatabase::getPackages(const string& search,
-                              vector<Package>& result) const {
+void TdbDatabase::getPackages(const std::string& search,
+                              std::vector<Package>& result) const {
     TdbKeyValue name_kv;
     name_kv.setKey(search);
     name_kv.setValue(tdb_fetch(m_tdbFile, name_kv.key()));
 
-    vector<string> package_names;
-    istringstream iss(name_kv.value_str());
-    copy(istream_iterator<string>(iss), istream_iterator<string>(),
-         back_inserter<vector<string>>(package_names));
+    std::vector<std::string> package_names;
+    std::istringstream iss(name_kv.value_str());
+    copy(std::istream_iterator<std::string>(iss),
+         std::istream_iterator<std::string>(),
+         std::back_inserter<std::vector<std::string>>(package_names));
 
     for (auto& package_name : package_names) {
         TdbKeyValue version_kv;
@@ -220,10 +223,11 @@ void TdbDatabase::getPackages(const string& search,
         files_kv.setKey(package_name + "-files");
         files_kv.setValue(tdb_fetch(m_tdbFile, files_kv.key()));
 
-        istringstream iss(files_kv.value_str());
-        vector<string> files;
-        copy(istream_iterator<string>(iss), istream_iterator<string>(),
-             back_inserter<vector<string>>(files));
+        std::istringstream iss(files_kv.value_str());
+        std::vector<std::string> files;
+        copy(std::istream_iterator<std::string>(iss),
+             std::istream_iterator<std::string>(),
+             std::back_inserter<std::vector<std::string>>(files));
 
         Package p(package_name, version_kv.value_str(), release_kv.value_str(),
                   arch_kv.value_str(), compression_kv.value_str(), files);
@@ -241,30 +245,30 @@ void TdbDatabase::truncate() {
                  S_IRWXU | S_IRGRP | S_IROTH);
 
     if (m_tdbFile == nullptr) {
-        string message;
+        std::string message;
         message += translate("Error opening tdb database: ");
         message += m_databaseName;
         throw DatabaseException(CONNECT_ERROR, message);
     }
 }
 
-void TdbDatabase::getCatalogs(const string& database_path,
-                              vector<string>& result) {
-    const bf::path p(database_path);
+void TdbDatabase::getCatalogs(const std::string& database_path,
+                              std::vector<std::string>& result) {
+    const fs::path p(database_path);
 
-    if (bf::is_directory(p)) {
-        using dirIter = bf::directory_iterator;
+    if (fs::is_directory(p)) {
+        using dirIter = fs::directory_iterator;
 
         for (dirIter iter = dirIter(p); iter != dirIter(); ++iter) {
-            bf::path cand(*iter);
-            if (cand.extension() == ".tdb" && bf::is_regular_file(cand)) {
+            fs::path cand(*iter);
+            if (cand.extension() == ".tdb" && fs::is_regular_file(cand)) {
                 result.push_back(cand.stem().string());
             }
         }
     }
 }
 
-TdbKeyValue::TdbKeyValue(const string& key, const string& value)
+TdbKeyValue::TdbKeyValue(const std::string& key, const std::string& value)
     : m_key(TDB_DATA()), m_value(TDB_DATA()) {
     setKey(key);
     setValue(value);
@@ -272,7 +276,7 @@ TdbKeyValue::TdbKeyValue(const string& key, const string& value)
 
 TdbKeyValue::TdbKeyValue() : m_key(TDB_DATA()), m_value(TDB_DATA()) {}
 
-void TdbKeyValue::setKey(const string& key) {
+void TdbKeyValue::setKey(const std::string& key) {
     if (m_key.dptr != nullptr) {
         free(m_key.dptr);
     }
@@ -288,7 +292,7 @@ void TdbKeyValue::setKey(const TDB_DATA& key) {
     m_key = key;
 }
 
-void TdbKeyValue::setValue(const string& value) {
+void TdbKeyValue::setValue(const std::string& value) {
     if (m_value.dptr != nullptr) {
         free(m_value.dptr);
     }
@@ -311,7 +315,7 @@ TdbKeyValue::~TdbKeyValue() {
     m_value.dptr = nullptr;
 }
 
-unsigned char* getWritableUCString(const string& aString) {
+unsigned char* getWritableUCString(const std::string& aString) {
     auto* result =
         (unsigned char*)malloc((aString.size() + 1) * sizeof(unsigned char));
     copy(aString.begin(), aString.end(), result);

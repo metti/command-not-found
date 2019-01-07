@@ -16,14 +16,14 @@
     along with command-not-found.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARSEPKG_H_
-#define PARSEPKG_H_
+#ifndef PACKAGE_H_
+#define PACKAGE_H_
 
+#include <filesystem>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
-
-#include <boost/filesystem.hpp>
 
 #include "custom_exceptions.h"
 
@@ -31,7 +31,7 @@ namespace cnf {
 
 class Package {
 public:
-    explicit Package(const boost::filesystem::path& path, bool lazy = false);
+    explicit Package(const std::filesystem::path& path, bool lazy = false);
     explicit Package(std::string name,
                      std::string version,
                      std::string release,
@@ -44,10 +44,7 @@ public:
         , m_architecture(std::move(architecture))
         , m_compression(std::move(compression))
         , m_files(std::move(files))
-        , m_filesDetermined(true)
-        , m_path(nullptr) {}
-
-    ~Package() { delete m_path; }
+        , m_filesDetermined(true) {}
 
     const std::vector<std::string>& files() const;
 
@@ -73,7 +70,7 @@ private:
     std::string m_compression;
     mutable std::vector<std::string> m_files;
     mutable bool m_filesDetermined;
-    boost::filesystem::path* m_path;
+    std::optional<std::filesystem::path> m_path;
 };
 
 enum PackageError { MISSING_FILE, INVALID_FILE, UNKNOWN_ERROR };
@@ -85,4 +82,4 @@ bool operator==(const Package& lhs, const Package& rhs);
 
 }  // namespace cnf
 
-#endif /* PARSEPKG_H */
+#endif /* PACKAGE_H */

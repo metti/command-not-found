@@ -25,8 +25,6 @@ ENDIF(STATIC_LINKS)
 
 FIND_PACKAGE(Boost 1.44
                    COMPONENTS
-                        filesystem
-                        system
                         locale
                    REQUIRED)
 
@@ -38,6 +36,8 @@ LIST(APPEND EXTRA_LIBRARIES ${LibTdb_LIBRARY})
 FIND_PACKAGE(LibArchive 3 REQUIRED)
 INCLUDE_DIRECTORIES(${LibArchive_INCLUDE_DIRS})
 LIST(APPEND EXTRA_LIBRARIES ${LibArchive_LIBRARIES})
+
+LIST(APPEND EXTRA_LIBRARIES stdc++fs)
 
 ###### PROJECT CONFIGURATION ######
 
@@ -57,11 +57,6 @@ SET (VERSION_SHORT "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}${VERSION_
 
 GET_GIT_HEAD_REVISION(GIT_REFSPEC GIT_HASH GIT_HASH_SHORT)
 
-IF ("${CMAKE_BUILD_TYPE}" MATCHES "^Debug$")
-    SET (DEBUG 1)
-    MESSAGE (STATUS "Compiling with debug symbols")
-ENDIF()
-
 ### Application Configuration ###
 
 SET (DATABASE_PATH ${CMAKE_INSTALL_PREFIX}/var/lib/${BINARY_NAME})
@@ -71,11 +66,6 @@ SET (LC_MESSAGE_PATH ${CMAKE_INSTALL_PREFIX}/usr/share)
 CONFIGURE_FILE (
     "${PROJECT_SOURCE_DIR}/config.cpp.in"
     "${PROJECT_BINARY_DIR}/config.cpp"
-)
-
-CONFIGURE_FILE (
-    "${PROJECT_SOURCE_DIR}/config.h.in"
-    "${PROJECT_BINARY_DIR}/config.h"
 )
 
 CONFIGURE_FILE (
@@ -100,7 +90,8 @@ INCLUDE_DIRECTORIES ("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}")
 
 ###### EXECUTABLES and LIBRARIES######
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++14")
+SET(CMAKE_CXX_STANDARD 17)
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror")
 
 OPTION(ENABLE_CLANG_TIDY OFF)
 IF(ENABLE_CLANG_TIDY)

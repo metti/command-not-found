@@ -17,6 +17,7 @@
 */
 
 #include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -33,49 +34,46 @@
 #include "db_tdb.h"
 #include "similar.h"
 
-namespace bf = boost::filesystem;
-using namespace std;
+namespace fs = std::filesystem;
 using boost::format;
 using boost::locale::translate;
 
 namespace cnf {
 
-const shared_ptr<Database> getDatabase(const string& id,
-                                       const bool readonly,
-                                       const string& base_path) {
-    return shared_ptr<Database>(new TdbDatabase(id, readonly, base_path));
+std::unique_ptr<Database> getDatabase(const std::string& id,
+                                      const bool readonly,
+                                      const std::string& base_path) {
+    return std::make_unique<TdbDatabase>(id, readonly, base_path);
 }
 
-void getCatalogs(const string& database_path, vector<string>& result) {
+void getCatalogs(const std::string& database_path,
+                 std::vector<std::string>& result) {
     TdbDatabase::getCatalogs(database_path, result);
 }
 
-void lookup(const string& search_string,
-            const string& database_path,
+void lookup(const std::string& search_string,
+            const std::string& database_path,
             ResultMap& result,
-            vector<string>* const inexact_matches) {
-    vector<string> catalogs;
+            std::vector<std::string>* const inexact_matches) {
+    std::vector<std::string> catalogs;
     getCatalogs(database_path, catalogs);
 
     if (!catalogs.empty()) {
-        vector<string> terms;
+        std::vector<std::string> terms;
         if (inexact_matches) {
             terms = similar_words(search_string);
         }
 
         for (const auto& catalog : catalogs) {
-            vector<Package> packs;
+            std::vector<Package> packs;
 
             try {
+                auto d = getDatabase(catalog, true, database_path);
                 if (inexact_matches == nullptr) {
-                    getDatabase(catalog, true, database_path)
-                        ->getPackages(search_string, packs);
+                    d->getPackages(search_string, packs);
                 } else {
-                    const shared_ptr<Database>& d =
-                        getDatabase(catalog, true, database_path);
-
                     for (const auto& term : terms) {
-                        vector<Package> tempPack;
+                        std::vector<Package> tempPack;
                         d->getPackages(term, tempPack);
                         if (!tempPack.empty()) {
                             packs.insert(packs.end(), tempPack.begin(),
@@ -86,7 +84,7 @@ void lookup(const string& search_string,
                 }
 
             } catch (const DatabaseException& e) {
-                cerr << e.what() << endl;
+                std::cerr << e.what() << '\n';
             }
 
             if (!packs.empty()) {
@@ -95,38 +93,39 @@ void lookup(const string& search_string,
             }
         }
     } else {
-        cout << format(translate("WARNING: No database for lookup!")) << endl;
+        std::cout << format(translate("WARNING: No database for lookup!"))
+                  << '\n';
     }
 }
 
-void populate_mirror(const bf::path& mirror_path,
-                     const string& database_path,
+void populate_mirror(const fs::path& mirror_path,
+                     const std::string& database_path,
                      const bool truncate,
                      const uint8_t verbosity) {
-    using dirIter = bf::directory_iterator;
+    using dirIter = fs::directory_iterator;
 
-    static const string architectures[] = {"i686", "x86_64"};
+    static const std::string architectures[] = {"i686", "x86_64"};
 
     for (const auto& architecture : architectures) {
-        vector<string> catalogs;
+        std::vector<std::string> catalogs;
 
         for (dirIter iter = dirIter(mirror_path); iter != dirIter(); ++iter) {
-            const string& catalog =
-                bf::path(*iter).stem().string() + "-" + architecture;
+            const std::string& catalog =
+                fs::path(*iter).stem().string() + "-" + architecture;
 
             bool truncated = !truncate;
 
             bool list_catalog = false;
 
-            bf::path dir = bf::path(*iter) / "os" / architecture;
-            if (bf::is_directory(dir)) {
+            fs::path dir = fs::path(*iter) / "os" / architecture;
+            if (fs::is_directory(dir)) {
                 populate(dir, database_path, catalog, !truncated, verbosity);
                 truncated = true;
                 list_catalog = true;
             }
 
-            dir = bf::path(*iter) / "os" / "any";
-            if (bf::is_directory(dir)) {
+            dir = fs::path(*iter) / "os" / "any";
+            if (fs::is_directory(dir)) {
                 populate(dir, database_path, catalog, !truncated, verbosity);
                 list_catalog = true;
             }
@@ -135,30 +134,31 @@ void populate_mirror(const bf::path& mirror_path,
             }
         }
 
-        const bf::path& catalogs_file_name =
-            bf::path(database_path) / ("catalogs-" + architecture + "-tdb");
+        const fs::path& catalogs_file_name =
+            fs::path(database_path) / ("catalogs-" + architecture + "-tdb");
 
-        ofstream catalogs_file;
+        std::ofstream catalogs_file;
 
-        catalogs_file.open(catalogs_file_name.c_str(), ios::trunc | ios::out);
+        catalogs_file.open(catalogs_file_name.c_str(),
+                           std::ios::trunc | std::ios::out);
 
         for (const auto& catalog : catalogs) {
-            catalogs_file << catalog << ".tdb" << endl;
+            catalogs_file << catalog << ".tdb" << '\n';
         }
         catalogs_file.close();
     }
 }
 
-void populate(const bf::path& path,
-              const string& database_path,
-              const string& catalog,
+void populate(const fs::path& path,
+              const std::string& database_path,
+              const std::string& catalog,
               const bool truncate,
               const uint8_t verbosity) {
-    shared_ptr<Database> d;
+    std::unique_ptr<Database> d;
     try {
         d = getDatabase(catalog, false, database_path);
     } catch (const DatabaseException& e) {
-        cerr << e.what() << endl;
+        std::cerr << e.what() << '\n';
         return;
     }
 
@@ -166,7 +166,7 @@ void populate(const bf::path& path,
         d->truncate();
     }
 
-    using dirIter = bf::directory_iterator;
+    using dirIter = fs::directory_iterator;
 
     uint32_t count = 0;
 
@@ -178,23 +178,24 @@ void populate(const bf::path& path,
 
     for (dirIter iter = dirIter(path); iter != dirIter(); ++iter) {
         if (verbosity > 0) {
-            cout << format(translate("[ %d / %d ] %s...")) % ++current % count %
-                        *iter;
-            cout.flush();
+            std::cout << format(translate("[ %d / %d ] %s...")) % ++current %
+                             count % *iter;
+            std::cout.flush();
         }
         try {
             Package p(*iter, true);
             d->storePackage(p);
             if (verbosity > 0) {
-                cout << translate("done") << endl;
+                std::cout << translate("done") << '\n';
             }
         } catch (const InvalidArgumentException& e) {
             if (verbosity > 0) {
-                cout << format(translate("skipping (%s)")) % e.what() << endl;
+                std::cout << format(translate("skipping (%s)")) % e.what()
+                          << '\n';
             }
             continue;
         } catch (const DatabaseException& e) {
-            cerr << e.what() << endl;
+            std::cerr << e.what() << '\n';
             return;
         }
     }
